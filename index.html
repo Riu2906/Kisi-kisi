@@ -45,13 +45,13 @@
       z-index: 1000;
       background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 55%, var(--slate) 100%);
       display: flex;
-      align-items: center;
-      justify-content: center;
       padding: 16px;
       min-height: 100dvh;
+      overflow-y: auto;
     }
 
     .welcome-card {
+      margin: auto;
       background: var(--white);
       width: 100%;
       max-width: 460px;
@@ -59,7 +59,7 @@
       overflow: hidden;
       box-shadow: 0 24px 50px rgba(0, 0, 0, 0.35);
       border-bottom: 5px solid var(--gold);
-      animation: cardEntrance 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+      animation: cardEntrance 0.65s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     @keyframes cardEntrance {
@@ -167,7 +167,7 @@
     }
 
     .shake {
-      animation: shakeAnim 0.35s ease-in-out;
+      animation: shakeAnim 0.4s ease-in-out;
     }
 
     @keyframes shakeAnim {
@@ -186,8 +186,6 @@
       z-index: 2000;
       background: radial-gradient(circle at center, rgba(27, 54, 93, 0.96) 0%, rgba(12, 26, 48, 0.98) 100%);
       display: none;
-      align-items: center;
-      justify-content: center;
       padding: 16px;
       min-height: 100dvh;
       overflow-y: auto;
@@ -203,12 +201,13 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
-      z-index: 1; /* Tepat di belakang tulisan */
+      z-index: 1;
     }
 
     .message-stage {
       position: relative;
-      z-index: 2; /* Tepat di depan letusan kertas */
+      z-index: 2;
+      margin: auto;
       width: 100%;
       max-width: 720px;
       background: rgba(255, 255, 255, 0.1);
@@ -222,41 +221,41 @@
       box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
     }
 
-    /* Animasi Bounce Khusus "TERIMAKASIH [NAMA SISWA]" */
     .hero-thanks {
       font-size: clamp(22px, 5vw, 34px);
       font-weight: 900;
       color: var(--gold-light);
       text-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
       letter-spacing: 0.5px;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
       line-height: 1.25;
       opacity: 0;
       transform: scale(0.3);
     }
 
+    /* Durasi animasi bounce diperlambat menjadi 1.85 detik agar memantul lembut & jelas */
     .hero-thanks.animate-bounce {
-      animation: cuteBounce 0.95s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      animation: cuteBounce 1.85s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     }
 
     @keyframes cuteBounce {
-      0% { opacity: 0; transform: scale(0.25) translateY(-30px) rotate(-3deg); }
-      45% { opacity: 1; transform: scale(1.12) translateY(6px) rotate(2deg); }
-      65% { transform: scale(0.94) translateY(-4px) rotate(-1deg); }
-      82% { transform: scale(1.04) translateY(2px) rotate(0.5deg); }
+      0% { opacity: 0; transform: scale(0.25) translateY(-32px) rotate(-3deg); }
+      40% { opacity: 1; transform: scale(1.12) translateY(8px) rotate(2deg); }
+      62% { transform: scale(0.94) translateY(-5px) rotate(-1deg); }
+      80% { transform: scale(1.04) translateY(2px) rotate(0.5deg); }
       100% { opacity: 1; transform: scale(1) translateY(0) rotate(0deg); }
     }
 
-    /* Baris Teks Muncul Berurutan */
+    /* Durasi transisi kemunculan tiap baris teks diperlambat menjadi 1.15 detik */
     .seq-line {
       font-size: clamp(14px, 3.2vw, 17.5px);
       font-weight: 600;
       color: #F8FAFC;
-      line-height: 1.55;
-      margin-bottom: 12px;
+      line-height: 1.6;
+      margin-bottom: 13px;
       opacity: 0;
-      transform: translateY(16px) scale(0.97);
-      transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+      transform: translateY(18px) scale(0.97);
+      transition: opacity 1.15s ease, transform 1.15s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     .seq-line.visible {
@@ -282,13 +281,12 @@
       letter-spacing: 0.6px;
     }
 
-    /* Kotak Hitungan Mundur */
     .countdown-box {
       margin-top: 22px;
       padding-top: 16px;
       border-top: 1px solid rgba(255, 255, 255, 0.2);
       opacity: 0;
-      transition: opacity 0.4s ease;
+      transition: opacity 0.85s ease;
     }
 
     .countdown-box.visible {
@@ -359,7 +357,7 @@
 
     .main-container.visible {
       display: block;
-      animation: fadeInMain 0.5s ease;
+      animation: fadeInMain 0.65s ease;
     }
 
     @keyframes fadeInMain {
@@ -367,7 +365,6 @@
       to { opacity: 1; }
     }
 
-    /* Hero Banner (Sama dengan Desain Word) */
     .hero-banner {
       background: var(--navy);
       color: var(--white);
@@ -395,7 +392,6 @@
       color: #DCE7F3;
     }
 
-    /* Bar Kontrol Siswa & Pencarian */
     .toolbar {
       background: var(--white);
       padding: 14px 20px;
@@ -442,15 +438,53 @@
       background: #FDE68A;
     }
 
+    .filter-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      flex: 1 1 320px;
+      justify-content: flex-end;
+    }
+
+    .filter-pills {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1.5px solid var(--border-gray);
+      background: var(--white);
+      color: var(--text-muted);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--navy);
+      color: var(--navy);
+    }
+
+    .filter-btn.active {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: var(--white);
+    }
+
     .search-box {
-      flex: 1 1 250px;
-      max-width: 340px;
+      flex: 1 1 210px;
+      max-width: 280px;
     }
 
     .search-input {
       width: 100%;
-      padding: 9px 14px;
-      font-size: 13.5px;
+      padding: 8px 12px;
+      font-size: 13px;
       border: 1.5px solid var(--border-gray);
       border-radius: 8px;
       outline: none;
@@ -460,7 +494,6 @@
       border-color: var(--navy);
     }
 
-    /* Kartu Metadata 4 Sel */
     .meta-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -510,7 +543,6 @@
       gap: 8px;
     }
 
-    /* Tabel Kisi-Kisi Desktop */
     .table-wrapper {
       background: var(--white);
       border-radius: 10px;
@@ -575,7 +607,6 @@
       margin-bottom: 4px;
     }
 
-    /* Link Materi Utama ke Wikipedia */
     .materi-link {
       display: inline-block;
       font-weight: 700;
@@ -612,7 +643,6 @@
       border-color: var(--navy);
     }
 
-    /* Daftar Poin Inti Materi */
     .inti-list {
       list-style: none;
     }
@@ -652,7 +682,6 @@
       text-decoration-color: #1D4ED8;
     }
 
-    /* Posisi Soal Badges */
     .paket-row {
       margin-bottom: 6px;
       font-size: 12.5px;
@@ -672,7 +701,6 @@
       color: var(--slate);
     }
 
-    /* Footer Keterangan & Bobot Penskoran */
     .legend-card {
       margin-top: 16px;
       background: var(--ice-blue);
@@ -705,6 +733,14 @@
        4. RESPONSIVE HP (TAMPILAN KARTU RAPI)
        ========================================= */
     @media (max-width: 820px) {
+      .filter-controls {
+        justify-content: flex-start;
+      }
+
+      .search-box {
+        max-width: 100%;
+      }
+
       .meta-grid {
         grid-template-columns: 1fr 2fr;
       }
@@ -773,14 +809,14 @@
 <body>
 
   <!-- =================================================
-       1. FORM AWAL (NAMA & KELAS SISWA)
+       1. FORM AWAL (NAMA & KELAS SISWA: XII F1 - XII F9)
        ================================================= -->
   <section id="welcomeScreen" class="welcome-screen">
     <div id="welcomeCard" class="welcome-card">
       <div class="welcome-header">
         <span class="welcome-badge">Perangkat Asesmen • Kurikulum Merdeka</span>
         <h1>Kisi-Kisi SAS Sejarah Kelas XII</h1>
-        <p>Demokrasi Liberal (1950–1959) & Demokrasi Terpimpin (1959–1965)</p>
+        <p>Demokrasi Liberal (1950–1959) &amp; Demokrasi Terpimpin (1959–1965)</p>
       </div>
       <div class="welcome-body">
         <div class="form-group">
@@ -792,25 +828,22 @@
           <label for="studentClass">Pilih Kelas Kamu</label>
           <select id="studentClass" class="form-control">
             <option value="">-- Pilih Kelas --</option>
-            <option value="XII.1">XII.1</option>
-            <option value="XII.2">XII.2</option>
-            <option value="XII.3">XII.3</option>
-            <option value="XII.4">XII.4</option>
-            <option value="XII.5">XII.5</option>
-            <option value="XII.6">XII.6</option>
-            <option value="XII.7">XII.7</option>
-            <option value="XII.8">XII.8</option>
-            <option value="XII.9">XII.9</option>
-            <option value="XII.10">XII.10</option>
-            <option value="XII.11">XII.11</option>
-            <option value="XII.12">XII.12</option>
+            <option value="XII F1">XII F1</option>
+            <option value="XII F2">XII F2</option>
+            <option value="XII F3">XII F3</option>
+            <option value="XII F4">XII F4</option>
+            <option value="XII F5">XII F5</option>
+            <option value="XII F6">XII F6</option>
+            <option value="XII F7">XII F7</option>
+            <option value="XII F8">XII F8</option>
+            <option value="XII F9">XII F9</option>
             <option value="CUSTOM">Lainnya (Ketik Nama Kelas)</option>
           </select>
         </div>
 
         <div class="form-group" id="customClassGroup" style="display: none;">
           <label for="customClassInput">Ketik Nama Kelas Kamu</label>
-          <input type="text" id="customClassInput" class="form-control" placeholder="Contoh: XII IPS 1 / XII Fase F-2" />
+          <input type="text" id="customClassInput" class="form-control" placeholder="Contoh: XII F10 / XII IPS 1" />
         </div>
 
         <div id="errorMsg" class="error-msg">Silakan isi nama dan pilih kelas kamu terlebih dahulu ya!</div>
@@ -827,10 +860,8 @@
     <canvas id="confettiCanvas"></canvas>
 
     <div class="message-stage">
-      <!-- Judul Utama dengan Animasi Bounce + SFX Lucu -->
       <div id="heroThanks" class="hero-thanks"></div>
 
-      <!-- Kalimat Muncul Berurutan -->
       <p id="seqLine1" class="seq-line">
         SUDAH MAU MEMPELAJARI KISI KISI INI,
       </p>
@@ -847,7 +878,6 @@
         <span class="proud-badge">PROUD OF U ALL 🎓✨</span>
       </div>
 
-      <!-- Hitungan Mundur Otomatis 8 Detik -->
       <div id="countdownBox" class="countdown-box">
         <p class="countdown-text">
           Kisi-kisi akan terbuka otomatis dalam <span id="countdownNum" class="countdown-number">8</span> detik...
@@ -875,8 +905,15 @@
         <span id="studentPill" class="student-pill">👋 Halo, Siswa!</span>
         <button type="button" id="replayBtn" class="btn-replay">🎉 Putar Ulang Ucapan</button>
       </div>
-      <div class="search-box">
-        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Cari materi, tokoh, atau nomor soal..." />
+      <div class="filter-controls">
+        <div class="filter-pills">
+          <button type="button" class="filter-btn active" data-era="ALL">Semua (14)</button>
+          <button type="button" class="filter-btn" data-era="LIBERAL">Demokrasi Liberal</button>
+          <button type="button" class="filter-btn" data-era="TERPIMPIN">Demokrasi Terpimpin</button>
+        </div>
+        <div class="search-box">
+          <input type="text" id="searchInput" class="search-input" placeholder="🔍 Cari materi, tokoh, atau nomor soal..." />
+        </div>
       </div>
     </div>
 
@@ -922,12 +959,10 @@
   </main>
 
   <script>
-    /* =====================================================================
-       DATA KISI-KISI LENGKAP (14 POIN MATERI + TAUTAN WIKIPEDIA)
-       ===================================================================== */
     const kisiData = [
       {
         no: 1,
+        era: "LIBERAL",
         periode: "DEMOKRASI LIBERAL (1950–1959)",
         materi: "Sistem Ketatanegaraan dan Pemerintahan Masa Demokrasi Liberal (UUDS 1950)",
         wikiUrl: "https://id.wikipedia.org/wiki/Demokrasi_liberal_di_Indonesia",
@@ -941,6 +976,7 @@
       },
       {
         no: 2,
+        era: "LIBERAL",
         periode: "DEMOKRASI LIBERAL (1950–1959)",
         materi: "Dinamika Kabinet Awal Demokrasi Liberal (Kabinet Natsir, Sukiman, dan Wilopo, 1950–1953)",
         wikiUrl: "https://id.wikipedia.org/wiki/Kabinet_Natsir",
@@ -954,6 +990,7 @@
       },
       {
         no: 3,
+        era: "LIBERAL",
         periode: "DEMOKRASI LIBERAL (1950–1959)",
         materi: "Kabinet Ali Sastroamidjojo I dan Penyelenggaraan Konferensi Asia-Afrika (1953–1955)",
         wikiUrl: "https://id.wikipedia.org/wiki/Konferensi_Asia%E2%80%93Afrika",
@@ -967,6 +1004,7 @@
       },
       {
         no: 4,
+        era: "LIBERAL",
         periode: "DEMOKRASI LIBERAL (1950–1959)",
         materi: "Kabinet Burhanuddin Harahap dan Pemilihan Umum Pertama Tahun 1955",
         wikiUrl: "https://id.wikipedia.org/wiki/Pemilihan_umum_legislatif_Indonesia_1955",
@@ -980,6 +1018,7 @@
       },
       {
         no: 5,
+        era: "LIBERAL",
         periode: "DEMOKRASI LIBERAL (1950–1959)",
         materi: "Kabinet Ali Sastroamidjojo II, Kabinet Karya (Djuanda), dan Deklarasi Djuanda 1957",
         wikiUrl: "https://id.wikipedia.org/wiki/Deklarasi_Djuanda",
@@ -993,6 +1032,7 @@
       },
       {
         no: 6,
+        era: "LIBERAL",
         periode: "DEMOKRASI LIBERAL (1950–1959)",
         materi: "Kebijakan Ekonomi pada Masa Demokrasi Liberal (1950–1959)",
         wikiUrl: "https://id.wikipedia.org/wiki/Gunting_Syafruddin",
@@ -1007,6 +1047,7 @@
       },
       {
         no: 7,
+        era: "LIBERAL",
         periode: "DEMOKRASI LIBERAL (1950–1959)",
         materi: "Pergolakan Daerah di Akhir Masa Demokrasi Liberal (PRRI/Permesta, 1956–1958)",
         wikiUrl: "https://id.wikipedia.org/wiki/Pemerintahan_Revolusioner_Republik_Indonesia",
@@ -1020,6 +1061,7 @@
       },
       {
         no: 8,
+        era: "TERPIMPIN",
         periode: "TRANSISI KETATANEGARAAN (1957–1959)",
         materi: "Konsepsi Presiden 1957, Krisis Konstituante, dan Dekrit Presiden 5 Juli 1959",
         wikiUrl: "https://id.wikipedia.org/wiki/Dekret_Presiden_5_Juli_1959",
@@ -1033,6 +1075,7 @@
       },
       {
         no: 9,
+        era: "TERPIMPIN",
         periode: "DEMOKRASI TERPIMPIN (1959–1965)",
         materi: "Sistem Ketatanegaraan dan Penyimpangan terhadap UUD 1945 Masa Demokrasi Terpimpin",
         wikiUrl: "https://id.wikipedia.org/wiki/Demokrasi_Terpimpin_(1959%E2%80%931965)",
@@ -1046,6 +1089,7 @@
       },
       {
         no: 10,
+        era: "TERPIMPIN",
         periode: "DEMOKRASI TERPIMPIN (1959–1965)",
         materi: "Doktrin Politik (Manipol-USDEK, Nasakom) dan Peta Kekuatan Politik Demokrasi Terpimpin",
         wikiUrl: "https://id.wikipedia.org/wiki/Manifesto_Politik_Republik_Indonesia",
@@ -1059,6 +1103,7 @@
       },
       {
         no: 11,
+        era: "TERPIMPIN",
         periode: "DEMOKRASI TERPIMPIN (1959–1965)",
         materi: "Perjuangan Pembebasan Irian Barat (Trikora, Komando Mandala, dan Perjanjian New York)",
         wikiUrl: "https://id.wikipedia.org/wiki/Tri_Komando_Rakyat",
@@ -1073,6 +1118,7 @@
       },
       {
         no: 12,
+        era: "TERPIMPIN",
         periode: "DEMOKRASI TERPIMPIN (1959–1965)",
         materi: "Politik Luar Negeri Konfrontatif, Konfrontasi Malaysia, GANEFO, dan Keluar dari PBB",
         wikiUrl: "https://id.wikipedia.org/wiki/Konfrontasi_Indonesia%E2%80%93Malaysia",
@@ -1087,6 +1133,7 @@
       },
       {
         no: 13,
+        era: "TERPIMPIN",
         periode: "DEMOKRASI TERPIMPIN (1959–1965)",
         materi: "Kebijakan Ekonomi, Proyek Mercusuar, dan Hiperinflasi Masa Demokrasi Terpimpin",
         wikiUrl: "https://id.wikipedia.org/wiki/Proyek_Mercusuar",
@@ -1101,6 +1148,7 @@
       },
       {
         no: 14,
+        era: "ALL",
         periode: "SINTESIS LINTAS PERIODE (1950–1965)",
         materi: "Perbandingan Penyelenggaraan Negara Masa Demokrasi Liberal dan Demokrasi Terpimpin",
         wikiUrl: "https://id.wikipedia.org/wiki/Sejarah_Indonesia_(1950%E2%80%931959)",
@@ -1113,17 +1161,23 @@
       }
     ];
 
-    /* =====================================================================
-       RENDER TABEL KISI-KISI
-       ===================================================================== */
     const kisiBody = document.getElementById("kisiBody");
+    const searchInput = document.getElementById("searchInput");
+    const filterBtns = document.querySelectorAll(".filter-btn");
+    let currentEraFilter = "ALL";
 
-    function renderTable(filterText = "") {
-      const q = filterText.trim().toLowerCase();
+    function renderTable() {
+      const q = searchInput.value.trim().toLowerCase();
       kisiBody.innerHTML = "";
 
       const filtered = kisiData.filter(item => {
+        const eraMatch =
+          currentEraFilter === "ALL" ||
+          item.era === currentEraFilter ||
+          item.era === "ALL";
+        if (!eraMatch) return false;
         if (!q) return true;
+
         const combined = [
           item.no,
           item.periode,
@@ -1136,7 +1190,7 @@
       });
 
       if (filtered.length === 0) {
-        kisiBody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:24px; color:#64748B;">Tidak ada materi yang cocok dengan pencarian "<strong>${filterText}</strong>".</td></tr>`;
+        kisiBody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:24px; color:#64748B;">Tidak ada materi yang cocok dengan filter atau pencarian "<strong>${searchInput.value}</strong>".</td></tr>`;
         return;
       }
 
@@ -1171,8 +1225,15 @@
 
     renderTable();
 
-    document.getElementById("searchInput").addEventListener("input", e => {
-      renderTable(e.target.value);
+    searchInput.addEventListener("input", renderTable);
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        filterBtns.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentEraFilter = btn.dataset.era;
+        renderTable();
+      });
     });
 
     /* =====================================================================
@@ -1198,53 +1259,48 @@
         if (!audioCtx) return;
         const now = audioCtx.currentTime;
 
-        // 1. Suara Letusan Bom Kertas ("POP!")
         const popOsc = audioCtx.createOscillator();
         const popGain = audioCtx.createGain();
         popOsc.type = "sine";
         popOsc.frequency.setValueAtTime(140, now);
-        popOsc.frequency.exponentialRampToValueAtTime(520, now + 0.08);
-        popOsc.frequency.exponentialRampToValueAtTime(90, now + 0.16);
+        popOsc.frequency.exponentialRampToValueAtTime(520, now + 0.12);
+        popOsc.frequency.exponentialRampToValueAtTime(90, now + 0.24);
         popGain.gain.setValueAtTime(0.35, now);
-        popGain.gain.exponentialRampToValueAtTime(0.001, now + 0.17);
+        popGain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
         popOsc.connect(popGain);
         popGain.connect(audioCtx.destination);
         popOsc.start(now);
-        popOsc.stop(now + 0.18);
+        popOsc.stop(now + 0.26);
 
-        // 2. Suara "BOING / BOUNCE" Lucu untuk Teks "TERIMAKASIH [NAMA]"
         const boingOsc = audioCtx.createOscillator();
         const boingGain = audioCtx.createGain();
         boingOsc.type = "triangle";
-        boingOsc.frequency.setValueAtTime(240, now + 0.12);
-        boingOsc.frequency.exponentialRampToValueAtTime(680, now + 0.28);
-        boingOsc.frequency.exponentialRampToValueAtTime(420, now + 0.38);
-        boingOsc.frequency.exponentialRampToValueAtTime(760, now + 0.50);
-        boingGain.gain.setValueAtTime(0.28, now + 0.12);
-        boingGain.gain.exponentialRampToValueAtTime(0.001, now + 0.55);
+        boingOsc.frequency.setValueAtTime(240, now + 0.18);
+        boingOsc.frequency.exponentialRampToValueAtTime(680, now + 0.42);
+        boingOsc.frequency.exponentialRampToValueAtTime(420, now + 0.58);
+        boingOsc.frequency.exponentialRampToValueAtTime(760, now + 0.78);
+        boingGain.gain.setValueAtTime(0.28, now + 0.18);
+        boingGain.gain.exponentialRampToValueAtTime(0.001, now + 0.85);
         boingOsc.connect(boingGain);
         boingGain.connect(audioCtx.destination);
-        boingOsc.start(now + 0.12);
-        boingOsc.stop(now + 0.56);
+        boingOsc.start(now + 0.18);
+        boingOsc.stop(now + 0.86);
 
-        // 3. Nada Fanfare Ceria (C5 - E5 - G5 - C6)
         const notes = [523.25, 659.25, 783.99, 1046.50];
         notes.forEach((freq, idx) => {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
           osc.type = "sine";
-          const start = now + 0.22 + idx * 0.09;
+          const start = now + 0.35 + idx * 0.14;
           osc.frequency.setValueAtTime(freq, start);
           gain.gain.setValueAtTime(0.14, start);
-          gain.gain.exponentialRampToValueAtTime(0.001, start + 0.28);
+          gain.gain.exponentialRampToValueAtTime(0.001, start + 0.38);
           osc.connect(gain);
           gain.connect(audioCtx.destination);
           osc.start(start);
-          osc.stop(start + 0.29);
+          osc.stop(start + 0.4);
         });
-      } catch (err) {
-        // Abaikan jika perangkat dalam mode senyap ketat
-      }
+      } catch (err) {}
     }
 
     function playSoftStepChime(stepIndex) {
@@ -1258,11 +1314,11 @@
         osc.type = "sine";
         osc.frequency.setValueAtTime(scale[stepIndex % scale.length], now);
         gain.gain.setValueAtTime(0.08, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.26);
         osc.connect(gain);
         gain.connect(audioCtx.destination);
         osc.start(now);
-        osc.stop(now + 0.19);
+        osc.stop(now + 0.28);
       } catch (err) {}
     }
 
@@ -1289,7 +1345,7 @@
       ];
 
       const originX = canvas.width / 2;
-      const originY = canvas.height * 0.44; // Tepat di belakang tulisan ucapan
+      const originY = canvas.height * 0.44;
 
       for (let i = 0; i < 165; i++) {
         const angle = Math.random() * Math.PI * 2;
@@ -1298,7 +1354,7 @@
           x: originX,
           y: originY,
           vx: Math.cos(angle) * speed * (0.8 + Math.random() * 0.5),
-          vy: Math.sin(angle) * speed - 4.5, // Meluncur meledak ke atas & segala arah
+          vy: Math.sin(angle) * speed - 4.5,
           w: 7 + Math.random() * 8,
           h: 4 + Math.random() * 6,
           color: colors[Math.floor(Math.random() * colors.length)],
@@ -1351,7 +1407,7 @@
     }
 
     /* =====================================================================
-       ALUR INTERAKSI SISWA, ANIMASI BERURUTAN & COUNTDOWN 8 DETIK
+       ALUR INTERAKSI SISWA, ANIMASI BERURUTAN (DIPERLAMBAT) & COUNTDOWN
        ===================================================================== */
     const welcomeScreen = document.getElementById("welcomeScreen");
     const welcomeCard = document.getElementById("welcomeCard");
@@ -1400,7 +1456,6 @@
     function startCelebrationSequence(name, kelas) {
       clearAllTimers();
 
-      // Reset semua elemen animasi
       const upperName = name.toUpperCase();
       const upperClass = kelas.toUpperCase();
 
@@ -1408,18 +1463,17 @@
       displayClass.textContent = upperClass;
 
       heroThanks.classList.remove("animate-bounce");
-      void heroThanks.offsetWidth; // Force reflow untuk replay
+      void heroThanks.offsetWidth;
 
       const seqLines = ["seqLine1", "seqLine2", "seqLine3", "seqLine4", "seqLine5"];
       seqLines.forEach(id => document.getElementById(id).classList.remove("visible"));
       countdownBox.classList.remove("visible");
 
-      const totalCountdown = 8; // 8 detik (berada di rentang 5–10 detik setelah animasi selesai)
+      const totalCountdown = 8;
       countdownNum.textContent = totalCountdown;
       progressFill.style.transition = "none";
       progressFill.style.width = "100%";
 
-      // Tampilkan Overlay & Ledakan Kertas + Bounce Judul Utama
       welcomeScreen.style.display = "none";
       celebrationOverlay.classList.add("active");
 
@@ -1427,22 +1481,22 @@
       playPartyPopperAndBounceSFX();
       heroThanks.classList.add("animate-bounce");
 
-      // Munculkan baris kalimat secara berurutan setelah judul bounce
+      // Jeda kemunculan tiap baris teks diperlambat agar nyaman dibaca
+      const lineDelays = [1500, 2900, 4600, 6100, 7600];
+
       seqLines.forEach((id, idx) => {
-        const delay = 750 + idx * 620;
+        const delay = lineDelays[idx];
         const timer = setTimeout(() => {
           document.getElementById(id).classList.add("visible");
           playSoftStepChime(idx);
           if (idx === seqLines.length - 1) {
-            // Ledakan kertas kedua kecil saat "PROUD OF U ALL" muncul
             launchConfettiBurst();
           }
         }, delay);
         sequenceTimers.push(timer);
       });
 
-      // Mulai hitungan mundur setelah seluruh animasi tulisan berurutan selesai
-      const animationFinishTime = 750 + seqLines.length * 620 + 350;
+      const animationFinishTime = lineDelays[lineDelays.length - 1] + 1150;
       const startCountdownTimer = setTimeout(() => {
         countdownBox.classList.add("visible");
         void progressFill.offsetWidth;
@@ -1494,7 +1548,6 @@
       startCelebrationSequence(currentStudentName, currentStudentClass);
     });
 
-    // Izinkan tekan Enter di kolom input
     studentNameInput.addEventListener("keypress", e => {
       if (e.key === "Enter") startBtn.click();
     });
