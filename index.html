@@ -233,6 +233,9 @@
       box-shadow: 0 8px 20px rgba(29, 78, 216, 0.32);
       min-height: 50px;
       user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -244,13 +247,13 @@
       box-shadow: 0 10px 24px rgba(29, 78, 216, 0.42);
     }
 
-    /* Mode melayang saat menghindar di layar */
+    /* Mode melayang saat menghindar di layar (HP & Laptop) */
     .btn-start.escaped {
       position: fixed;
       z-index: 1500;
       width: auto;
-      min-width: 195px;
-      padding: 13px 22px;
+      min-width: 178px;
+      padding: 12px 18px;
       margin: 0;
     }
 
@@ -1594,17 +1597,11 @@
     let sequenceTimers = [];
     let countdownInterval = null;
 
-    // State prank tombol menghindari mouse (khusus laptop/desktop)
+    // State prank tombol menghindar (berlaku di HP maupun Laptop/PC)
     let dodgeCount = 0;
-    const maxDodgesBeforeSuccess = 2; // Klik 1 & Klik 2 kabur -> Klik ke-3 berhasil lanjut!
+    const maxDodgesBeforeSuccess = 2; // Klik/tap 1 & 2 kabur -> Klik/tap ke-3 berhasil lanjut!
     let lastMoveType = "";
     let isButtonAnimating = false;
-
-    function isLaptopDevice() {
-      const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
-      const canHover = window.matchMedia("(hover: hover)").matches;
-      return (hasFinePointer && canHover) || window.innerWidth >= 900;
-    }
 
     window.addEventListener("resize", () => {
       if (startBtn.classList.contains("escaped")) {
@@ -1642,8 +1639,9 @@
       const cardRect = welcomeCard.getBoundingClientRect();
       const vw = window.innerWidth;
       const vh = window.innerHeight;
-      const margin = 20;
-      const gap = 18;
+      const isCompact = vw < 640;
+      const margin = isCompact ? 12 : 20;
+      const gap = isCompact ? 10 : 18;
 
       const zones = [];
 
@@ -1667,7 +1665,7 @@
         });
       }
 
-      // Zona Atas dari kotak putih
+      // Zona Atas dari kotak putih (utama di layar HP potret)
       if (cardRect.top - margin - gap >= btnHeight) {
         zones.push({
           minX: Math.max(margin, cardRect.left - 80),
@@ -1677,7 +1675,7 @@
         });
       }
 
-      // Zona Bawah dari kotak putih
+      // Zona Bawah dari kotak putih (utama di layar HP potret)
       if (vh - cardRect.bottom - margin - gap >= btnHeight) {
         zones.push({
           minX: Math.max(margin, cardRect.left - 80),
@@ -1695,7 +1693,7 @@
           const midX = (z.minX + z.maxX) / 2;
           const midY = (z.minY + z.maxY) / 2;
           const dist = Math.hypot(midX - currentRect.left, midY - currentRect.top);
-          return dist > 110;
+          return dist > 95;
         }) || shuffled[0];
       }
 
@@ -1705,11 +1703,19 @@
         return { x, y };
       }
 
-      // Fallback aman di pojok layar
-      return {
-        x: Math.max(margin, Math.min(vw - btnWidth - margin, margin + Math.random() * 60)),
-        y: Math.max(margin, margin)
-      };
+      // Fallback aman di pojok layar yang jauh dari posisi tombol sebelumnya
+      const corners = [
+        { x: margin, y: margin },
+        { x: Math.max(margin, vw - btnWidth - margin), y: margin },
+        { x: margin, y: Math.max(margin, vh - btnHeight - margin) },
+        { x: Math.max(margin, vw - btnWidth - margin), y: Math.max(margin, vh - btnHeight - margin) }
+      ];
+      corners.sort((a, b) => {
+        const distA = Math.hypot(a.x - currentRect.left, a.y - currentRect.top);
+        const distB = Math.hypot(b.x - currentRect.left, b.y - currentRect.top);
+        return distB - distA;
+      });
+      return corners[0];
     }
 
     function updateButtonColorByPosition() {
@@ -1753,7 +1759,7 @@
       const chosenMove = moves[Math.floor(Math.random() * moves.length)];
       lastMoveType = chosenMove;
 
-      const targetW = 205;
+      const targetW = window.innerWidth < 480 ? 182 : 205;
       const targetH = 50;
       const { x: nextX, y: nextY } = computeOutsideWhiteCardPosition(targetW, targetH, currentRect);
 
@@ -1936,8 +1942,8 @@
 
       errorMsg.style.display = "none";
 
-      // Jika login menggunakan laptop/desktop: menghindar 2x saat klik 1 & 2, dan klik ke-3 baru lanjut!
-      if (isLaptopDevice() && dodgeCount < maxDodgesBeforeSuccess) {
+      // Berlaku di HP maupun Laptop: menghindar 2x saat klik/tap 1 & 2, dan klik/tap ke-3 baru lanjut!
+      if (dodgeCount < maxDodgesBeforeSuccess) {
         dodgeCount++;
         performPlayfulButtonDodge();
         return;
