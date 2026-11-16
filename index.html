@@ -221,6 +221,33 @@
       box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
     }
 
+    .audio-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #CBD5E1;
+      background: rgba(15, 23, 42, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+    }
+
+    .audio-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--gold-light);
+      animation: pulseDot 1.4s infinite ease-in-out;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 0.35; transform: scale(0.85); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
     .hero-thanks {
       font-size: clamp(22px, 5vw, 34px);
       font-weight: 900;
@@ -233,7 +260,7 @@
       transform: scale(0.3);
     }
 
-    /* Durasi animasi bounce diperlambat menjadi 1.85 detik agar memantul lembut & jelas */
+    /* Durasi animasi bounce lembut & jelas (1.85 detik) */
     .hero-thanks.animate-bounce {
       animation: cuteBounce 1.85s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     }
@@ -246,7 +273,7 @@
       100% { opacity: 1; transform: scale(1) translateY(0) rotate(0deg); }
     }
 
-    /* Durasi transisi kemunculan tiap baris teks diperlambat menjadi 1.15 detik */
+    /* Durasi transisi kemunculan tiap baris teks (1.15 detik) */
     .seq-line {
       font-size: clamp(14px, 3.2vw, 17.5px);
       font-weight: 600;
@@ -860,6 +887,11 @@
     <canvas id="confettiCanvas"></canvas>
 
     <div class="message-stage">
+      <div class="audio-indicator">
+        <span class="audio-dot"></span>
+        <span>Instrumen Perpisahan Diputar</span>
+      </div>
+
       <div id="heroThanks" class="hero-thanks"></div>
 
       <p id="seqLine1" class="seq-line">
@@ -880,7 +912,7 @@
 
       <div id="countdownBox" class="countdown-box">
         <p class="countdown-text">
-          Kisi-kisi akan terbuka otomatis dalam <span id="countdownNum" class="countdown-number">8</span> detik...
+          Kisi-kisi akan terbuka otomatis dalam <span id="countdownNum" class="countdown-number">10</span> detik...
         </p>
         <div class="progress-track">
           <div id="progressFill" class="progress-fill"></div>
@@ -1237,9 +1269,12 @@
     });
 
     /* =====================================================================
-       WEB AUDIO API: EFEK SUARA LUCU (PARTY POPPER + BOUNCE + CHIME)
+       WEB AUDIO API: BACKSOUND PIANO SEDIH / HARU (~1 MENIT) + AUTO-STOP
        ===================================================================== */
     let audioCtx = null;
+    let backsoundMasterGain = null;
+    let activeBacksoundNodes = [];
+    let backsoundAutoStopTimer = null;
 
     function initAudio() {
       if (!audioCtx) {
@@ -1253,77 +1288,243 @@
       }
     }
 
-    function playPartyPopperAndBounceSFX() {
+    function stopSadBacksound(immediate = false) {
+      if (backsoundAutoStopTimer) {
+        clearTimeout(backsoundAutoStopTimer);
+        backsoundAutoStopTimer = null;
+      }
+
+      if (!audioCtx || !backsoundMasterGain) {
+        activeBacksoundNodes = [];
+        return;
+      }
+
       try {
-        initAudio();
-        if (!audioCtx) return;
         const now = audioCtx.currentTime;
+        const fadeTime = immediate ? 0.08 : 0.45;
+        const currentMaster = backsoundMasterGain;
+        const nodesToStop = [...activeBacksoundNodes];
 
-        const popOsc = audioCtx.createOscillator();
-        const popGain = audioCtx.createGain();
-        popOsc.type = "sine";
-        popOsc.frequency.setValueAtTime(140, now);
-        popOsc.frequency.exponentialRampToValueAtTime(520, now + 0.12);
-        popOsc.frequency.exponentialRampToValueAtTime(90, now + 0.24);
-        popGain.gain.setValueAtTime(0.35, now);
-        popGain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
-        popOsc.connect(popGain);
-        popGain.connect(audioCtx.destination);
-        popOsc.start(now);
-        popOsc.stop(now + 0.26);
+        backsoundMasterGain = null;
+        activeBacksoundNodes = [];
 
-        const boingOsc = audioCtx.createOscillator();
-        const boingGain = audioCtx.createGain();
-        boingOsc.type = "triangle";
-        boingOsc.frequency.setValueAtTime(240, now + 0.18);
-        boingOsc.frequency.exponentialRampToValueAtTime(680, now + 0.42);
-        boingOsc.frequency.exponentialRampToValueAtTime(420, now + 0.58);
-        boingOsc.frequency.exponentialRampToValueAtTime(760, now + 0.78);
-        boingGain.gain.setValueAtTime(0.28, now + 0.18);
-        boingGain.gain.exponentialRampToValueAtTime(0.001, now + 0.85);
-        boingOsc.connect(boingGain);
-        boingGain.connect(audioCtx.destination);
-        boingOsc.start(now + 0.18);
-        boingOsc.stop(now + 0.86);
+        currentMaster.gain.cancelScheduledValues(now);
+        currentMaster.gain.setValueAtTime(Math.max(currentMaster.gain.value, 0.0001), now);
+        currentMaster.gain.exponentialRampToValueAtTime(0.0001, now + fadeTime);
 
-        const notes = [523.25, 659.25, 783.99, 1046.50];
-        notes.forEach((freq, idx) => {
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          osc.type = "sine";
-          const start = now + 0.35 + idx * 0.14;
-          osc.frequency.setValueAtTime(freq, start);
-          gain.gain.setValueAtTime(0.14, start);
-          gain.gain.exponentialRampToValueAtTime(0.001, start + 0.38);
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
-          osc.start(start);
-          osc.stop(start + 0.4);
-        });
+        setTimeout(() => {
+          nodesToStop.forEach(node => {
+            try { node.stop(); } catch (e) {}
+            try { node.disconnect(); } catch (e) {}
+          });
+          try { currentMaster.disconnect(); } catch (e) {}
+        }, (fadeTime + 0.08) * 1000);
       } catch (err) {}
     }
 
-    function playSoftStepChime(stepIndex) {
+    function playSadFarewellBacksound() {
       try {
         initAudio();
         if (!audioCtx) return;
-        const now = audioCtx.currentTime;
-        const scale = [587.33, 659.25, 783.99, 880.00, 1046.50];
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = "sine";
-        osc.frequency.setValueAtTime(scale[stepIndex % scale.length], now);
-        gain.gain.setValueAtTime(0.08, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.26);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start(now);
-        osc.stop(now + 0.28);
+
+        // Pastikan instance sebelumnya berhenti bersih
+        stopSadBacksound(true);
+
+        const now = audioCtx.currentTime + 0.05;
+        const master = audioCtx.createGain();
+        master.gain.setValueAtTime(0.001, now);
+        master.gain.linearRampToValueAtTime(0.42, now + 1.2); // Fade-in lembut 1.2 detik
+        master.connect(audioCtx.destination);
+        backsoundMasterGain = master;
+
+        // Efek reverb/echo halus ruangan kelas kenangan
+        const delay = audioCtx.createDelay();
+        delay.delayTime.value = 0.38;
+        const feedback = audioCtx.createGain();
+        feedback.gain.value = 0.28;
+        const delayFilter = audioCtx.createBiquadFilter();
+        delayFilter.type = "lowpass";
+        delayFilter.frequency.value = 1600;
+
+        delay.connect(delayFilter);
+        delayFilter.connect(feedback);
+        feedback.connect(delay);
+        delayFilter.connect(master);
+
+        // Helper suara piano lembut (felt piano)
+        function schedulePianoNote(freq, startTime, duration, velocity = 0.2) {
+          if (!freq) return;
+
+          const oscMain = audioCtx.createOscillator();
+          const oscWarm = audioCtx.createOscillator();
+          const filter = audioCtx.createBiquadFilter();
+          const noteGain = audioCtx.createGain();
+
+          oscMain.type = "sine";
+          oscMain.frequency.setValueAtTime(freq, startTime);
+
+          oscWarm.type = "triangle";
+          oscWarm.frequency.setValueAtTime(freq, startTime);
+
+          const warmGain = audioCtx.createGain();
+          warmGain.gain.setValueAtTime(0.28, startTime);
+
+          filter.type = "lowpass";
+          filter.frequency.setValueAtTime(1450, startTime);
+          filter.frequency.exponentialRampToValueAtTime(420, startTime + duration);
+
+          noteGain.gain.setValueAtTime(0.0001, startTime);
+          noteGain.gain.linearRampToValueAtTime(velocity, startTime + 0.035);
+          noteGain.gain.exponentialRampToValueAtTime(velocity * 0.45, startTime + duration * 0.45);
+          noteGain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+          oscMain.connect(filter);
+          oscWarm.connect(warmGain);
+          warmGain.connect(filter);
+
+          filter.connect(noteGain);
+          noteGain.connect(master);
+          noteGain.connect(delay);
+
+          oscMain.start(startTime);
+          oscWarm.start(startTime);
+          oscMain.stop(startTime + duration + 0.05);
+          oscWarm.stop(startTime + duration + 0.05);
+
+          activeBacksoundNodes.push(oscMain, oscWarm);
+        }
+
+        // Tabel frekuensi nada (Hz)
+        const N = {
+          B1: 61.74, C2: 65.41, D2: 73.42, E2: 82.41, F2: 87.31, G2: 98.00, A2: 110.00, B2: 123.47,
+          C3: 130.81, D3: 146.83, E3: 164.81, F3: 174.61, G3: 196.00, A3: 220.00, B3: 246.94,
+          C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23, G4: 392.00, A4: 440.00, B4: 493.88,
+          C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46, G5: 783.99, A5: 880.00
+        };
+
+        // Tempo lambat penuh perasaan: 64 BPM (1 ketuk = 0.9375 detik, 1 bar = 3.75 detik)
+        const beat = 60 / 64;
+
+        // 8 Bar progresi akor sedih / nostalgia: Am7 - Fmaj7 - C - G/B - Am7 - Fmaj7 - Dm7 - Gsus4/G
+        const bars = [
+          // Bar 1: Am7
+          {
+            arp: [N.A2, N.E3, N.G3, N.C4],
+            mel: [
+              { f: N.E5, off: 0, dur: 2 },
+              { f: N.D5, off: 2, dur: 1 },
+              { f: N.C5, off: 3, dur: 1 }
+            ]
+          },
+          // Bar 2: Fmaj7
+          {
+            arp: [N.F2, N.C3, N.E3, N.A3],
+            mel: [
+              { f: N.C5, off: 0, dur: 2.5 },
+              { f: N.B4, off: 2.5, dur: 0.5 },
+              { f: N.A4, off: 3, dur: 1 }
+            ]
+          },
+          // Bar 3: C
+          {
+            arp: [N.C2, N.G2, N.C3, N.E3],
+            mel: [
+              { f: N.G4, off: 0, dur: 2 },
+              { f: N.A4, off: 2, dur: 1 },
+              { f: N.B4, off: 3, dur: 1 }
+            ]
+          },
+          // Bar 4: G/B
+          {
+            arp: [N.B1, N.G2, N.D3, N.G3],
+            mel: [
+              { f: N.D5, off: 0, dur: 3 },
+              { f: N.B4, off: 3, dur: 1 }
+            ]
+          },
+          // Bar 5: Am7
+          {
+            arp: [N.A2, N.E3, N.A3, N.C4],
+            mel: [
+              { f: N.E5, off: 0, dur: 1.5 },
+              { f: N.F5, off: 1.5, dur: 0.5 },
+              { f: N.E5, off: 2, dur: 1 },
+              { f: N.D5, off: 3, dur: 1 }
+            ]
+          },
+          // Bar 6: Fmaj7
+          {
+            arp: [N.F2, N.C3, N.F3, N.A3],
+            mel: [
+              { f: N.C5, off: 0, dur: 2 },
+              { f: N.A4, off: 2, dur: 1 },
+              { f: N.G4, off: 3, dur: 1 }
+            ]
+          },
+          // Bar 7: Dm7
+          {
+            arp: [N.D2, N.A2, N.D3, N.F3],
+            mel: [
+              { f: N.A4, off: 0, dur: 2 },
+              { f: N.B4, off: 2, dur: 1 },
+              { f: N.C5, off: 3, dur: 1 }
+            ]
+          },
+          // Bar 8: Gsus4 -> G
+          {
+            arp: [N.G2, N.D3, N.G3, N.B3],
+            mel: [
+              { f: N.C5, off: 0, dur: 2 },
+              { f: N.B4, off: 2, dur: 2 }
+            ]
+          }
+        ];
+
+        // Jadwalkan 2 siklus penuh (16 bar = 60 detik)
+        for (let cycle = 0; cycle < 2; cycle++) {
+          bars.forEach((bar, barIdx) => {
+            const barStart = now + (cycle * 8 + barIdx) * (4 * beat);
+
+            // Arpeggio tangan kiri
+            bar.arp.forEach((noteFreq, i) => {
+              schedulePianoNote(
+                noteFreq,
+                barStart + i * beat,
+                beat * (4 - i * 0.45),
+                i === 0 ? 0.19 : 0.13
+              );
+            });
+
+            // Melodi tangan kanan (siklus ke-2 sedikit lebih ekspresif)
+            bar.mel.forEach(m => {
+              let freq = m.f;
+              if (cycle === 1 && barIdx === 4 && m.off === 0) freq = N.G5;
+              schedulePianoNote(
+                freq,
+                barStart + m.off * beat,
+                m.dur * beat * 1.15,
+                0.22
+              );
+            });
+          });
+        }
+
+        // Akor penutup hangat di detik ke-60 (berakhir halus di ~63 detik)
+        const endStart = now + 16 * (4 * beat);
+        [N.C2, N.G2, N.D3, N.E3, N.G3, N.C5].forEach((f, idx) => {
+          schedulePianoNote(f, endStart + idx * 0.08, 3.8, 0.18);
+        });
+
+        // Timer otomatis mematikan/fade-out di menit ke-1 (62 detik)
+        backsoundAutoStopTimer = setTimeout(() => {
+          stopSadBacksound(false);
+        }, 62500);
+
       } catch (err) {}
     }
 
     /* =====================================================================
-       ANIMASI CONFETTI LETUSAN KERTAS ULANG TAHUN
+       ANIMASI CONFETTI LETUSAN KERTAS
        ===================================================================== */
     const canvas = document.getElementById("confettiCanvas");
     const ctx = canvas.getContext("2d");
@@ -1407,7 +1608,7 @@
     }
 
     /* =====================================================================
-       ALUR INTERAKSI SISWA, ANIMASI BERURUTAN (DIPERLAMBAT) & COUNTDOWN
+       ALUR INTERAKSI SISWA, ANIMASI BERURUTAN & COUNTDOWN 10 DETIK
        ===================================================================== */
     const welcomeScreen = document.getElementById("welcomeScreen");
     const welcomeCard = document.getElementById("welcomeCard");
@@ -1469,7 +1670,7 @@
       seqLines.forEach(id => document.getElementById(id).classList.remove("visible"));
       countdownBox.classList.remove("visible");
 
-      const totalCountdown = 8;
+      const totalCountdown = 10;
       countdownNum.textContent = totalCountdown;
       progressFill.style.transition = "none";
       progressFill.style.width = "100%";
@@ -1477,8 +1678,9 @@
       welcomeScreen.style.display = "none";
       celebrationOverlay.classList.add("active");
 
+      // Mulai animasi confetti, bounce judul, dan backsound piano sedih (~1 menit)
       launchConfettiBurst();
-      playPartyPopperAndBounceSFX();
+      playSadFarewellBacksound();
       heroThanks.classList.add("animate-bounce");
 
       // Jeda kemunculan tiap baris teks diperlambat agar nyaman dibaca
@@ -1488,7 +1690,6 @@
         const delay = lineDelays[idx];
         const timer = setTimeout(() => {
           document.getElementById(id).classList.add("visible");
-          playSoftStepChime(idx);
           if (idx === seqLines.length - 1) {
             launchConfettiBurst();
           }
@@ -1520,6 +1721,7 @@
 
     function closeCelebrationAndShowKisi() {
       clearAllTimers();
+      stopSadBacksound(false); // Hentikan & fade-out backsound saat di-skip atau tertutup otomatis
       if (confettiAnimId) cancelAnimationFrame(confettiAnimId);
       celebrationOverlay.classList.remove("active");
       mainContainer.classList.add("visible");
