@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kisi-Kisi SAS Sejarah Kelas XII | Demokrasi Liberal & Terpimpin</title>
+  <style>
+    :root {
+      --navy: #1B365D;
+      --navy-dark: #102442;
+      --slate: #2B4C7E;
+      --gold: #C59B27;
+      --gold-dark: #A67F17;
+      --gold-light: #F6D365;
+      --ice-blue: #EBF2F7;
+      --zebra: #F6F9FC;
+      --bg-page: #F1F5F9;
+      --text-main: #1F2937;
+      --text-muted: #4B5563;
+      --border-gray: #CBD5E1;
+      --white: #FFFFFF;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      font-family: 'Segoe UI', Calibri, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.5;
+      overflow-x: hidden;
+      min-height: 100dvh;
+    }
+
+    /* =========================================
+       1. HALAMAN INPUT NAMA & KELAS (AWAL)
+       ========================================= */
+    .welcome-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 55%, var(--slate) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      min-height: 100dvh;
+    }
+
+    .welcome-card {
+      background: var(--white);
+      width: 100%;
+      max-width: 460px;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 24px 50px rgba(0, 0, 0, 0.35);
+      border-bottom: 5px solid var(--gold);
+      animation: cardEntrance 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @keyframes cardEntrance {
+      from { opacity: 0; transform: translateY(24px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .welcome-header {
+      background: var(--navy);
+      color: var(--white);
+      padding: 24px 24px 20px;
+      text-align: center;
+      border-bottom: 3px solid var(--gold);
+    }
+
+    .welcome-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--gold-light);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .welcome-header h1 {
+      font-size: 20px;
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+
+    .welcome-header p {
+      font-size: 13px;
+      color: #DCE7F3;
+    }
+
+    .welcome-body {
+      padding: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 15px;
+      border: 2px solid var(--border-gray);
+      border-radius: 10px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: var(--white);
+      color: var(--text-main);
+    }
+
+    .form-control:focus {
+      border-color: var(--navy);
+      box-shadow: 0 0 0 3px rgba(27, 54, 93, 0.14);
+    }
+
+    .error-msg {
+      display: none;
+      color: #DC2626;
+      font-size: 12.5px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      background: #FEF2F2;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border-left: 3px solid #DC2626;
+    }
+
+    .btn-start {
+      width: 100%;
+      padding: 14px 18px;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--slate) 100%);
+      color: var(--white);
+      font-size: 15px;
+      font-weight: 700;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 6px 16px rgba(27, 54, 93, 0.28);
+      min-height: 48px;
+    }
+
+    .btn-start:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(27, 54, 93, 0.36);
+    }
+
+    .btn-start:active {
+      transform: scale(0.98);
+    }
+
+    .shake {
+      animation: shakeAnim 0.35s ease-in-out;
+    }
+
+    @keyframes shakeAnim {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      50% { transform: translateX(6px); }
+      75% { transform: translateX(-4px); }
+    }
+
+    /* =========================================
+       2. OVERLAY ANIMASI CONFETTI & UCAPAN GURU
+       ========================================= */
+    .celebration-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: radial-gradient(circle at center, rgba(27, 54, 93, 0.96) 0%, rgba(12, 26, 48, 0.98) 100%);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      min-height: 100dvh;
+      overflow-y: auto;
+    }
+
+    .celebration-overlay.active {
+      display: flex;
+    }
+
+    #confettiCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1; /* Tepat di belakang tulisan */
+    }
+
+    .message-stage {
+      position: relative;
+      z-index: 2; /* Tepat di depan letusan kertas */
+      width: 100%;
+      max-width: 720px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 2px solid rgba(246, 211, 101, 0.45);
+      border-radius: 22px;
+      padding: 28px 22px;
+      text-align: center;
+      color: var(--white);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+    }
+
+    /* Animasi Bounce Khusus "TERIMAKASIH [NAMA SISWA]" */
+    .hero-thanks {
+      font-size: clamp(22px, 5vw, 34px);
+      font-weight: 900;
+      color: var(--gold-light);
+      text-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+      letter-spacing: 0.5px;
+      margin-bottom: 18px;
+      line-height: 1.25;
+      opacity: 0;
+      transform: scale(0.3);
+    }
+
+    .hero-thanks.animate-bounce {
+      animation: cuteBounce 0.95s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    @keyframes cuteBounce {
+      0% { opacity: 0; transform: scale(0.25) translateY(-30px) rotate(-3deg); }
+      45% { opacity: 1; transform: scale(1.12) translateY(6px) rotate(2deg); }
+      65% { transform: scale(0.94) translateY(-4px) rotate(-1deg); }
+      82% { transform: scale(1.04) translateY(2px) rotate(0.5deg); }
+      100% { opacity: 1; transform: scale(1) translateY(0) rotate(0deg); }
+    }
+
+    /* Baris Teks Muncul Berurutan */
+    .seq-line {
+      font-size: clamp(14px, 3.2vw, 17.5px);
+      font-weight: 600;
+      color: #F8FAFC;
+      line-height: 1.55;
+      margin-bottom: 12px;
+      opacity: 0;
+      transform: translateY(16px) scale(0.97);
+      transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .seq-line.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .seq-highlight {
+      color: #FDE68A;
+      font-weight: 800;
+    }
+
+    .proud-badge {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 10px 22px;
+      background: linear-gradient(135deg, var(--gold) 0%, #EAB308 100%);
+      color: var(--navy-dark);
+      font-size: clamp(16px, 3.8vw, 21px);
+      font-weight: 900;
+      border-radius: 999px;
+      box-shadow: 0 8px 22px rgba(234, 179, 8, 0.4);
+      letter-spacing: 0.6px;
+    }
+
+    /* Kotak Hitungan Mundur */
+    .countdown-box {
+      margin-top: 22px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .countdown-box.visible {
+      opacity: 1;
+    }
+
+    .countdown-text {
+      font-size: 13.5px;
+      color: #E2E8F0;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .countdown-number {
+      display: inline-block;
+      background: var(--gold-light);
+      color: var(--navy-dark);
+      font-weight: 900;
+      padding: 2px 10px;
+      border-radius: 6px;
+      font-size: 15px;
+      margin: 0 3px;
+    }
+
+    .progress-track {
+      width: 100%;
+      max-width: 320px;
+      height: 7px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 999px;
+      margin: 0 auto 12px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, var(--gold-light), #F59E0B);
+      border-radius: 999px;
+      transition: width 1s linear;
+    }
+
+    .btn-skip {
+      background: rgba(255, 255, 255, 0.14);
+      color: var(--white);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-skip:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    /* =========================================
+       3. HALAMAN UTAMA KISI-KISI
+       ========================================= */
+    .main-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+      display: none;
+    }
+
+    .main-container.visible {
+      display: block;
+      animation: fadeInMain 0.5s ease;
+    }
+
+    @keyframes fadeInMain {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Hero Banner (Sama dengan Desain Word) */
+    .hero-banner {
+      background: var(--navy);
+      color: var(--white);
+      padding: 22px 26px;
+      border-radius: 12px 12px 0 0;
+      border-bottom: 4px solid var(--gold);
+    }
+
+    .hero-eyebrow {
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: var(--gold-light);
+      margin-bottom: 4px;
+    }
+
+    .hero-banner h1 {
+      font-size: clamp(18px, 3vw, 24px);
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .hero-banner p {
+      font-size: 13.5px;
+      color: #DCE7F3;
+    }
+
+    /* Bar Kontrol Siswa & Pencarian */
+    .toolbar {
+      background: var(--white);
+      padding: 14px 20px;
+      border-left: 1px solid var(--border-gray);
+      border-right: 1px solid var(--border-gray);
+      border-bottom: 1px solid var(--border-gray);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .student-greeting {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .student-pill {
+      background: var(--ice-blue);
+      color: var(--navy);
+      font-weight: 700;
+      font-size: 13.5px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid #BFDBFE;
+    }
+
+    .btn-replay {
+      background: #FEF3C7;
+      color: #92400E;
+      border: 1px solid #FCD34D;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-replay:hover {
+      background: #FDE68A;
+    }
+
+    .search-box {
+      flex: 1 1 250px;
+      max-width: 340px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 9px 14px;
+      font-size: 13.5px;
+      border: 1.5px solid var(--border-gray);
+      border-radius: 8px;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--navy);
+    }
+
+    /* Kartu Metadata 4 Sel */
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: var(--white);
+      border-left: 4px solid var(--navy);
+      border-right: 1px solid var(--border-gray);
+      border-bottom: 1px solid var(--border-gray);
+      margin-bottom: 16px;
+      border-radius: 0 0 10px 10px;
+      overflow: hidden;
+    }
+
+    .meta-cell {
+      padding: 10px 14px;
+      border-right: 1px solid var(--border-gray);
+      border-bottom: 1px solid var(--border-gray);
+    }
+
+    .meta-lbl {
+      background: var(--ice-blue);
+      font-weight: 700;
+      font-size: 12.5px;
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+    }
+
+    .meta-val {
+      background: var(--zebra);
+      font-size: 13px;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+    }
+
+    .wiki-hint {
+      background: #FFFBEB;
+      border: 1px solid #FDE68A;
+      border-left: 4px solid var(--gold);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #78350F;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Tabel Kisi-Kisi Desktop */
+    .table-wrapper {
+      background: var(--white);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+      border: 1px solid var(--border-gray);
+    }
+
+    table.kisi-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    table.kisi-table thead th {
+      background: var(--navy);
+      color: var(--white);
+      font-size: 13.5px;
+      font-weight: 700;
+      padding: 14px 12px;
+      border-bottom: 3px solid var(--gold);
+      border-right: 1px solid var(--slate);
+      text-align: left;
+    }
+
+    table.kisi-table thead th:first-child,
+    table.kisi-table thead th:last-child {
+      text-align: center;
+    }
+
+    table.kisi-table tbody tr {
+      border-bottom: 1px solid var(--border-gray);
+      transition: background-color 0.15s;
+    }
+
+    table.kisi-table tbody tr:nth-child(even) {
+      background-color: var(--zebra);
+    }
+
+    table.kisi-table tbody tr:hover {
+      background-color: #EDF4FB;
+    }
+
+    table.kisi-table td {
+      padding: 14px 12px;
+      vertical-align: top;
+      border-right: 1px solid var(--border-gray);
+      font-size: 13.5px;
+    }
+
+    .col-no { width: 56px; text-align: center; font-weight: 800; color: var(--navy); font-size: 14px; }
+    .col-materi { width: 23%; }
+    .col-inti { width: 51%; }
+    .col-posisi { width: 20%; }
+
+    .periode-tag {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 800;
+      color: var(--gold-dark);
+      letter-spacing: 0.4px;
+      margin-bottom: 4px;
+    }
+
+    /* Link Materi Utama ke Wikipedia */
+    .materi-link {
+      display: inline-block;
+      font-weight: 700;
+      color: var(--navy);
+      text-decoration: none;
+      line-height: 1.4;
+      transition: color 0.15s;
+    }
+
+    .materi-link:hover {
+      color: #1D4ED8;
+      text-decoration: underline;
+    }
+
+    .wiki-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 6px;
+      padding: 3px 8px;
+      background: var(--ice-blue);
+      color: var(--navy);
+      border: 1px solid #BFDBFE;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+
+    .wiki-badge:hover {
+      background: var(--navy);
+      color: var(--white);
+      border-color: var(--navy);
+    }
+
+    /* Daftar Poin Inti Materi */
+    .inti-list {
+      list-style: none;
+    }
+
+    .inti-list li {
+      position: relative;
+      padding-left: 16px;
+      margin-bottom: 7px;
+      line-height: 1.48;
+      font-size: 13px;
+    }
+
+    .inti-list li:last-child {
+      margin-bottom: 0;
+    }
+
+    .inti-list li::before {
+      content: "▸";
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: var(--gold-dark);
+      font-weight: 800;
+    }
+
+    .inti-link {
+      color: var(--navy);
+      font-weight: 700;
+      text-decoration: underline;
+      text-decoration-color: rgba(27, 54, 93, 0.35);
+      text-underline-offset: 2px;
+      transition: color 0.15s, text-decoration-color 0.15s;
+    }
+
+    .inti-link:hover {
+      color: #1D4ED8;
+      text-decoration-color: #1D4ED8;
+    }
+
+    /* Posisi Soal Badges */
+    .paket-row {
+      margin-bottom: 6px;
+      font-size: 12.5px;
+      line-height: 1.4;
+    }
+
+    .paket-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .paket-label {
+      font-weight: 800;
+      color: var(--navy);
+    }
+
+    .paket-label.b {
+      color: var(--slate);
+    }
+
+    /* Footer Keterangan & Bobot Penskoran */
+    .legend-card {
+      margin-top: 16px;
+      background: var(--ice-blue);
+      border: 1px solid var(--border-gray);
+      border-left: 5px solid var(--gold);
+      border-radius: 8px;
+      padding: 14px 18px;
+    }
+
+    .legend-card h3 {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    .legend-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      font-size: 12.5px;
+      color: var(--text-main);
+    }
+
+    .legend-items strong {
+      color: var(--navy);
+    }
+
+    /* =========================================
+       4. RESPONSIVE HP (TAMPILAN KARTU RAPI)
+       ========================================= */
+    @media (max-width: 820px) {
+      .meta-grid {
+        grid-template-columns: 1fr 2fr;
+      }
+
+      table.kisi-table,
+      table.kisi-table thead,
+      table.kisi-table tbody,
+      table.kisi-table tr,
+      table.kisi-table td {
+        display: block;
+        width: 100%;
+      }
+
+      table.kisi-table thead {
+        display: none;
+      }
+
+      .table-wrapper {
+        background: transparent;
+        border: none;
+        box-shadow: none;
+      }
+
+      table.kisi-table tbody tr {
+        background: var(--white) !important;
+        border: 1px solid var(--border-gray);
+        border-top: 4px solid var(--navy);
+        border-radius: 12px;
+        margin-bottom: 14px;
+        padding: 14px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      table.kisi-table td {
+        border: none;
+        padding: 6px 0;
+      }
+
+      .col-no {
+        text-align: left;
+        font-size: 12px;
+        padding-bottom: 2px !important;
+      }
+
+      .col-no::before {
+        content: "MATERI KE-";
+      }
+
+      .col-materi {
+        border-bottom: 1px solid var(--border-gray) !important;
+        padding-bottom: 10px !important;
+        margin-bottom: 6px;
+      }
+
+      .col-posisi {
+        margin-top: 8px;
+        padding-top: 10px !important;
+        border-top: 1px dashed var(--border-gray) !important;
+        background: var(--zebra);
+        padding: 10px !important;
+        border-radius: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =================================================
+       1. FORM AWAL (NAMA & KELAS SISWA)
+       ================================================= -->
+  <section id="welcomeScreen" class="welcome-screen">
+    <div id="welcomeCard" class="welcome-card">
+      <div class="welcome-header">
+        <span class="welcome-badge">Perangkat Asesmen • Kurikulum Merdeka</span>
+        <h1>Kisi-Kisi SAS Sejarah Kelas XII</h1>
+        <p>Demokrasi Liberal (1950–1959) & Demokrasi Terpimpin (1959–1965)</p>
+      </div>
+      <div class="welcome-body">
+        <div class="form-group">
+          <label for="studentName">Nama Lengkap Kamu</label>
+          <input type="text" id="studentName" class="form-control" placeholder="Contoh: Ahmad Fauzan" autocomplete="name" />
+        </div>
+
+        <div class="form-group">
+          <label for="studentClass">Pilih Kelas Kamu</label>
+          <select id="studentClass" class="form-control">
+            <option value="">-- Pilih Kelas --</option>
+            <option value="XII.1">XII.1</option>
+            <option value="XII.2">XII.2</option>
+            <option value="XII.3">XII.3</option>
+            <option value="XII.4">XII.4</option>
+            <option value="XII.5">XII.5</option>
+            <option value="XII.6">XII.6</option>
+            <option value="XII.7">XII.7</option>
+            <option value="XII.8">XII.8</option>
+            <option value="XII.9">XII.9</option>
+            <option value="XII.10">XII.10</option>
+            <option value="XII.11">XII.11</option>
+            <option value="XII.12">XII.12</option>
+            <option value="CUSTOM">Lainnya (Ketik Nama Kelas)</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="customClassGroup" style="display: none;">
+          <label for="customClassInput">Ketik Nama Kelas Kamu</label>
+          <input type="text" id="customClassInput" class="form-control" placeholder="Contoh: XII IPS 1 / XII Fase F-2" />
+        </div>
+
+        <div id="errorMsg" class="error-msg">Silakan isi nama dan pilih kelas kamu terlebih dahulu ya!</div>
+
+        <button type="button" id="startBtn" class="btn-start">Buka Kisi-Kisi SAS 🚀</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================
+       2. OVERLAY ANIMASI LEDAKAN KERTAS & PESAN GURU
+       ================================================= -->
+  <section id="celebrationOverlay" class="celebration-overlay" aria-live="polite">
+    <canvas id="confettiCanvas"></canvas>
+
+    <div class="message-stage">
+      <!-- Judul Utama dengan Animasi Bounce + SFX Lucu -->
+      <div id="heroThanks" class="hero-thanks"></div>
+
+      <!-- Kalimat Muncul Berurutan -->
+      <p id="seqLine1" class="seq-line">
+        SUDAH MAU MEMPELAJARI KISI KISI INI,
+      </p>
+      <p id="seqLine2" class="seq-line">
+        KEMUNGKINAN SETELAH INI KITA GA KETEMU LAGI DI KELAS <span id="displayClass" class="seq-highlight"></span> DENGAN BAPAK SEBAGAI GURU, DAN KAMU SEBAGAI MURID....
+      </p>
+      <p id="seqLine3" class="seq-line seq-highlight">
+        BAPAK HARAP UJIAN AKHIR SEMESTER KAMU BAGUS YA HASIL NYAAA!!!!
+      </p>
+      <p id="seqLine4" class="seq-line">
+        BAPAK BANGGA PERNAH MENGAJAR DI KELAS KAMU DENGAN SEGALA KEJADIAN DI DALAM NYA,
+      </p>
+      <div id="seqLine5" class="seq-line">
+        <span class="proud-badge">PROUD OF U ALL 🎓✨</span>
+      </div>
+
+      <!-- Hitungan Mundur Otomatis 8 Detik -->
+      <div id="countdownBox" class="countdown-box">
+        <p class="countdown-text">
+          Kisi-kisi akan terbuka otomatis dalam <span id="countdownNum" class="countdown-number">8</span> detik...
+        </p>
+        <div class="progress-track">
+          <div id="progressFill" class="progress-fill"></div>
+        </div>
+        <button type="button" id="skipBtn" class="btn-skip">Langsung Lihat Kisi-Kisi →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================
+       3. KONTEN UTAMA KISI-KISI INTERAKTIF
+       ================================================= -->
+  <main id="mainContainer" class="main-container">
+    <header class="hero-banner">
+      <div class="hero-eyebrow">DOKUMEN PERANGKAT ASESMEN • KURIKULUM MERDEKA</div>
+      <h1>KISI-KISI PENULISAN SOAL SUMATIF AKHIR SEMESTER (SAS)</h1>
+      <p>Mata Pelajaran Sejarah Kelas XII — Dinamika Politik dan Ekonomi Masa Demokrasi Liberal (1950–1959) &amp; Demokrasi Terpimpin (1959–1965)</p>
+    </header>
+
+    <div class="toolbar">
+      <div class="student-greeting">
+        <span id="studentPill" class="student-pill">👋 Halo, Siswa!</span>
+        <button type="button" id="replayBtn" class="btn-replay">🎉 Putar Ulang Ucapan</button>
+      </div>
+      <div class="search-box">
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Cari materi, tokoh, atau nomor soal..." />
+      </div>
+    </div>
+
+    <div class="meta-grid">
+      <div class="meta-cell meta-lbl">Mata Pelajaran</div>
+      <div class="meta-cell meta-val">Sejarah</div>
+      <div class="meta-cell meta-lbl">Jenjang / Kelas</div>
+      <div class="meta-cell meta-val">SMA / Kelas XII (Fase F)</div>
+      <div class="meta-cell meta-lbl">Cakupan Paket</div>
+      <div class="meta-cell meta-val">Paket A &amp; Paket B (40 Soal / Paket)</div>
+      <div class="meta-cell meta-lbl">Komposisi Soal</div>
+      <div class="meta-cell meta-val">15 PG • 15 PG Kompleks • 10 Benar–Salah (Skor Maks. 100)</div>
+    </div>
+
+    <div class="wiki-hint">
+      <span>💡</span>
+      <span><strong>Tips Belajar:</strong> Klik pada judul <strong>Poin Materi</strong> atau kata kunci bergaris bawah untuk membuka artikel <strong>Wikipedia</strong> di tab baru!</span>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="kisi-table" id="kisiTable">
+        <thead>
+          <tr>
+            <th class="col-no">No.</th>
+            <th class="col-materi">Poin Materi</th>
+            <th class="col-inti">Poin-Poin Inti Materi</th>
+            <th class="col-posisi">Posisi Soal</th>
+          </tr>
+        </thead>
+        <tbody id="kisiBody"></tbody>
+      </table>
+    </div>
+
+    <footer class="legend-card">
+      <h3>KETERANGAN KODE BENTUK SOAL &amp; BOBOT PENSKORAN (BERLAKU UNTUK PAKET A DAN PAKET B)</h3>
+      <div class="legend-items">
+        <span><strong>PG</strong> = Pilihan Ganda (Nomor 1–15: 15 soal × 2 poin = 30 poin)</span>
+        <span><strong>PGK</strong> = Pilihan Ganda Kompleks / Jawaban Lebih dari Satu (Nomor 16–30: 15 soal × 3 poin = 45 poin)</span>
+        <span><strong>BS</strong> = Benar dan Salah Pernyataan A–E (Nomor 31–40: 10 soal × 2,5 poin = 25 poin)</span>
+        <span><strong>Total Skor Maksimal</strong> = 100 Poin</span>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    /* =====================================================================
+       DATA KISI-KISI LENGKAP (14 POIN MATERI + TAUTAN WIKIPEDIA)
+       ===================================================================== */
+    const kisiData = [
+      {
+        no: 1,
+        periode: "DEMOKRASI LIBERAL (1950–1959)",
+        materi: "Sistem Ketatanegaraan dan Pemerintahan Masa Demokrasi Liberal (UUDS 1950)",
+        wikiUrl: "https://id.wikipedia.org/wiki/Demokrasi_liberal_di_Indonesia",
+        inti: [
+          `<a href="https://id.wikipedia.org/wiki/Undang-Undang_Dasar_Sementara_Republik_Indonesia" target="_blank" rel="noopener noreferrer" class="inti-link">Landasan Konstitusi (UUDS 1950):</a> Penerapan sistem pemerintahan parlementer berdasarkan UUDS 1950 setelah Indonesia kembali ke bentuk Negara Kesatuan Republik Indonesia (NKRI) pada 17 Agustus 1950.`,
+          `<a href="https://id.wikipedia.org/wiki/Sistem_parlementer" target="_blank" rel="noopener noreferrer" class="inti-link">Pembagian Kekuasaan:</a> Kedudukan presiden sebagai kepala negara yang tidak dapat diganggu gugat dengan hak prerogatif terbatas, sedangkan perdana menteri sebagai kepala pemerintahan bertanggung jawab kepada parlemen.`,
+          `<a href="https://id.wikipedia.org/wiki/Demokrasi_liberal_di_Indonesia" target="_blank" rel="noopener noreferrer" class="inti-link">Sistem Multipartai &amp; Instabilitas:</a> Berlakunya sistem multipartai serta faktor penyebab seringnya pergantian kabinet (mekanisme mosi tidak percaya parlemen, perbedaan ideologi/program antarpartai koalisi, dan kecenderungan mengutamakan kepentingan golongan).`
+        ],
+        paketA: "No. 1 (PG), No. 16 (PGK)",
+        paketB: "No. 1 (PG), No. 16 (PGK)"
+      },
+      {
+        no: 2,
+        periode: "DEMOKRASI LIBERAL (1950–1959)",
+        materi: "Dinamika Kabinet Awal Demokrasi Liberal (Kabinet Natsir, Sukiman, dan Wilopo, 1950–1953)",
+        wikiUrl: "https://id.wikipedia.org/wiki/Kabinet_Natsir",
+        inti: [
+          `<a href="https://id.wikipedia.org/wiki/Kabinet_Natsir" target="_blank" rel="noopener noreferrer" class="inti-link">Kabinet Natsir (1950–1951):</a> Kabinet koalisi pertama tanpa keikutsertaan PNI; jatuh akibat kegagalan perundingan masalah Irian Barat dan mosi Hadikusumo mengenai pencabutan PP No. 39 Tahun 1950.`,
+          `<a href="https://id.wikipedia.org/wiki/Kabinet_Sukiman-Suwirjo" target="_blank" rel="noopener noreferrer" class="inti-link">Kabinet Sukiman (1951–1952):</a> Koalisi Masyumi–PNI yang jatuh akibat kontroversi penandatanganan perjanjian bantuan ekonomi dan militer <em>Mutual Security Act</em> (MSA) dengan AS oleh Menlu Ahmad Subardjo karena dinilai melanggar politik luar negeri bebas aktif.`,
+          `<a href="https://id.wikipedia.org/wiki/Kabinet_Wilopo" target="_blank" rel="noopener noreferrer" class="inti-link">Kabinet Wilopo (1952–1953):</a> <em>Zaken kabinet</em> yang diguncang <a href="https://id.wikipedia.org/wiki/Peristiwa_17_Oktober" target="_blank" rel="noopener noreferrer" class="inti-link">Peristiwa 17 Oktober 1952</a> (tuntutan pimpinan TNI-AD di bawah KSAD Kolonel A.H. Nasution agar parlemen sementara dibubarkan) dan berakhir karena mosi tidak percaya terkait insiden sengketa lahan perkebunan asing di Tanjung Morawa, Sumatra Utara.`
+        ],
+        paketA: "No. 2 (PG), No. 4 (PG), No. 5 (PG), No. 31 (BS), No. 33 (BS)",
+        paketB: "No. 2 (PG), No. 3 (PG), No. 17 (PGK), No. 31 (BS), No. 33 (BS)"
+      },
+      {
+        no: 3,
+        periode: "DEMOKRASI LIBERAL (1950–1959)",
+        materi: "Kabinet Ali Sastroamidjojo I dan Penyelenggaraan Konferensi Asia-Afrika (1953–1955)",
+        wikiUrl: "https://id.wikipedia.org/wiki/Konferensi_Asia%E2%80%93Afrika",
+        inti: [
+          `<a href="https://id.wikipedia.org/wiki/Kabinet_Ali_Sastroamidjojo_I" target="_blank" rel="noopener noreferrer" class="inti-link">Komposisi Kabinet:</a> Kabinet Ali Sastroamidjojo I merupakan kabinet koalisi antara PNI dan Nahdlatul Ulama (NU) tanpa mengikutsertakan Partai Masyumi.`,
+          `<a href="https://id.wikipedia.org/wiki/Konferensi_Asia%E2%80%93Afrika" target="_blank" rel="noopener noreferrer" class="inti-link">Persiapan &amp; Pelaksanaan KAA:</a> Penyelenggaraan Konferensi Asia-Afrika (KAA) di Bandung pada 18–24 April 1955 yang didahului Konferensi Kolombo dan Konferensi Pancanegara di Bogor serta dihadiri oleh 29 negara Asia dan Afrika.`,
+          `<a href="https://id.wikipedia.org/wiki/Dasasila_Bandung" target="_blank" rel="noopener noreferrer" class="inti-link">Hasil &amp; Dampak Strategis KAA:</a> Lahirnya Dasasila Bandung sebagai pedoman perdamaian dunia, percepatan proses dekolonisasi di kawasan Asia-Afrika, peningkatan wibawa diplomatik Indonesia, dan menjadi cikal bakal <a href="https://id.wikipedia.org/wiki/Gerakan_Non-Blok" target="_blank" rel="noopener noreferrer" class="inti-link">Gerakan Non-Blok (GNB)</a> tahun 1961.`
+        ],
+        paketA: "No. 6 (PG), No. 20 (PGK), No. 34 (BS)",
+        paketB: "No. 20 (PGK)"
+      },
+      {
+        no: 4,
+        periode: "DEMOKRASI LIBERAL (1950–1959)",
+        materi: "Kabinet Burhanuddin Harahap dan Pemilihan Umum Pertama Tahun 1955",
+        wikiUrl: "https://id.wikipedia.org/wiki/Pemilihan_umum_legislatif_Indonesia_1955",
+        inti: [
+          `<a href="https://id.wikipedia.org/wiki/Pemilihan_umum_legislatif_Indonesia_1955" target="_blank" rel="noopener noreferrer" class="inti-link">Pelaksanaan Pemilu 1955:</a> Diselenggarakan dalam dua tahap secara demokratis: tahap I (29 September 1955) untuk memilih anggota DPR dan tahap II (15 Desember 1955) untuk memilih anggota <a href="https://id.wikipedia.org/wiki/Konstituante_Republik_Indonesia" target="_blank" rel="noopener noreferrer" class="inti-link">Dewan Konstituante</a>.`,
+          `<a href="https://id.wikipedia.org/wiki/Pemilihan_umum_legislatif_Indonesia_1955" target="_blank" rel="noopener noreferrer" class="inti-link">Empat Besar Pemenang Pemilu:</a> Urutan empat partai politik peraih suara terbanyak secara nasional adalah PNI, Masyumi, Nahdlatul Ulama (NU), dan PKI.`,
+          `<a href="https://id.wikipedia.org/wiki/Kabinet_Burhanuddin_Harahap" target="_blank" rel="noopener noreferrer" class="inti-link">Capaian Lain &amp; Akhir Mandat:</a> Pelantikan kembali Kolonel A.H. Nasution sebagai KSAD untuk meredakan konflik internal militer serta pembubaran <a href="https://id.wikipedia.org/wiki/Uni_Indonesia-Belanda" target="_blank" rel="noopener noreferrer" class="inti-link">Uni Indonesia-Belanda</a> secara sepihak pada Februari 1956 sebelum menyerahkan mandat pasca-terbentuknya DPR hasil pemilu.`
+        ],
+        paketA: "No. 7 (PG), No. 18 (PGK), No. 35 (BS)",
+        paketB: "No. 6 (PG), No. 7 (PG), No. 35 (BS)"
+      },
+      {
+        no: 5,
+        periode: "DEMOKRASI LIBERAL (1950–1959)",
+        materi: "Kabinet Ali Sastroamidjojo II, Kabinet Karya (Djuanda), dan Deklarasi Djuanda 1957",
+        wikiUrl: "https://id.wikipedia.org/wiki/Deklarasi_Djuanda",
+        inti: [
+          `<a href="https://id.wikipedia.org/wiki/Kabinet_Ali_Sastroamidjojo_II" target="_blank" rel="noopener noreferrer" class="inti-link">Pembatalan KMB (1956):</a> Langkah tegas Kabinet Ali Sastroamidjojo II membatalkan secara sepihak seluruh isi perjanjian Konferensi Meja Bundar (KMB) melalui UU No. 13 Tahun 1956.`,
+          `<a href="https://id.wikipedia.org/wiki/Kabinet_Djuanda" target="_blank" rel="noopener noreferrer" class="inti-link">Kabinet Karya (1957–1959):</a> Kabinet pimpinan Ir. Djuanda Kartawidjaja yang berkarakter <em>zaken kabinet</em> (jajaran menteri terdiri atas para tokoh ahli tanpa terikat perwakilan partai politik).`,
+          `<a href="https://id.wikipedia.org/wiki/Deklarasi_Djuanda" target="_blank" rel="noopener noreferrer" class="inti-link">Deklarasi Djuanda (13 Desember 1957):</a> Mengganti aturan kolonial TZMKO 1939 (batas laut 3 mil), menetapkan laut di antara pulau-pulau sebagai penghubung wilayah Nusantara dengan batas laut teritorial 12 mil dari garis pangkal pulau terluar, serta menjadi landasan konsepsi <a href="https://id.wikipedia.org/wiki/Wawasan_Nusantara" target="_blank" rel="noopener noreferrer" class="inti-link">Wawasan Nusantara</a>.`
+        ],
+        paketA: "No. 8 (PG), No. 19 (PGK), No. 36 (BS)",
+        paketB: "No. 8 (PG), No. 10 (PG)"
+      },
+      {
+        no: 6,
+        periode: "DEMOKRASI LIBERAL (1950–1959)",
+        materi: "Kebijakan Ekonomi pada Masa Demokrasi Liberal (1950–1959)",
+        wikiUrl: "https://id.wikipedia.org/wiki/Gunting_Syafruddin",
+        inti: [
+          `<a href="https://id.wikipedia.org/wiki/Gunting_Syafruddin" target="_blank" rel="noopener noreferrer" class="inti-link">Gunting Syafruddin (1950):</a> Kebijakan moneter Menkeu Syafruddin Prawiranegara memotong uang kertas pecahan Rp2,50 ke atas menjadi dua bagian untuk menekan defisit anggaran dan jumlah uang beredar.`,
+          `<a href="https://id.wikipedia.org/wiki/Program_Benteng" target="_blank" rel="noopener noreferrer" class="inti-link">Program Gerakan Benteng:</a> Gagasan Sumitro Djojohadikusumo untuk menumbuhkan kelas pengusaha pribumi melalui kredit dan lisensi impor, beserta penyebab kegagalannya (penjualan lisensi ke nonpribumi, mentalitas konsumtif, lemahnya pembinaan).`,
+          `<a href="https://id.wikipedia.org/wiki/Sistem_ekonomi_Ali-Baba" target="_blank" rel="noopener noreferrer" class="inti-link">Sistem Ekonomi Ali-Baba:</a> Gagasan Menko Iskaq Tjokroadisurjo (kerja sama pengusaha pribumi 'Ali' dan keturunan Tionghoa 'Baba' serta pelatihan tenaga kerja) beserta penyimpangan praktiknya.`,
+          `<a href="https://id.wikipedia.org/wiki/Bank_Indonesia" target="_blank" rel="noopener noreferrer" class="inti-link">Nasionalisasi De Javasche Bank:</a> Dilaksanakan berdasarkan UU No. 24 Tahun 1951 menjadi Bank Indonesia sebagai bank sentral dengan Gubernur pertama Syafruddin Prawiranegara.`
+        ],
+        paketA: "No. 3 (PG), No. 17 (PGK), No. 20 (PGK), No. 32 (BS)",
+        paketB: "No. 4 (PG), No. 5 (PG), No. 18 (PGK), No. 32 (BS), No. 34 (BS)"
+      },
+      {
+        no: 7,
+        periode: "DEMOKRASI LIBERAL (1950–1959)",
+        materi: "Pergolakan Daerah di Akhir Masa Demokrasi Liberal (PRRI/Permesta, 1956–1958)",
+        wikiUrl: "https://id.wikipedia.org/wiki/Pemerintahan_Revolusioner_Republik_Indonesia",
+        inti: [
+          `<a href="https://id.wikipedia.org/wiki/Pemerintahan_Revolusioner_Republik_Indonesia" target="_blank" rel="noopener noreferrer" class="inti-link">Latar Belakang Pergolakan:</a> Ketidakpuasan daerah terhadap alokasi pembangunan pusat dan instabilitas politik di Jakarta memicu terbentuknya dewan-dewan daerah (Dewan Banteng di Sumatra Barat dan Dewan Gajah di Sumatra Utara).`,
+          `<a href="https://id.wikipedia.org/wiki/Permesta" target="_blank" rel="noopener noreferrer" class="inti-link">Proklamasi PRRI &amp; Dukungan Permesta:</a> Proklamasi PRRI di Padang pada 15 Februari 1958 oleh Letkol Ahmad Husein dengan Syafruddin Prawiranegara sebagai Perdana Menteri, serta dukungan gerakan Permesta di Sulawesi pimpinan Letkol Ventje Sumual.`,
+          `<a href="https://id.wikipedia.org/wiki/Pemerintahan_Revolusioner_Republik_Indonesia" target="_blank" rel="noopener noreferrer" class="inti-link">Langkah Penumpasan Pusat:</a> Pemerintah pusat menumpas pergolakan melalui operasi militer terpadu dan pemberlakuan keadaan darurat perang (<em>Staat van Oorlog en Beleg</em> / SOB).`
+        ],
+        paketA: "Terintegrasi pada No. 30 (PGK)",
+        paketB: "No. 19 (PGK), No. 36 (BS)"
+      },
+      {
+        no: 8,
+        periode: "TRANSISI KETATANEGARAAN (1957–1959)",
+        materi: "Konsepsi Presiden 1957, Krisis Konstituante, dan Dekrit Presiden 5 Juli 1959",
+        wikiUrl: "https://id.wikipedia.org/wiki/Dekret_Presiden_5_Juli_1959",
+        inti: [
+          `<a href="https://id.wikipedia.org/wiki/Demokrasi_Terpimpin_(1959%E2%80%931965)" target="_blank" rel="noopener noreferrer" class="inti-link">Konsepsi Presiden (21 Februari 1957):</a> Usulan pembentukan Kabinet Gotong Royong (melibatkan seluruh partai termasuk PKI) serta Dewan Nasional dari golongan fungsional (diketuai Presiden Soekarno dengan wakil Roeslan Abdulgani) yang menjadi cikal bakal DPAS.`,
+          `<a href="https://id.wikipedia.org/wiki/Konstituante_Republik_Indonesia" target="_blank" rel="noopener noreferrer" class="inti-link">Kemacetan Sidang Konstituante:</a> Kegagalan Dewan Konstituante mencapai kuorum 2/3 suara dalam merumuskan UUD baru akibat pertentangan dasar negara, serta usulan Presiden untuk kembali memberlakukan UUD 1945.`,
+          `<a href="https://id.wikipedia.org/wiki/Dekret_Presiden_5_Juli_1959" target="_blank" rel="noopener noreferrer" class="inti-link">Isi Pokok Dekrit Presiden 5 Juli 1959:</a> Pembubaran Dewan Konstituante, berlakunya kembali UUD 1945 dan tidak berlakunya lagi UUDS 1950, serta pembentukan MPRS dan DPAS (sekaligus mengakhiri sistem parlementer).`
+        ],
+        paketA: "No. 9 (PG), No. 21 (PGK), No. 37 (BS)",
+        paketB: "No. 9 (PG), No. 21 (PGK), No. 37 (BS)"
+      },
+      {
+        no: 9,
+        periode: "DEMOKRASI TERPIMPIN (1959–1965)",
+        materi: "Sistem Ketatanegaraan dan Penyimpangan terhadap UUD 1945 Masa Demokrasi Terpimpin",
+        wikiUrl: "https://id.wikipedia.org/wiki/Demokrasi_Terpimpin_(1959%E2%80%931965)",
+        inti: [
+          `<a href="https://id.wikipedia.org/wiki/Demokrasi_Terpimpin_(1959%E2%80%931965)" target="_blank" rel="noopener noreferrer" class="inti-link">Pemusatan Kekuasaan Eksekutif:</a> Presiden Soekarno merangkap jabatan sebagai kepala negara sekaligus perdana menteri (kepala pemerintahan).`,
+          `<a href="https://id.wikipedia.org/wiki/Dewan_Perwakilan_Rakyat_Gotong_Royong" target="_blank" rel="noopener noreferrer" class="inti-link">Pembubaran &amp; Pengangkatan Lembaga Negara:</a> Pembubaran DPR hasil Pemilu 1955 karena menolak RAPBN 1960 dan penggantiannya dengan DPR-GR yang anggotanya ditunjuk Presiden; pengangkatan langsung anggota MPRS dan DPAS tanpa pemilu; serta kedudukan pimpinan lembaga tinggi negara dijadikan setingkat menteri.`,
+          `<a href="https://id.wikipedia.org/wiki/Demokrasi_Terpimpin_(1959%E2%80%931965)" target="_blank" rel="noopener noreferrer" class="inti-link">Penyimpangan Konstitusional Lainnya:</a> Penetapan pidato Presiden (Manipol) sebagai GBHN, pembubaran partai Masyumi dan PSI (1960), serta pengangkatan Ir. Soekarno sebagai presiden seumur hidup melalui Ketetapan MPRS No. III/MPRS/1963.`
+        ],
+        paketA: "No. 10 (PG), No. 22 (PGK), No. 38 (BS)",
+        paketB: "No. 12 (PG), No. 22 (PGK)"
+      },
+      {
+        no: 10,
+        periode: "DEMOKRASI TERPIMPIN (1959–1965)",
+        materi: "Doktrin Politik (Manipol-USDEK, Nasakom) dan Peta Kekuatan Politik Demokrasi Terpimpin",
+        wikiUrl: "https://id.wikipedia.org/wiki/Manifesto_Politik_Republik_Indonesia",
+        inti: [
+          `<a href="https://id.wikipedia.org/wiki/Manifesto_Politik_Republik_Indonesia" target="_blank" rel="noopener noreferrer" class="inti-link">Doktrin Manipol-USDEK:</a> Unsur pokok dalam singkatan USDEK meliputi UUD 1945, Sosialisme Indonesia, Demokrasi Terpimpin, Ekonomi Terpimpin, dan Kepribadian Indonesia.`,
+          `<a href="https://id.wikipedia.org/wiki/Nasakom" target="_blank" rel="noopener noreferrer" class="inti-link">Konsep Nasakom:</a> Doktrin penyatuan tiga kekuatan ideologi utama revolusi Indonesia, yaitu Nasionalis, Agama, dan Komunis.`,
+          `<a href="https://id.wikipedia.org/wiki/Gerakan_30_September" target="_blank" rel="noopener noreferrer" class="inti-link">Keseimbangan Segitiga Kekuatan &amp; Rivalitas:</a> Tarik-menarik pengaruh antara Presiden Soekarno, TNI Angkatan Darat, dan PKI; faktor menguatnya pengaruh PKI serta persaingan dengan TNI-AD (usulan Angkatan Kelima, isu Dewan Jenderal, penolakan dominasi PKI) hingga runtuhnya keseimbangan pasca-G30S/PKI 1965.`
+        ],
+        paketA: "No. 11 (PG), No. 12 (PG), No. 27 (PGK), No. 38 (BS)",
+        paketB: "No. 11 (PG), No. 25 (PGK), No. 38 (BS)"
+      },
+      {
+        no: 11,
+        periode: "DEMOKRASI TERPIMPIN (1959–1965)",
+        materi: "Perjuangan Pembebasan Irian Barat (Trikora, Komando Mandala, dan Perjanjian New York)",
+        wikiUrl: "https://id.wikipedia.org/wiki/Tri_Komando_Rakyat",
+        inti: [
+          `<a href="https://id.wikipedia.org/wiki/Sengketa_Irian_Barat" target="_blank" rel="noopener noreferrer" class="inti-link">Konfrontasi Politik &amp; Ekonomi:</a> Pemutusan hubungan diplomatik dengan Belanda (1960) dan nasionalisasi perusahaan-perusahaan milik Belanda di Indonesia.`,
+          `<a href="https://id.wikipedia.org/wiki/Tri_Komando_Rakyat" target="_blank" rel="noopener noreferrer" class="inti-link">Tri Komando Rakyat (Trikora, 19 Desember 1961):</a> Gagalkan pembentukan negara boneka Papua buatan Belanda, kibarkan Sang Merah Putih di Irian Barat, dan bersiaplah untuk mobilisasi umum.`,
+          `<a href="https://id.wikipedia.org/wiki/Komando_Mandala" target="_blank" rel="noopener noreferrer" class="inti-link">Operasi Militer Komando Mandala:</a> Dipimpin Mayjen Soeharto melalui tiga tahapan (infiltrasi, eksploitasi, konsolidasi) serta gugurnya Komodor Yos Sudarso dalam <a href="https://id.wikipedia.org/wiki/Pertempuran_Laut_Aru" target="_blank" rel="noopener noreferrer" class="inti-link">Pertempuran Laut Aru</a> (15 Januari 1962).`,
+          `<a href="https://id.wikipedia.org/wiki/Persetujuan_New_York" target="_blank" rel="noopener noreferrer" class="inti-link">Perjanjian New York (15 Agustus 1962) &amp; Pepera:</a> Mediasi diplomat AS Ellsworth Bunker menghasilkan penyerahan administrasi Irian Barat melalui badan PBB (<a href="https://id.wikipedia.org/wiki/Otoritas_Eksekutif_Sementara_Perserikatan_Bangsa-Bangsa" target="_blank" rel="noopener noreferrer" class="inti-link">UNTEA</a>) sebelum diserahkan ke Indonesia paling lambat 1 Mei 1963, serta pelaksanaan <a href="https://id.wikipedia.org/wiki/Penentuan_Pendapat_Rakyat" target="_blank" rel="noopener noreferrer" class="inti-link">Pepera 1969</a>.`
+        ],
+        paketA: "No. 13 (PG), No. 23 (PGK), No. 39 (BS)",
+        paketB: "No. 13 (PG), No. 23 (PGK), No. 39 (BS)"
+      },
+      {
+        no: 12,
+        periode: "DEMOKRASI TERPIMPIN (1959–1965)",
+        materi: "Politik Luar Negeri Konfrontatif, Konfrontasi Malaysia, GANEFO, dan Keluar dari PBB",
+        wikiUrl: "https://id.wikipedia.org/wiki/Konfrontasi_Indonesia%E2%80%93Malaysia",
+        inti: [
+          `<a href="https://id.wikipedia.org/wiki/Oldefo_dan_Nefo" target="_blank" rel="noopener noreferrer" class="inti-link">Pergeseran Arah Politik Luar Negeri:</a> Pembagian kekuatan dunia menjadi <em>Oldefo</em> (imperialis Barat) dan <em>Nefo</em> (negara berkembang progresif), serta pembentukan Poros Jakarta–Peking–Pyongyang–Phnom Penh–Hanoi.`,
+          `<a href="https://id.wikipedia.org/wiki/Konfrontasi_Indonesia%E2%80%93Malaysia" target="_blank" rel="noopener noreferrer" class="inti-link">Konfrontasi Federasi Malaysia (1963–1965):</a> Dianggap proyek neokolonialisme Inggris dan melanggar Persetujuan Manila; diwujudkan lewat pemutusan hubungan diplomatik, pencetusan <a href="https://id.wikipedia.org/wiki/Dwikora" target="_blank" rel="noopener noreferrer" class="inti-link">Dwikora</a> (3 Mei 1964), dan pengiriman sukarelawan ke perbatasan Kalimantan Utara.`,
+          `<a href="https://id.wikipedia.org/wiki/Pesta_Olahraga_Negara-Negara_Berkembang" target="_blank" rel="noopener noreferrer" class="inti-link">Penyelenggaraan GANEFO (November 1963):</a> Reaksi Indonesia atas skorsing IOC pasca-Asian Games IV 1962 sekaligus wahana solidaritas negara-negara <em>Nefo</em>.`,
+          `<a href="https://id.wikipedia.org/wiki/Indonesia_dan_Perserikatan_Bangsa-Bangsa" target="_blank" rel="noopener noreferrer" class="inti-link">Keluar dari Keanggotaan PBB (7 Januari 1965):</a> Keputusan Indonesia keluar dari PBB sebagai bentuk protes atas diterimanya Malaysia menjadi anggota tidak tetap Dewan Keamanan PBB.`
+        ],
+        paketA: "No. 14 (PG), No. 24 (PGK), No. 25 (PGK), No. 28 (PGK), No. 40 (BS)",
+        paketB: "No. 14 (PG), No. 24 (PGK), No. 26 (PGK), No. 28 (PGK)"
+      },
+      {
+        no: 13,
+        periode: "DEMOKRASI TERPIMPIN (1959–1965)",
+        materi: "Kebijakan Ekonomi, Proyek Mercusuar, dan Hiperinflasi Masa Demokrasi Terpimpin",
+        wikiUrl: "https://id.wikipedia.org/wiki/Proyek_Mercusuar",
+        inti: [
+          `<a href="https://id.wikipedia.org/wiki/Badan_Perencanaan_Pembangunan_Nasional" target="_blank" rel="noopener noreferrer" class="inti-link">Depernas/Bappenas &amp; Devaluasi 1959:</a> Pembentukan Depernas (1959) pimpinan Mohammad Yamin yang berubah menjadi Bappenas (1963), serta kebijakan devaluasi 25 Agustus 1959 (pemotongan pecahan Rp1.000 &amp; Rp500 menjadi Rp100 &amp; Rp50 dan pembekuan tabungan &gt; Rp25.000).`,
+          `<a href="https://id.wikipedia.org/wiki/Deklarasi_Ekonomi" target="_blank" rel="noopener noreferrer" class="inti-link">Deklarasi Ekonomi (Dekon, 28 Maret 1963):</a> Strategi dasar ekonomi terpimpin yang gagal di lapangan karena lebih didominasi pertimbangan politik konfrontasi dan proyek mercusuar daripada ekonomi rasional.`,
+          `<a href="https://id.wikipedia.org/wiki/Proyek_Mercusuar" target="_blank" rel="noopener noreferrer" class="inti-link">Pembangunan Proyek Mercusuar:</a> Pembangunan Kompleks Olahraga Gelora Bung Karno Senayan, Monumen Nasional (Monas), Monumen Selamat Datang, Jembatan Semanggi, dan Hotel Indonesia.`,
+          `<a href="https://id.wikipedia.org/wiki/Sanering" target="_blank" rel="noopener noreferrer" class="inti-link">Hiperinflasi &amp; Sanering 1965:</a> Pencetakan uang besar-besaran menutup defisit anggaran memicu lonjakan harga kebutuhan pokok dan merosotnya daya beli rakyat, sementara kebijakan sanering Desember 1965 (Rp1.000 menjadi Rp1) gagal menstabilkan harga.`
+        ],
+        paketA: "No. 15 (PG), No. 26 (PGK), No. 29 (PGK), No. 40 (BS)",
+        paketB: "No. 15 (PG), No. 27 (PGK), No. 29 (PGK), No. 40 (BS)"
+      },
+      {
+        no: 14,
+        periode: "SINTESIS LINTAS PERIODE (1950–1965)",
+        materi: "Perbandingan Penyelenggaraan Negara Masa Demokrasi Liberal dan Demokrasi Terpimpin",
+        wikiUrl: "https://id.wikipedia.org/wiki/Sejarah_Indonesia_(1950%E2%80%931959)",
+        inti: [
+          `<a href="https://id.wikipedia.org/wiki/Sejarah_Indonesia_(1950%E2%80%931959)" target="_blank" rel="noopener noreferrer" class="inti-link">Perbedaan Mendasar Penyelenggaraan Negara:</a> Landasan konstitusi (UUDS 1950 vs UUD 1945), pusat kekuasaan pemerintahan (parlemen dan perdana menteri vs terpusat di tangan presiden), serta ruang kebebasan berpendapat dan aktivitas partai politik (terbuka vs dibatasi ketat).`,
+          `<a href="https://id.wikipedia.org/wiki/Sejarah_Indonesia_(1959%E2%80%931965)" target="_blank" rel="noopener noreferrer" class="inti-link">Persamaan Kondisi Kehidupan Berbangsa:</a> Terjadinya dinamika dan ketegangan politik antara pemerintah pusat dengan berbagai kekuatan politik maupun daerah, serta belum stabilnya kondisi perekonomian nasional akibat tingginya inflasi dan defisit anggaran.`
+        ],
+        paketA: "No. 30 (PGK)",
+        paketB: "No. 30 (PGK)"
+      }
+    ];
+
+    /* =====================================================================
+       RENDER TABEL KISI-KISI
+       ===================================================================== */
+    const kisiBody = document.getElementById("kisiBody");
+
+    function renderTable(filterText = "") {
+      const q = filterText.trim().toLowerCase();
+      kisiBody.innerHTML = "";
+
+      const filtered = kisiData.filter(item => {
+        if (!q) return true;
+        const combined = [
+          item.no,
+          item.periode,
+          item.materi,
+          item.inti.join(" "),
+          item.paketA,
+          item.paketB
+        ].join(" ").toLowerCase();
+        return combined.includes(q);
+      });
+
+      if (filtered.length === 0) {
+        kisiBody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:24px; color:#64748B;">Tidak ada materi yang cocok dengan pencarian "<strong>${filterText}</strong>".</td></tr>`;
+        return;
+      }
+
+      filtered.forEach(item => {
+        const tr = document.createElement("tr");
+        const bulletsHtml = item.inti.map(b => `<li>${b}</li>`).join("");
+
+        tr.innerHTML = `
+          <td class="col-no">${item.no}</td>
+          <td class="col-materi">
+            <span class="periode-tag">${item.periode}</span>
+            <a href="${item.wikiUrl}" target="_blank" rel="noopener noreferrer" class="materi-link" title="Buka artikel Wikipedia di tab baru">
+              ${item.materi}
+            </a>
+            <div>
+              <a href="${item.wikiUrl}" target="_blank" rel="noopener noreferrer" class="wiki-badge">
+                🌐 Baca Wikipedia ↗
+              </a>
+            </div>
+          </td>
+          <td class="col-inti">
+            <ul class="inti-list">${bulletsHtml}</ul>
+          </td>
+          <td class="col-posisi">
+            <div class="paket-row"><span class="paket-label">Paket A:</span> ${item.paketA}</div>
+            <div class="paket-row"><span class="paket-label b">Paket B:</span> ${item.paketB}</div>
+          </td>
+        `;
+        kisiBody.appendChild(tr);
+      });
+    }
+
+    renderTable();
+
+    document.getElementById("searchInput").addEventListener("input", e => {
+      renderTable(e.target.value);
+    });
+
+    /* =====================================================================
+       WEB AUDIO API: EFEK SUARA LUCU (PARTY POPPER + BOUNCE + CHIME)
+       ===================================================================== */
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+          audioCtx = new AudioContextClass();
+        }
+      }
+      if (audioCtx && audioCtx.state === "suspended") {
+        audioCtx.resume();
+      }
+    }
+
+    function playPartyPopperAndBounceSFX() {
+      try {
+        initAudio();
+        if (!audioCtx) return;
+        const now = audioCtx.currentTime;
+
+        // 1. Suara Letusan Bom Kertas ("POP!")
+        const popOsc = audioCtx.createOscillator();
+        const popGain = audioCtx.createGain();
+        popOsc.type = "sine";
+        popOsc.frequency.setValueAtTime(140, now);
+        popOsc.frequency.exponentialRampToValueAtTime(520, now + 0.08);
+        popOsc.frequency.exponentialRampToValueAtTime(90, now + 0.16);
+        popGain.gain.setValueAtTime(0.35, now);
+        popGain.gain.exponentialRampToValueAtTime(0.001, now + 0.17);
+        popOsc.connect(popGain);
+        popGain.connect(audioCtx.destination);
+        popOsc.start(now);
+        popOsc.stop(now + 0.18);
+
+        // 2. Suara "BOING / BOUNCE" Lucu untuk Teks "TERIMAKASIH [NAMA]"
+        const boingOsc = audioCtx.createOscillator();
+        const boingGain = audioCtx.createGain();
+        boingOsc.type = "triangle";
+        boingOsc.frequency.setValueAtTime(240, now + 0.12);
+        boingOsc.frequency.exponentialRampToValueAtTime(680, now + 0.28);
+        boingOsc.frequency.exponentialRampToValueAtTime(420, now + 0.38);
+        boingOsc.frequency.exponentialRampToValueAtTime(760, now + 0.50);
+        boingGain.gain.setValueAtTime(0.28, now + 0.12);
+        boingGain.gain.exponentialRampToValueAtTime(0.001, now + 0.55);
+        boingOsc.connect(boingGain);
+        boingGain.connect(audioCtx.destination);
+        boingOsc.start(now + 0.12);
+        boingOsc.stop(now + 0.56);
+
+        // 3. Nada Fanfare Ceria (C5 - E5 - G5 - C6)
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((freq, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = "sine";
+          const start = now + 0.22 + idx * 0.09;
+          osc.frequency.setValueAtTime(freq, start);
+          gain.gain.setValueAtTime(0.14, start);
+          gain.gain.exponentialRampToValueAtTime(0.001, start + 0.28);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(start);
+          osc.stop(start + 0.29);
+        });
+      } catch (err) {
+        // Abaikan jika perangkat dalam mode senyap ketat
+      }
+    }
+
+    function playSoftStepChime(stepIndex) {
+      try {
+        initAudio();
+        if (!audioCtx) return;
+        const now = audioCtx.currentTime;
+        const scale = [587.33, 659.25, 783.99, 880.00, 1046.50];
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(scale[stepIndex % scale.length], now);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.19);
+      } catch (err) {}
+    }
+
+    /* =====================================================================
+       ANIMASI CONFETTI LETUSAN KERTAS ULANG TAHUN
+       ===================================================================== */
+    const canvas = document.getElementById("confettiCanvas");
+    const ctx = canvas.getContext("2d");
+    let confettiParticles = [];
+    let confettiAnimId = null;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resizeCanvas);
+
+    function launchConfettiBurst() {
+      resizeCanvas();
+      confettiParticles = [];
+      const colors = [
+        "#F6D365", "#FDA085", "#FF6B6B", "#4ECDC4",
+        "#45B7D1", "#A78BFA", "#F472B6", "#34D399", "#FBBF24", "#FFFFFF"
+      ];
+
+      const originX = canvas.width / 2;
+      const originY = canvas.height * 0.44; // Tepat di belakang tulisan ucapan
+
+      for (let i = 0; i < 165; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 5 + Math.random() * 14;
+        confettiParticles.push({
+          x: originX,
+          y: originY,
+          vx: Math.cos(angle) * speed * (0.8 + Math.random() * 0.5),
+          vy: Math.sin(angle) * speed - 4.5, // Meluncur meledak ke atas & segala arah
+          w: 7 + Math.random() * 8,
+          h: 4 + Math.random() * 6,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          rotSpeed: (Math.random() - 0.5) * 12,
+          gravity: 0.22 + Math.random() * 0.12,
+          drag: 0.965,
+          wobble: Math.random() * 10,
+          wobbleSpeed: 0.05 + Math.random() * 0.06,
+          shape: Math.random() > 0.25 ? "rect" : "circle"
+        });
+      }
+
+      if (confettiAnimId) cancelAnimationFrame(confettiAnimId);
+      animateConfetti();
+    }
+
+    function animateConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let activeCount = 0;
+
+      confettiParticles.forEach(p => {
+        p.vx *= p.drag;
+        p.vy = p.vy * p.drag + p.gravity;
+        p.wobble += p.wobbleSpeed;
+        p.x += p.vx + Math.sin(p.wobble) * 1.1;
+        p.y += p.vy;
+        p.rotation += p.rotSpeed;
+
+        if (p.y < canvas.height + 30) {
+          activeCount++;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          if (p.shape === "rect") {
+            ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+          } else {
+            ctx.beginPath();
+            ctx.arc(0, 0, p.w / 2.2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.restore();
+        }
+      });
+
+      if (activeCount > 0) {
+        confettiAnimId = requestAnimationFrame(animateConfetti);
+      }
+    }
+
+    /* =====================================================================
+       ALUR INTERAKSI SISWA, ANIMASI BERURUTAN & COUNTDOWN 8 DETIK
+       ===================================================================== */
+    const welcomeScreen = document.getElementById("welcomeScreen");
+    const welcomeCard = document.getElementById("welcomeCard");
+    const studentNameInput = document.getElementById("studentName");
+    const studentClassSelect = document.getElementById("studentClass");
+    const customClassGroup = document.getElementById("customClassGroup");
+    const customClassInput = document.getElementById("customClassInput");
+    const errorMsg = document.getElementById("errorMsg");
+    const startBtn = document.getElementById("startBtn");
+
+    const celebrationOverlay = document.getElementById("celebrationOverlay");
+    const heroThanks = document.getElementById("heroThanks");
+    const displayClass = document.getElementById("displayClass");
+    const countdownBox = document.getElementById("countdownBox");
+    const countdownNum = document.getElementById("countdownNum");
+    const progressFill = document.getElementById("progressFill");
+    const skipBtn = document.getElementById("skipBtn");
+
+    const mainContainer = document.getElementById("mainContainer");
+    const studentPill = document.getElementById("studentPill");
+    const replayBtn = document.getElementById("replayBtn");
+
+    let currentStudentName = "";
+    let currentStudentClass = "";
+    let sequenceTimers = [];
+    let countdownInterval = null;
+
+    studentClassSelect.addEventListener("change", () => {
+      if (studentClassSelect.value === "CUSTOM") {
+        customClassGroup.style.display = "block";
+        customClassInput.focus();
+      } else {
+        customClassGroup.style.display = "none";
+      }
+    });
+
+    function clearAllTimers() {
+      sequenceTimers.forEach(t => clearTimeout(t));
+      sequenceTimers = [];
+      if (countdownInterval) {
+        clearInterval(countdownInterval);
+        countdownInterval = null;
+      }
+    }
+
+    function startCelebrationSequence(name, kelas) {
+      clearAllTimers();
+
+      // Reset semua elemen animasi
+      const upperName = name.toUpperCase();
+      const upperClass = kelas.toUpperCase();
+
+      heroThanks.textContent = `TERIMAKASIH ${upperName} 🎉`;
+      displayClass.textContent = upperClass;
+
+      heroThanks.classList.remove("animate-bounce");
+      void heroThanks.offsetWidth; // Force reflow untuk replay
+
+      const seqLines = ["seqLine1", "seqLine2", "seqLine3", "seqLine4", "seqLine5"];
+      seqLines.forEach(id => document.getElementById(id).classList.remove("visible"));
+      countdownBox.classList.remove("visible");
+
+      const totalCountdown = 8; // 8 detik (berada di rentang 5–10 detik setelah animasi selesai)
+      countdownNum.textContent = totalCountdown;
+      progressFill.style.transition = "none";
+      progressFill.style.width = "100%";
+
+      // Tampilkan Overlay & Ledakan Kertas + Bounce Judul Utama
+      welcomeScreen.style.display = "none";
+      celebrationOverlay.classList.add("active");
+
+      launchConfettiBurst();
+      playPartyPopperAndBounceSFX();
+      heroThanks.classList.add("animate-bounce");
+
+      // Munculkan baris kalimat secara berurutan setelah judul bounce
+      seqLines.forEach((id, idx) => {
+        const delay = 750 + idx * 620;
+        const timer = setTimeout(() => {
+          document.getElementById(id).classList.add("visible");
+          playSoftStepChime(idx);
+          if (idx === seqLines.length - 1) {
+            // Ledakan kertas kedua kecil saat "PROUD OF U ALL" muncul
+            launchConfettiBurst();
+          }
+        }, delay);
+        sequenceTimers.push(timer);
+      });
+
+      // Mulai hitungan mundur setelah seluruh animasi tulisan berurutan selesai
+      const animationFinishTime = 750 + seqLines.length * 620 + 350;
+      const startCountdownTimer = setTimeout(() => {
+        countdownBox.classList.add("visible");
+        void progressFill.offsetWidth;
+        progressFill.style.transition = `width ${totalCountdown}s linear`;
+        progressFill.style.width = "0%";
+
+        let remaining = totalCountdown;
+        countdownInterval = setInterval(() => {
+          remaining--;
+          if (remaining > 0) {
+            countdownNum.textContent = remaining;
+          } else {
+            countdownNum.textContent = "0";
+            closeCelebrationAndShowKisi();
+          }
+        }, 1000);
+      }, animationFinishTime);
+
+      sequenceTimers.push(startCountdownTimer);
+    }
+
+    function closeCelebrationAndShowKisi() {
+      clearAllTimers();
+      if (confettiAnimId) cancelAnimationFrame(confettiAnimId);
+      celebrationOverlay.classList.remove("active");
+      mainContainer.classList.add("visible");
+      studentPill.textContent = `👋 Semangat belajar, ${currentStudentName} (${currentStudentClass})!`;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    startBtn.addEventListener("click", () => {
+      const nameVal = studentNameInput.value.trim();
+      let classVal = studentClassSelect.value;
+      if (classVal === "CUSTOM") {
+        classVal = customClassInput.value.trim();
+      }
+
+      if (!nameVal || !classVal) {
+        errorMsg.style.display = "block";
+        welcomeCard.classList.remove("shake");
+        void welcomeCard.offsetWidth;
+        welcomeCard.classList.add("shake");
+        return;
+      }
+
+      errorMsg.style.display = "none";
+      currentStudentName = nameVal;
+      currentStudentClass = classVal;
+      startCelebrationSequence(currentStudentName, currentStudentClass);
+    });
+
+    // Izinkan tekan Enter di kolom input
+    studentNameInput.addEventListener("keypress", e => {
+      if (e.key === "Enter") startBtn.click();
+    });
+    customClassInput.addEventListener("keypress", e => {
+      if (e.key === "Enter") startBtn.click();
+    });
+
+    skipBtn.addEventListener("click", closeCelebrationAndShowKisi);
+    replayBtn.addEventListener("click", () => {
+      startCelebrationSequence(currentStudentName, currentStudentClass);
+    });
+  </script>
+</body>
+</html>
