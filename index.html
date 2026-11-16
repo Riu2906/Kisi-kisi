@@ -9,6 +9,7 @@
       --navy: #1B365D;
       --navy-dark: #102442;
       --slate: #2B4C7E;
+      --royal: #2563EB;
       --gold: #C59B27;
       --gold-dark: #A67F17;
       --gold-light: #F6D365;
@@ -37,56 +38,95 @@
     }
 
     /* =========================================
-       1. HALAMAN INPUT NAMA & KELAS (AWAL)
+       1. HALAMAN INPUT NAMA & KELAS (PLAYFUL & LUCU)
        ========================================= */
     .welcome-screen {
       position: fixed;
       inset: 0;
       z-index: 1000;
-      background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 55%, var(--slate) 100%);
+      background: linear-gradient(135deg, #0F2547 0%, #1B3E75 52%, #255499 100%);
       display: flex;
       padding: 16px;
       min-height: 100dvh;
-      overflow-y: auto;
+      overflow: hidden;
+    }
+
+    /* Dekorasi melayang lucu di background biru */
+    .bg-doodles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .doodle {
+      position: absolute;
+      font-size: clamp(22px, 3vw, 34px);
+      opacity: 0.16;
+      user-select: none;
+      animation: floatDoodle 6s ease-in-out infinite;
+    }
+
+    .doodle:nth-child(1) { top: 10%; left: 8%; animation-delay: 0s; }
+    .doodle:nth-child(2) { top: 18%; right: 10%; animation-delay: 1.2s; }
+    .doodle:nth-child(3) { bottom: 16%; left: 11%; animation-delay: 2.1s; }
+    .doodle:nth-child(4) { bottom: 12%; right: 9%; animation-delay: 0.7s; }
+    .doodle:nth-child(5) { top: 50%; left: 5%; animation-delay: 1.8s; }
+    .doodle:nth-child(6) { top: 48%; right: 6%; animation-delay: 2.8s; }
+
+    @keyframes floatDoodle {
+      0%, 100% { transform: translateY(0px) rotate(-6deg); }
+      50% { transform: translateY(-14px) rotate(6deg); }
     }
 
     .welcome-card {
+      position: relative;
+      z-index: 10;
       margin: auto;
       background: var(--white);
       width: 100%;
       max-width: 460px;
-      border-radius: 18px;
-      overflow: hidden;
-      box-shadow: 0 24px 50px rgba(0, 0, 0, 0.35);
-      border-bottom: 5px solid var(--gold);
-      animation: cardEntrance 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+      border-radius: 24px;
+      overflow: visible;
+      box-shadow: 0 24px 55px rgba(7, 18, 38, 0.42), 0 0 0 4px rgba(255, 255, 255, 0.14);
+      border-bottom: 6px solid var(--gold);
+      animation: cardPopIn 0.75s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    @keyframes cardEntrance {
-      from { opacity: 0; transform: translateY(24px) scale(0.96); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
+    @keyframes cardPopIn {
+      0% { opacity: 0; transform: translateY(32px) scale(0.9) rotate(-1.5deg); }
+      70% { opacity: 1; transform: translateY(-4px) scale(1.01) rotate(0.5deg); }
+      100% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
     }
 
     .welcome-header {
-      background: var(--navy);
+      background: linear-gradient(135deg, var(--navy) 0%, #244980 100%);
       color: var(--white);
       padding: 24px 24px 20px;
       text-align: center;
-      border-bottom: 3px solid var(--gold);
+      border-radius: 24px 24px 0 0;
+      border-bottom: 4px solid var(--gold);
+      position: relative;
     }
 
-    .welcome-badge {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 1px;
+    .mascot-bubble {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(246, 211, 101, 0.45);
       color: var(--gold-light);
-      text-transform: uppercase;
-      margin-bottom: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+      letter-spacing: 0.4px;
     }
 
     .welcome-header h1 {
-      font-size: 20px;
+      font-size: 21px;
       font-weight: 800;
       line-height: 1.3;
       margin-bottom: 4px;
@@ -98,7 +138,7 @@
     }
 
     .welcome-body {
-      padding: 24px;
+      padding: 24px 24px 26px;
     }
 
     .form-group {
@@ -106,8 +146,10 @@
     }
 
     .form-group label {
-      display: block;
-      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13.5px;
       font-weight: 700;
       color: var(--navy);
       margin-bottom: 6px;
@@ -118,16 +160,45 @@
       padding: 12px 14px;
       font-size: 15px;
       border: 2px solid var(--border-gray);
-      border-radius: 10px;
+      border-radius: 14px;
       outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      background: var(--white);
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+      background: #F8FAFC;
       color: var(--text-main);
     }
 
     .form-control:focus {
-      border-color: var(--navy);
-      box-shadow: 0 0 0 3px rgba(27, 54, 93, 0.14);
+      background: var(--white);
+      border-color: var(--royal);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.14);
+      transform: translateY(-1px);
+    }
+
+    /* Balon teks lucu saat tombol kabur */
+    .tease-banner {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #FEF3C7;
+      color: #92400E;
+      border: 1.5px dashed #F59E0B;
+      border-radius: 12px;
+      padding: 9px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      text-align: center;
+      animation: popTease 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .tease-banner.show {
+      display: flex;
+    }
+
+    @keyframes popTease {
+      0% { opacity: 0; transform: scale(0.85); }
+      100% { opacity: 1; transform: scale(1); }
     }
 
     .error-msg {
@@ -137,33 +208,97 @@
       font-weight: 600;
       margin-bottom: 12px;
       background: #FEF2F2;
-      padding: 8px 12px;
-      border-radius: 8px;
-      border-left: 3px solid #DC2626;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border-left: 4px solid #DC2626;
     }
 
+    .btn-slot {
+      width: 100%;
+      min-height: 50px;
+      position: relative;
+    }
+
+    /* Tombol Lanjut (Awalnya Biru) */
     .btn-start {
       width: 100%;
-      padding: 14px 18px;
-      background: linear-gradient(135deg, var(--navy) 0%, var(--slate) 100%);
+      padding: 14px 20px;
+      background: linear-gradient(135deg, #1D4ED8 0%, #1E40AF 100%);
       color: var(--white);
       font-size: 15px;
-      font-weight: 700;
-      border: none;
-      border-radius: 10px;
+      font-weight: 800;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 14px;
       cursor: pointer;
-      transition: transform 0.15s, box-shadow 0.2s;
-      box-shadow: 0 6px 16px rgba(27, 54, 93, 0.28);
-      min-height: 48px;
+      box-shadow: 0 8px 20px rgba(29, 78, 216, 0.32);
+      min-height: 50px;
+      user-select: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background-color 0.22s ease, color 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
     }
 
     .btn-start:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 20px rgba(27, 54, 93, 0.36);
+      box-shadow: 0 10px 24px rgba(29, 78, 216, 0.42);
     }
 
-    .btn-start:active {
-      transform: scale(0.98);
+    /* Mode melayang saat menghindar di layar */
+    .btn-start.escaped {
+      position: fixed;
+      z-index: 1500;
+      width: auto;
+      min-width: 195px;
+      padding: 13px 22px;
+      margin: 0;
+    }
+
+    /* Saat keluar dari kotak putih ke background biru -> berubah jadi PUTIH */
+    .btn-start.outside-white {
+      background: #FFFFFF !important;
+      color: #1B365D !important;
+      border: 2.5px solid #F6D365 !important;
+      box-shadow: 0 14px 32px rgba(7, 18, 38, 0.42), 0 0 18px rgba(255, 255, 255, 0.45) !important;
+    }
+
+    /* Efek Motion Blur saat Dash */
+    .btn-start.fx-dash {
+      filter: blur(4.5px) drop-shadow(18px 0 10px rgba(255, 255, 255, 0.65)) drop-shadow(-18px 0 10px rgba(59, 130, 246, 0.55));
+    }
+
+    /* Efek Mengecil (Shrink + Motion Blur ringan) */
+    .btn-start.state-shrunk {
+      transform: scale(0.68) rotate(-4deg);
+    }
+
+    .btn-start.fx-shrink-move {
+      filter: blur(3.5px) drop-shadow(0 10px 14px rgba(255, 255, 255, 0.55));
+    }
+
+    /* Efek Flicker + Motion Blur */
+    @keyframes flickerBlurAnim {
+      0% { opacity: 1; filter: blur(0px); transform: scale(1); }
+      18% { opacity: 0.15; filter: blur(6px); transform: translateX(-10px) scaleX(1.22); }
+      36% { opacity: 0.9; filter: blur(3px); transform: translateX(8px) scaleX(0.9); }
+      54% { opacity: 0.1; filter: blur(7px); transform: translateY(-6px) scale(1.15); }
+      74% { opacity: 0.85; filter: blur(3.5px); transform: translateX(-5px) scale(0.95); }
+      100% { opacity: 1; filter: blur(0px); transform: scale(1); }
+    }
+
+    .btn-start.fx-flicker {
+      animation: flickerBlurAnim 0.46s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Jejak afterimage motion blur */
+    .ghost-trail {
+      position: fixed;
+      z-index: 1490;
+      pointer-events: none;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.45);
+      filter: blur(8px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
     }
 
     .shake {
@@ -209,43 +344,16 @@
       z-index: 2;
       margin: auto;
       width: 100%;
-      max-width: 720px;
+      max-width: 740px;
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       border: 2px solid rgba(246, 211, 101, 0.45);
       border-radius: 22px;
-      padding: 28px 22px;
+      padding: 30px 24px;
       text-align: center;
       color: var(--white);
       box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
-    }
-
-    .audio-indicator {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11.5px;
-      font-weight: 600;
-      color: #CBD5E1;
-      background: rgba(15, 23, 42, 0.45);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      padding: 4px 12px;
-      border-radius: 999px;
-      margin-bottom: 14px;
-    }
-
-    .audio-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--gold-light);
-      animation: pulseDot 1.4s infinite ease-in-out;
-    }
-
-    @keyframes pulseDot {
-      0%, 100% { opacity: 0.35; transform: scale(0.85); }
-      50% { opacity: 1; transform: scale(1.2); }
     }
 
     .hero-thanks {
@@ -275,11 +383,11 @@
 
     /* Durasi transisi kemunculan tiap baris teks (1.15 detik) */
     .seq-line {
-      font-size: clamp(14px, 3.2vw, 17.5px);
-      font-weight: 600;
+      font-size: clamp(14.5px, 3.2vw, 17.5px);
+      font-weight: 500;
       color: #F8FAFC;
-      line-height: 1.6;
-      margin-bottom: 13px;
+      line-height: 1.68;
+      margin-bottom: 14px;
       opacity: 0;
       transform: translateY(18px) scale(0.97);
       transition: opacity 1.15s ease, transform 1.15s cubic-bezier(0.22, 1, 0.36, 1);
@@ -292,20 +400,20 @@
 
     .seq-highlight {
       color: #FDE68A;
-      font-weight: 800;
+      font-weight: 700;
     }
 
     .proud-badge {
       display: inline-block;
       margin-top: 6px;
-      padding: 10px 22px;
+      padding: 10px 24px;
       background: linear-gradient(135deg, var(--gold) 0%, #EAB308 100%);
       color: var(--navy-dark);
       font-size: clamp(16px, 3.8vw, 21px);
       font-weight: 900;
       border-radius: 999px;
       box-shadow: 0 8px 22px rgba(234, 179, 8, 0.4);
-      letter-spacing: 0.6px;
+      letter-spacing: 0.5px;
     }
 
     .countdown-box {
@@ -839,20 +947,29 @@
        1. FORM AWAL (NAMA & KELAS SISWA: XII F1 - XII F9)
        ================================================= -->
   <section id="welcomeScreen" class="welcome-screen">
+    <div class="bg-doodles" aria-hidden="true">
+      <span class="doodle">📜</span>
+      <span class="doodle">🏛️</span>
+      <span class="doodle">🎓</span>
+      <span class="doodle">🧭</span>
+      <span class="doodle">✨</span>
+      <span class="doodle">📚</span>
+    </div>
+
     <div id="welcomeCard" class="welcome-card">
       <div class="welcome-header">
-        <span class="welcome-badge">Perangkat Asesmen • Kurikulum Merdeka</span>
-        <h1>Kisi-Kisi SAS Sejarah Kelas XII</h1>
-        <p>Demokrasi Liberal (1950–1959) &amp; Demokrasi Terpimpin (1959–1965)</p>
+        <span class="mascot-bubble">✨ Edisi Spesial SAS Sejarah • Kelas XII ✨</span>
+        <h1>Halo, Pejuang SAS Sejarah! 👋</h1>
+        <p>Isi dulu data singkat di bawah sebelum membuka kisi-kisi ya~</p>
       </div>
       <div class="welcome-body">
         <div class="form-group">
-          <label for="studentName">Nama Lengkap Kamu</label>
-          <input type="text" id="studentName" class="form-control" placeholder="Contoh: Ahmad Fauzan" autocomplete="name" />
+          <label for="studentName">✍️ Nama Lengkap Kamu</label>
+          <input type="text" id="studentName" class="form-control" placeholder="Ketik nama lengkap kamu di sini..." autocomplete="name" />
         </div>
 
         <div class="form-group">
-          <label for="studentClass">Pilih Kelas Kamu</label>
+          <label for="studentClass">🏫 Pilih Kelas Kamu</label>
           <select id="studentClass" class="form-control">
             <option value="">-- Pilih Kelas --</option>
             <option value="XII F1">XII F1</option>
@@ -864,18 +981,15 @@
             <option value="XII F7">XII F7</option>
             <option value="XII F8">XII F8</option>
             <option value="XII F9">XII F9</option>
-            <option value="CUSTOM">Lainnya (Ketik Nama Kelas)</option>
           </select>
         </div>
 
-        <div class="form-group" id="customClassGroup" style="display: none;">
-          <label for="customClassInput">Ketik Nama Kelas Kamu</label>
-          <input type="text" id="customClassInput" class="form-control" placeholder="Contoh: XII F10 / XII IPS 1" />
+        <div id="teaseBanner" class="tease-banner"></div>
+        <div id="errorMsg" class="error-msg">Eits, isi nama dan pilih kelas kamu dulu sebelum lanjut ya! 😊</div>
+
+        <div id="btnSlot" class="btn-slot">
+          <button type="button" id="startBtn" class="btn-start">Buka Kisi-Kisi SAS 🚀</button>
         </div>
-
-        <div id="errorMsg" class="error-msg">Silakan isi nama dan pilih kelas kamu terlebih dahulu ya!</div>
-
-        <button type="button" id="startBtn" class="btn-start">Buka Kisi-Kisi SAS 🚀</button>
       </div>
     </div>
   </section>
@@ -887,32 +1001,24 @@
     <canvas id="confettiCanvas"></canvas>
 
     <div class="message-stage">
-      <div class="audio-indicator">
-        <span class="audio-dot"></span>
-        <span>Instrumen Perpisahan Diputar</span>
-      </div>
-
       <div id="heroThanks" class="hero-thanks"></div>
 
       <p id="seqLine1" class="seq-line">
-        SUDAH MAU MEMPELAJARI KISI KISI INI,
+        Terimakasih ya kamu udah mau belajar menggunakan kisi kisi yang bapak buat, dan mungkin kisi kisi ini jadi hal terakhir yang bisa bapak siapkan untuk pelajaran kamu...
       </p>
       <p id="seqLine2" class="seq-line">
-        KEMUNGKINAN SETELAH INI KITA GA KETEMU LAGI DI KELAS <span id="displayClass" class="seq-highlight"></span> DENGAN BAPAK SEBAGAI GURU, DAN KAMU SEBAGAI MURID....
+        terimakasih ya <span id="displayBodyName" class="seq-highlight"></span> dari kelas <span id="displayBodyClass" class="seq-highlight"></span> kamu dan kelas mu udah menjadi bagian penting dalam cerita bapak dalam menambah ilmu menjadi seorang calon guru.
       </p>
       <p id="seqLine3" class="seq-line seq-highlight">
-        BAPAK HARAP UJIAN AKHIR SEMESTER KAMU BAGUS YA HASIL NYAAA!!!!
+        selamat belajar semoga kalian sukses
       </p>
-      <p id="seqLine4" class="seq-line">
-        BAPAK BANGGA PERNAH MENGAJAR DI KELAS KAMU DENGAN SEGALA KEJADIAN DI DALAM NYA,
-      </p>
-      <div id="seqLine5" class="seq-line">
-        <span class="proud-badge">PROUD OF U ALL 🎓✨</span>
+      <div id="seqLine4" class="seq-line">
+        <span id="proudBadgeText" class="proud-badge"></span>
       </div>
 
       <div id="countdownBox" class="countdown-box">
         <p class="countdown-text">
-          Kisi-kisi akan terbuka otomatis dalam <span id="countdownNum" class="countdown-number">10</span> detik...
+          Kisi-kisi akan terbuka otomatis dalam <span id="countdownNum" class="countdown-number">8</span> detik...
         </p>
         <div class="progress-track">
           <div id="progressFill" class="progress-fill"></div>
@@ -1269,12 +1375,9 @@
     });
 
     /* =====================================================================
-       WEB AUDIO API: BACKSOUND PIANO SEDIH / HARU (~1 MENIT) + AUTO-STOP
+       WEB AUDIO API: EFEK SUARA LUCU (WHOOSH DODGE + PARTY POPPER + CHIME)
        ===================================================================== */
     let audioCtx = null;
-    let backsoundMasterGain = null;
-    let activeBacksoundNodes = [];
-    let backsoundAutoStopTimer = null;
 
     function initAudio() {
       if (!audioCtx) {
@@ -1288,238 +1391,92 @@
       }
     }
 
-    function stopSadBacksound(immediate = false) {
-      if (backsoundAutoStopTimer) {
-        clearTimeout(backsoundAutoStopTimer);
-        backsoundAutoStopTimer = null;
-      }
-
-      if (!audioCtx || !backsoundMasterGain) {
-        activeBacksoundNodes = [];
-        return;
-      }
-
-      try {
-        const now = audioCtx.currentTime;
-        const fadeTime = immediate ? 0.08 : 0.45;
-        const currentMaster = backsoundMasterGain;
-        const nodesToStop = [...activeBacksoundNodes];
-
-        backsoundMasterGain = null;
-        activeBacksoundNodes = [];
-
-        currentMaster.gain.cancelScheduledValues(now);
-        currentMaster.gain.setValueAtTime(Math.max(currentMaster.gain.value, 0.0001), now);
-        currentMaster.gain.exponentialRampToValueAtTime(0.0001, now + fadeTime);
-
-        setTimeout(() => {
-          nodesToStop.forEach(node => {
-            try { node.stop(); } catch (e) {}
-            try { node.disconnect(); } catch (e) {}
-          });
-          try { currentMaster.disconnect(); } catch (e) {}
-        }, (fadeTime + 0.08) * 1000);
-      } catch (err) {}
-    }
-
-    function playSadFarewellBacksound() {
+    function playDodgeWhooshSFX() {
       try {
         initAudio();
         if (!audioCtx) return;
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(280, now);
+        osc.frequency.exponentialRampToValueAtTime(760, now + 0.14);
+        osc.frequency.exponentialRampToValueAtTime(340, now + 0.26);
+        gain.gain.setValueAtTime(0.22, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.27);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.28);
+      } catch (err) {}
+    }
 
-        // Pastikan instance sebelumnya berhenti bersih
-        stopSadBacksound(true);
+    function playPartyPopperAndBounceSFX() {
+      try {
+        initAudio();
+        if (!audioCtx) return;
+        const now = audioCtx.currentTime;
 
-        const now = audioCtx.currentTime + 0.05;
-        const master = audioCtx.createGain();
-        master.gain.setValueAtTime(0.001, now);
-        master.gain.linearRampToValueAtTime(0.42, now + 1.2); // Fade-in lembut 1.2 detik
-        master.connect(audioCtx.destination);
-        backsoundMasterGain = master;
+        const popOsc = audioCtx.createOscillator();
+        const popGain = audioCtx.createGain();
+        popOsc.type = "sine";
+        popOsc.frequency.setValueAtTime(140, now);
+        popOsc.frequency.exponentialRampToValueAtTime(520, now + 0.12);
+        popOsc.frequency.exponentialRampToValueAtTime(90, now + 0.24);
+        popGain.gain.setValueAtTime(0.35, now);
+        popGain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+        popOsc.connect(popGain);
+        popGain.connect(audioCtx.destination);
+        popOsc.start(now);
+        popOsc.stop(now + 0.26);
 
-        // Efek reverb/echo halus ruangan kelas kenangan
-        const delay = audioCtx.createDelay();
-        delay.delayTime.value = 0.38;
-        const feedback = audioCtx.createGain();
-        feedback.gain.value = 0.28;
-        const delayFilter = audioCtx.createBiquadFilter();
-        delayFilter.type = "lowpass";
-        delayFilter.frequency.value = 1600;
+        const boingOsc = audioCtx.createOscillator();
+        const boingGain = audioCtx.createGain();
+        boingOsc.type = "triangle";
+        boingOsc.frequency.setValueAtTime(240, now + 0.18);
+        boingOsc.frequency.exponentialRampToValueAtTime(680, now + 0.42);
+        boingOsc.frequency.exponentialRampToValueAtTime(420, now + 0.58);
+        boingOsc.frequency.exponentialRampToValueAtTime(760, now + 0.78);
+        boingGain.gain.setValueAtTime(0.28, now + 0.18);
+        boingGain.gain.exponentialRampToValueAtTime(0.001, now + 0.85);
+        boingOsc.connect(boingGain);
+        boingGain.connect(audioCtx.destination);
+        boingOsc.start(now + 0.18);
+        boingOsc.stop(now + 0.86);
 
-        delay.connect(delayFilter);
-        delayFilter.connect(feedback);
-        feedback.connect(delay);
-        delayFilter.connect(master);
-
-        // Helper suara piano lembut (felt piano)
-        function schedulePianoNote(freq, startTime, duration, velocity = 0.2) {
-          if (!freq) return;
-
-          const oscMain = audioCtx.createOscillator();
-          const oscWarm = audioCtx.createOscillator();
-          const filter = audioCtx.createBiquadFilter();
-          const noteGain = audioCtx.createGain();
-
-          oscMain.type = "sine";
-          oscMain.frequency.setValueAtTime(freq, startTime);
-
-          oscWarm.type = "triangle";
-          oscWarm.frequency.setValueAtTime(freq, startTime);
-
-          const warmGain = audioCtx.createGain();
-          warmGain.gain.setValueAtTime(0.28, startTime);
-
-          filter.type = "lowpass";
-          filter.frequency.setValueAtTime(1450, startTime);
-          filter.frequency.exponentialRampToValueAtTime(420, startTime + duration);
-
-          noteGain.gain.setValueAtTime(0.0001, startTime);
-          noteGain.gain.linearRampToValueAtTime(velocity, startTime + 0.035);
-          noteGain.gain.exponentialRampToValueAtTime(velocity * 0.45, startTime + duration * 0.45);
-          noteGain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
-
-          oscMain.connect(filter);
-          oscWarm.connect(warmGain);
-          warmGain.connect(filter);
-
-          filter.connect(noteGain);
-          noteGain.connect(master);
-          noteGain.connect(delay);
-
-          oscMain.start(startTime);
-          oscWarm.start(startTime);
-          oscMain.stop(startTime + duration + 0.05);
-          oscWarm.stop(startTime + duration + 0.05);
-
-          activeBacksoundNodes.push(oscMain, oscWarm);
-        }
-
-        // Tabel frekuensi nada (Hz)
-        const N = {
-          B1: 61.74, C2: 65.41, D2: 73.42, E2: 82.41, F2: 87.31, G2: 98.00, A2: 110.00, B2: 123.47,
-          C3: 130.81, D3: 146.83, E3: 164.81, F3: 174.61, G3: 196.00, A3: 220.00, B3: 246.94,
-          C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23, G4: 392.00, A4: 440.00, B4: 493.88,
-          C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46, G5: 783.99, A5: 880.00
-        };
-
-        // Tempo lambat penuh perasaan: 64 BPM (1 ketuk = 0.9375 detik, 1 bar = 3.75 detik)
-        const beat = 60 / 64;
-
-        // 8 Bar progresi akor sedih / nostalgia: Am7 - Fmaj7 - C - G/B - Am7 - Fmaj7 - Dm7 - Gsus4/G
-        const bars = [
-          // Bar 1: Am7
-          {
-            arp: [N.A2, N.E3, N.G3, N.C4],
-            mel: [
-              { f: N.E5, off: 0, dur: 2 },
-              { f: N.D5, off: 2, dur: 1 },
-              { f: N.C5, off: 3, dur: 1 }
-            ]
-          },
-          // Bar 2: Fmaj7
-          {
-            arp: [N.F2, N.C3, N.E3, N.A3],
-            mel: [
-              { f: N.C5, off: 0, dur: 2.5 },
-              { f: N.B4, off: 2.5, dur: 0.5 },
-              { f: N.A4, off: 3, dur: 1 }
-            ]
-          },
-          // Bar 3: C
-          {
-            arp: [N.C2, N.G2, N.C3, N.E3],
-            mel: [
-              { f: N.G4, off: 0, dur: 2 },
-              { f: N.A4, off: 2, dur: 1 },
-              { f: N.B4, off: 3, dur: 1 }
-            ]
-          },
-          // Bar 4: G/B
-          {
-            arp: [N.B1, N.G2, N.D3, N.G3],
-            mel: [
-              { f: N.D5, off: 0, dur: 3 },
-              { f: N.B4, off: 3, dur: 1 }
-            ]
-          },
-          // Bar 5: Am7
-          {
-            arp: [N.A2, N.E3, N.A3, N.C4],
-            mel: [
-              { f: N.E5, off: 0, dur: 1.5 },
-              { f: N.F5, off: 1.5, dur: 0.5 },
-              { f: N.E5, off: 2, dur: 1 },
-              { f: N.D5, off: 3, dur: 1 }
-            ]
-          },
-          // Bar 6: Fmaj7
-          {
-            arp: [N.F2, N.C3, N.F3, N.A3],
-            mel: [
-              { f: N.C5, off: 0, dur: 2 },
-              { f: N.A4, off: 2, dur: 1 },
-              { f: N.G4, off: 3, dur: 1 }
-            ]
-          },
-          // Bar 7: Dm7
-          {
-            arp: [N.D2, N.A2, N.D3, N.F3],
-            mel: [
-              { f: N.A4, off: 0, dur: 2 },
-              { f: N.B4, off: 2, dur: 1 },
-              { f: N.C5, off: 3, dur: 1 }
-            ]
-          },
-          // Bar 8: Gsus4 -> G
-          {
-            arp: [N.G2, N.D3, N.G3, N.B3],
-            mel: [
-              { f: N.C5, off: 0, dur: 2 },
-              { f: N.B4, off: 2, dur: 2 }
-            ]
-          }
-        ];
-
-        // Jadwalkan 2 siklus penuh (16 bar = 60 detik)
-        for (let cycle = 0; cycle < 2; cycle++) {
-          bars.forEach((bar, barIdx) => {
-            const barStart = now + (cycle * 8 + barIdx) * (4 * beat);
-
-            // Arpeggio tangan kiri
-            bar.arp.forEach((noteFreq, i) => {
-              schedulePianoNote(
-                noteFreq,
-                barStart + i * beat,
-                beat * (4 - i * 0.45),
-                i === 0 ? 0.19 : 0.13
-              );
-            });
-
-            // Melodi tangan kanan (siklus ke-2 sedikit lebih ekspresif)
-            bar.mel.forEach(m => {
-              let freq = m.f;
-              if (cycle === 1 && barIdx === 4 && m.off === 0) freq = N.G5;
-              schedulePianoNote(
-                freq,
-                barStart + m.off * beat,
-                m.dur * beat * 1.15,
-                0.22
-              );
-            });
-          });
-        }
-
-        // Akor penutup hangat di detik ke-60 (berakhir halus di ~63 detik)
-        const endStart = now + 16 * (4 * beat);
-        [N.C2, N.G2, N.D3, N.E3, N.G3, N.C5].forEach((f, idx) => {
-          schedulePianoNote(f, endStart + idx * 0.08, 3.8, 0.18);
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((freq, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = "sine";
+          const start = now + 0.35 + idx * 0.14;
+          osc.frequency.setValueAtTime(freq, start);
+          gain.gain.setValueAtTime(0.14, start);
+          gain.gain.exponentialRampToValueAtTime(0.001, start + 0.38);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(start);
+          osc.stop(start + 0.4);
         });
+      } catch (err) {}
+    }
 
-        // Timer otomatis mematikan/fade-out di menit ke-1 (62 detik)
-        backsoundAutoStopTimer = setTimeout(() => {
-          stopSadBacksound(false);
-        }, 62500);
-
+    function playSoftStepChime(stepIndex) {
+      try {
+        initAudio();
+        if (!audioCtx) return;
+        const now = audioCtx.currentTime;
+        const scale = [587.33, 659.25, 783.99, 880.00, 1046.50];
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(scale[stepIndex % scale.length], now);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.26);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.28);
       } catch (err) {}
     }
 
@@ -1608,20 +1565,21 @@
     }
 
     /* =====================================================================
-       ALUR INTERAKSI SISWA, ANIMASI BERURUTAN & COUNTDOWN 10 DETIK
+       ALUR INTERAKSI SISWA, PRANK TOMBOL KABUR DI LAPTOP & UCAPAN GURU
        ===================================================================== */
     const welcomeScreen = document.getElementById("welcomeScreen");
     const welcomeCard = document.getElementById("welcomeCard");
     const studentNameInput = document.getElementById("studentName");
     const studentClassSelect = document.getElementById("studentClass");
-    const customClassGroup = document.getElementById("customClassGroup");
-    const customClassInput = document.getElementById("customClassInput");
+    const teaseBanner = document.getElementById("teaseBanner");
     const errorMsg = document.getElementById("errorMsg");
     const startBtn = document.getElementById("startBtn");
 
     const celebrationOverlay = document.getElementById("celebrationOverlay");
     const heroThanks = document.getElementById("heroThanks");
-    const displayClass = document.getElementById("displayClass");
+    const displayBodyName = document.getElementById("displayBodyName");
+    const displayBodyClass = document.getElementById("displayBodyClass");
+    const proudBadgeText = document.getElementById("proudBadgeText");
     const countdownBox = document.getElementById("countdownBox");
     const countdownNum = document.getElementById("countdownNum");
     const progressFill = document.getElementById("progressFill");
@@ -1636,14 +1594,249 @@
     let sequenceTimers = [];
     let countdownInterval = null;
 
-    studentClassSelect.addEventListener("change", () => {
-      if (studentClassSelect.value === "CUSTOM") {
-        customClassGroup.style.display = "block";
-        customClassInput.focus();
-      } else {
-        customClassGroup.style.display = "none";
+    // State prank tombol menghindari mouse (khusus laptop/desktop)
+    let dodgeCount = 0;
+    const maxDodgesBeforeSuccess = 2; // Klik 1 & Klik 2 kabur -> Klik ke-3 berhasil lanjut!
+    let lastMoveType = "";
+    let isButtonAnimating = false;
+
+    function isLaptopDevice() {
+      const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
+      const canHover = window.matchMedia("(hover: hover)").matches;
+      return (hasFinePointer && canHover) || window.innerWidth >= 900;
+    }
+
+    window.addEventListener("resize", () => {
+      if (startBtn.classList.contains("escaped")) {
+        const rect = startBtn.getBoundingClientRect();
+        const maxX = Math.max(16, window.innerWidth - rect.width - 16);
+        const maxY = Math.max(16, window.innerHeight - rect.height - 16);
+        const clampedX = Math.min(Math.max(16, rect.left), maxX);
+        const clampedY = Math.min(Math.max(16, rect.top), maxY);
+        startBtn.style.left = `${clampedX}px`;
+        startBtn.style.top = `${clampedY}px`;
+        updateButtonColorByPosition();
       }
     });
+
+    function createGhostTrail(rect) {
+      const ghost = document.createElement("div");
+      ghost.className = "ghost-trail";
+      ghost.style.left = `${rect.left}px`;
+      ghost.style.top = `${rect.top}px`;
+      ghost.style.width = `${rect.width}px`;
+      ghost.style.height = `${rect.height}px`;
+      welcomeScreen.appendChild(ghost);
+
+      requestAnimationFrame(() => {
+        ghost.style.opacity = "0";
+        ghost.style.transform = "scale(0.85)";
+      });
+
+      setTimeout(() => {
+        ghost.remove();
+      }, 380);
+    }
+
+    function computeOutsideWhiteCardPosition(btnWidth, btnHeight, currentRect) {
+      const cardRect = welcomeCard.getBoundingClientRect();
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const margin = 20;
+      const gap = 18;
+
+      const zones = [];
+
+      // Zona Kiri dari kotak putih
+      if (cardRect.left - margin - gap >= btnWidth) {
+        zones.push({
+          minX: margin,
+          maxX: cardRect.left - btnWidth - gap,
+          minY: Math.max(margin, cardRect.top - 30),
+          maxY: Math.min(vh - btnHeight - margin, cardRect.bottom + 30)
+        });
+      }
+
+      // Zona Kanan dari kotak putih
+      if (vw - cardRect.right - margin - gap >= btnWidth) {
+        zones.push({
+          minX: cardRect.right + gap,
+          maxX: vw - btnWidth - margin,
+          minY: Math.max(margin, cardRect.top - 30),
+          maxY: Math.min(vh - btnHeight - margin, cardRect.bottom + 30)
+        });
+      }
+
+      // Zona Atas dari kotak putih
+      if (cardRect.top - margin - gap >= btnHeight) {
+        zones.push({
+          minX: Math.max(margin, cardRect.left - 80),
+          maxX: Math.min(vw - btnWidth - margin, cardRect.right + 80),
+          minY: margin,
+          maxY: cardRect.top - btnHeight - gap
+        });
+      }
+
+      // Zona Bawah dari kotak putih
+      if (vh - cardRect.bottom - margin - gap >= btnHeight) {
+        zones.push({
+          minX: Math.max(margin, cardRect.left - 80),
+          maxX: Math.min(vw - btnWidth - margin, cardRect.right + 80),
+          minY: cardRect.bottom + gap,
+          maxY: vh - btnHeight - margin
+        });
+      }
+
+      // Pilih zona yang cukup jauh dari posisi tombol saat ini agar terasa dash nyata
+      let chosenZone = null;
+      if (zones.length > 0) {
+        const shuffled = zones.sort(() => Math.random() - 0.5);
+        chosenZone = shuffled.find(z => {
+          const midX = (z.minX + z.maxX) / 2;
+          const midY = (z.minY + z.maxY) / 2;
+          const dist = Math.hypot(midX - currentRect.left, midY - currentRect.top);
+          return dist > 110;
+        }) || shuffled[0];
+      }
+
+      if (chosenZone) {
+        const x = chosenZone.minX + Math.random() * Math.max(0, chosenZone.maxX - chosenZone.minX);
+        const y = chosenZone.minY + Math.random() * Math.max(0, chosenZone.maxY - chosenZone.minY);
+        return { x, y };
+      }
+
+      // Fallback aman di pojok layar
+      return {
+        x: Math.max(margin, Math.min(vw - btnWidth - margin, margin + Math.random() * 60)),
+        y: Math.max(margin, margin)
+      };
+    }
+
+    function updateButtonColorByPosition() {
+      const btnRect = startBtn.getBoundingClientRect();
+      const cardRect = welcomeCard.getBoundingClientRect();
+
+      const isOverlappingWhiteCard = !(
+        btnRect.right < cardRect.left ||
+        btnRect.left > cardRect.right ||
+        btnRect.bottom < cardRect.top ||
+        btnRect.top > cardRect.bottom
+      );
+
+      if (isOverlappingWhiteCard) {
+        startBtn.classList.remove("outside-white");
+      } else {
+        startBtn.classList.add("outside-white");
+      }
+    }
+
+    function performPlayfulButtonDodge() {
+      if (isButtonAnimating) return;
+      isButtonAnimating = true;
+
+      playDodgeWhooshSFX();
+
+      const currentRect = startBtn.getBoundingClientRect();
+      createGhostTrail(currentRect);
+
+      // Pastikan tombol dipromosikan ke fixed di koordinat asalnya terlebih dahulu
+      if (!startBtn.classList.contains("escaped")) {
+        startBtn.style.left = `${currentRect.left}px`;
+        startBtn.style.top = `${currentRect.top}px`;
+        startBtn.style.width = `${currentRect.width}px`;
+        startBtn.classList.add("escaped");
+        void startBtn.offsetWidth;
+      }
+
+      // Pilih gerakan acak: dash, shrink (mengecil), atau flicker
+      const moves = ["dash", "shrink", "flicker"].filter(m => m !== lastMoveType);
+      const chosenMove = moves[Math.floor(Math.random() * moves.length)];
+      lastMoveType = chosenMove;
+
+      const targetW = 205;
+      const targetH = 50;
+      const { x: nextX, y: nextY } = computeOutsideWhiteCardPosition(targetW, targetH, currentRect);
+
+      // Reset efek transisi sebelumnya
+      startBtn.classList.remove("fx-dash", "fx-shrink-move", "fx-flicker", "state-shrunk");
+      void startBtn.offsetWidth;
+
+      if (chosenMove === "dash") {
+        // Gerakan DASH cepat dengan motion blur horizontal/diagonal
+        startBtn.style.transition =
+          "left 0.34s cubic-bezier(0.16, 1, 0.3, 1), top 0.34s cubic-bezier(0.16, 1, 0.3, 1), width 0.25s ease, transform 0.34s ease, filter 0.16s ease, background-color 0.2s ease, color 0.2s ease";
+        startBtn.classList.add("fx-dash");
+        startBtn.style.width = `${targetW}px`;
+        startBtn.style.left = `${nextX}px`;
+        startBtn.style.top = `${nextY}px`;
+        startBtn.style.transform = "scaleX(1.18) scaleY(0.88)";
+
+        setTimeout(() => {
+          startBtn.classList.remove("fx-dash");
+          startBtn.style.transform = "scale(1)";
+          updateButtonColorByPosition();
+          isButtonAnimating = false;
+        }, 350);
+
+      } else if (chosenMove === "shrink") {
+        // Gerakan MENGECIL + dash dengan motion blur
+        startBtn.style.transition =
+          "left 0.42s cubic-bezier(0.34, 1.56, 0.64, 1), top 0.42s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.25s ease, transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.2s ease, background-color 0.2s ease, color 0.2s ease";
+        startBtn.classList.add("fx-shrink-move", "state-shrunk");
+        startBtn.style.width = `${targetW}px`;
+        startBtn.style.left = `${nextX}px`;
+        startBtn.style.top = `${nextY}px`;
+        startBtn.style.transform = "scale(0.68) rotate(-5deg)";
+
+        setTimeout(() => {
+          startBtn.classList.remove("fx-shrink-move");
+          updateButtonColorByPosition();
+          isButtonAnimating = false;
+        }, 420);
+
+      } else {
+        // Gerakan FLICKER (kedip cepat + teleport + motion blur)
+        startBtn.style.transition = "background-color 0.18s ease, color 0.18s ease";
+        startBtn.classList.add("fx-flicker");
+
+        setTimeout(() => {
+          startBtn.style.width = `${targetW}px`;
+          startBtn.style.left = `${nextX}px`;
+          startBtn.style.top = `${nextY}px`;
+          startBtn.style.transform = "scale(1)";
+          updateButtonColorByPosition();
+        }, 160);
+
+        setTimeout(() => {
+          startBtn.classList.remove("fx-flicker");
+          updateButtonColorByPosition();
+          isButtonAnimating = false;
+        }, 470);
+      }
+
+      // Perbarui teks tombol & balon candaan lucu
+      if (dodgeCount === 1) {
+        startBtn.textContent = "Eits, Meleset! 😜";
+        teaseBanner.textContent = "🏃‍♂️💨 Wlee, tombolnya kabur! Coba tangkap lagi ya~";
+        teaseBanner.classList.add("show");
+      } else if (dodgeCount === 2) {
+        startBtn.textContent = "Tangkap Aku! 🏃‍♂️💨";
+        teaseBanner.textContent = "😆 Hampir kena! Klik sekali lagi baru Bapak kasih masuk~";
+        teaseBanner.classList.remove("show");
+        void teaseBanner.offsetWidth;
+        teaseBanner.classList.add("show");
+      }
+    }
+
+    function resetStartButtonState() {
+      dodgeCount = 0;
+      lastMoveType = "";
+      isButtonAnimating = false;
+      startBtn.classList.remove("escaped", "outside-white", "fx-dash", "fx-shrink-move", "fx-flicker", "state-shrunk");
+      startBtn.style.cssText = "";
+      startBtn.textContent = "Buka Kisi-Kisi SAS 🚀";
+      teaseBanner.classList.remove("show");
+    }
 
     function clearAllTimers() {
       sequenceTimers.forEach(t => clearTimeout(t));
@@ -1658,19 +1851,20 @@
       clearAllTimers();
 
       const upperName = name.toUpperCase();
-      const upperClass = kelas.toUpperCase();
 
-      heroThanks.textContent = `TERIMAKASIH ${upperName} 🎉`;
-      displayClass.textContent = upperClass;
+      heroThanks.textContent = `HALO, ${upperName} 👋`;
+      displayBodyName.textContent = name;
+      displayBodyClass.textContent = kelas;
+      proudBadgeText.textContent = `prod of u ${kelas} 🎓✨`;
 
       heroThanks.classList.remove("animate-bounce");
       void heroThanks.offsetWidth;
 
-      const seqLines = ["seqLine1", "seqLine2", "seqLine3", "seqLine4", "seqLine5"];
+      const seqLines = ["seqLine1", "seqLine2", "seqLine3", "seqLine4"];
       seqLines.forEach(id => document.getElementById(id).classList.remove("visible"));
       countdownBox.classList.remove("visible");
 
-      const totalCountdown = 10;
+      const totalCountdown = 8;
       countdownNum.textContent = totalCountdown;
       progressFill.style.transition = "none";
       progressFill.style.width = "100%";
@@ -1678,18 +1872,18 @@
       welcomeScreen.style.display = "none";
       celebrationOverlay.classList.add("active");
 
-      // Mulai animasi confetti, bounce judul, dan backsound piano sedih (~1 menit)
       launchConfettiBurst();
-      playSadFarewellBacksound();
+      playPartyPopperAndBounceSFX();
       heroThanks.classList.add("animate-bounce");
 
       // Jeda kemunculan tiap baris teks diperlambat agar nyaman dibaca
-      const lineDelays = [1500, 2900, 4600, 6100, 7600];
+      const lineDelays = [1600, 3400, 5400, 7000];
 
       seqLines.forEach((id, idx) => {
         const delay = lineDelays[idx];
         const timer = setTimeout(() => {
           document.getElementById(id).classList.add("visible");
+          playSoftStepChime(idx);
           if (idx === seqLines.length - 1) {
             launchConfettiBurst();
           }
@@ -1721,7 +1915,6 @@
 
     function closeCelebrationAndShowKisi() {
       clearAllTimers();
-      stopSadBacksound(false); // Hentikan & fade-out backsound saat di-skip atau tertutup otomatis
       if (confettiAnimId) cancelAnimationFrame(confettiAnimId);
       celebrationOverlay.classList.remove("active");
       mainContainer.classList.add("visible");
@@ -1731,10 +1924,7 @@
 
     startBtn.addEventListener("click", () => {
       const nameVal = studentNameInput.value.trim();
-      let classVal = studentClassSelect.value;
-      if (classVal === "CUSTOM") {
-        classVal = customClassInput.value.trim();
-      }
+      const classVal = studentClassSelect.value;
 
       if (!nameVal || !classVal) {
         errorMsg.style.display = "block";
@@ -1745,15 +1935,21 @@
       }
 
       errorMsg.style.display = "none";
+
+      // Jika login menggunakan laptop/desktop: menghindar 2x saat klik 1 & 2, dan klik ke-3 baru lanjut!
+      if (isLaptopDevice() && dodgeCount < maxDodgesBeforeSuccess) {
+        dodgeCount++;
+        performPlayfulButtonDodge();
+        return;
+      }
+
       currentStudentName = nameVal;
       currentStudentClass = classVal;
+      resetStartButtonState();
       startCelebrationSequence(currentStudentName, currentStudentClass);
     });
 
     studentNameInput.addEventListener("keypress", e => {
-      if (e.key === "Enter") startBtn.click();
-    });
-    customClassInput.addEventListener("keypress", e => {
       if (e.key === "Enter") startBtn.click();
     });
 
