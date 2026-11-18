@@ -396,6 +396,23 @@ function playSuccessChord() {
   } catch {}
 }
 
+function playSecretSFX() {
+  if (!soundEnabled) return;
+  try {
+    initAudio(); if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+    // Nada koin game klasik (B5 -> E6)
+    const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(987.77, now); // B5
+    osc.frequency.setValueAtTime(1318.51, now + 0.08); // E6
+    gain.gain.setValueAtTime(0.1, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(now); osc.stop(now + 0.5);
+  } catch {}
+}
+
 function playVictorySFX() {
   if (!soundEnabled) return;
   try {
@@ -1170,16 +1187,32 @@ document.addEventListener('keypress', e => {
   if (document.activeElement && ['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName)) return;
   typedBuffer += e.key.toLowerCase();
   if (typedBuffer.length > 20) typedBuffer = typedBuffer.slice(-20);
+  
   if (typedBuffer.includes('sejarah') || typedBuffer.includes('merdeka')) {
     typedBuffer = '';
+    
+    // Efek Visual
     launchConfettiBurst();
-    playPartyPopperAndBounceSFX();
-    toast('🥚 Easter egg ditemukan! Merdeka! 🇮🇩', 'success', 4000);
+    playSecretSFX(); // Panggil suara rahasia baru
+    document.body.classList.add('easter-flash');
+    setTimeout(() => document.body.classList.remove('easter-flash'), 500);
+    
+    // Teks notifikasi baru (anti-cringe)
+    const rahasia = [
+      "🤫 Sssst... ini rahasia Bapak. Jangan bilang siapa-siapa ya!",
+      "🕵️‍♂️ Kode terpecahkan! Kamu memang calon sejarawan hebat.",
+      "🎉 Yeay! Kamu nemu easter egg-nya. Pinter!",
+      "📜 Naskah kuno terbuka! Nilai SAS kamu +1000 (secara imajiner)."
+    ];
+    const pesan = rahasia[Math.floor(Math.random() * rahasia.length)];
+    toast(pesan, 'success', 4500);
+    
+    // Efek Ring Progress
     const ring = document.getElementById('progressRingFill');
     if (ring) {
       ring.style.transition = 'stroke 0.5s';
-      ring.style.stroke = '#C59B27';
-      setTimeout(() => { ring.style.stroke = ''; }, 3000);
+      ring.style.stroke = '#F6D365';
+      setTimeout(() => { ring.style.stroke = ''; }, 4000);
     }
   }
 });
