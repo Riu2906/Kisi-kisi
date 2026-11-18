@@ -738,6 +738,7 @@ function closeCelebrationAndShowKisi() {
   clearAllTimers();
   if (confettiAnimId) cancelAnimationFrame(confettiAnimId);
   celebrationOverlay.classList.remove('active');
+  welcomeScreen.style.display = 'none'; // Pastikan layar login hilang
   mainContainer.classList.add('visible');
   studentPill.textContent = `👋 Semangat belajar, ${currentStudentName} (${currentStudentClass})!`;
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -749,18 +750,34 @@ function closeCelebrationAndShowKisi() {
 startBtn.addEventListener('click', () => {
   const nameVal = studentNameInput.value.trim();
   const classVal = studentClassSelect.value;
+  
   if (!nameVal || !classVal) {
     errorMsg.style.display = 'block';
     welcomeCard.classList.remove('shake'); void welcomeCard.offsetWidth; welcomeCard.classList.add('shake');
     return;
   }
+  
   errorMsg.style.display = 'none';
+  
+  // Logika Tombol Kabur
   if (dodgeCount < maxDodgesBeforeSuccess) { dodgeCount++; performPlayfulButtonDodge(); return; }
+  
   currentStudentName = nameVal;
   currentStudentClass = classVal;
   store.set('sas_student', { name: nameVal, kelas: classVal });
   resetStartButtonState();
-  startCelebrationSequence(currentStudentName, currentStudentClass);
+
+  // Cek apakah sudah pernah melihat ucapan
+  const hasSeenThanks = store.get('sas_has_seen_thanks', false);
+
+  if (hasSeenThanks) {
+    // Jika sudah pernah, langsung masuk tanpa animasi
+    closeCelebrationAndShowKisi();
+  } else {
+    // Jika belum pernah, mainkan animasi dan simpan statusnya
+    store.set('sas_has_seen_thanks', true);
+    startCelebrationSequence(currentStudentName, currentStudentClass);
+  }
 });
 
 studentNameInput.addEventListener('keypress', e => { if (e.key === 'Enter') startBtn.click(); });
@@ -1181,7 +1198,7 @@ document.addEventListener('keydown', e => {
 });
 
 /* =====================================================================
-   EASTER EGG & MASCOT INTERAKTIF (Sistem Baru)
+   EASTER EGG & MASCOT INTERAKTIF
    ===================================================================== */
 let isEasterEggActive = false; // Pencegah spam
 let typedBuffer = '';
