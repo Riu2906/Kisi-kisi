@@ -314,6 +314,32 @@
     <div class="mascot-bubble-tip" id="mascotTip">Halo! Klik aku buat dapat tips belajar 📚</div>
   </div>
 
+  <!-- ================= GAME MODE OVERLAY ================= -->
+  <div id="gameModeOverlay" class="game-overlay">
+    <div class="game-header">
+      <button type="button" id="exitGameBtn" class="game-exit-btn">✖ Keluar</button>
+      <div class="game-title">⚔️ UJIAN SAS SEJARAH</div>
+      <div class="game-timer" id="gameTimer">⏱️ Mode Fokus</div>
+    </div>
+    <div class="game-body" id="gameQuizContent">
+      <!-- Soal akan dirender di sini oleh JS -->
+    </div>
+  </div>
+
+  <!-- ================= RESULT MODAL (POP-UP) ================= -->
+  <div id="resultModalOverlay" class="game-modal-overlay">
+    <div class="game-modal" id="resultModalCard">
+      <div class="modal-emoji" id="modalEmoji">🏆</div>
+      <h2 class="modal-title" id="modalTitle">SELAMAT!</h2>
+      <div class="modal-score" id="modalScore">100%</div>
+      <p class="modal-desc" id="modalDesc">Kamu berhasil menaklukkan ujian ini!</p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-primary" id="modalRetryBtn">🔄 Coba Lagi</button>
+        <button type="button" class="btn btn-secondary" id="modalCloseBtn">📚 Kembali ke Kisi-Kisi</button>
+      </div>
+    </div>
+  </div>
+
   <!-- SCRIPT -->
   <script src="script.js"></script>
 </body>

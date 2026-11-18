@@ -956,9 +956,68 @@ function renderTimeline() {
 }
 
 /* =====================================================================
-   QUIZ LOGIC
+   TABS & GAME OVERLAY CONTROL
    ===================================================================== */
-let quizState = { questions: [], current: 0, answers: [], mode: 'all', active: false };
+const tabButtons = document.querySelectorAll('.tab-btn');
+const tabPanels = { kisi: $('tabKisi'), quiz: $('tabQuiz'), flashcard: $('tabFlashcard') };
+const gameOverlay = $('gameModeOverlay');
+const resultModalOverlay = $('resultModalOverlay');
+const resultModalCard = $('resultModalCard');
+
+function switchTab(tabName) {
+  if (!tabPanels[tabName]) return;
+  tabButtons.forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
+  Object.values(tabPanels).forEach(p => p.classList.remove('active'));
+  tabPanels[tabName].classList.add('active');
+
+  if (tabName === 'quiz') {
+    // Buka Game Overlay, bukan tab biasa
+    gameOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden'; // Kunci scroll background
+    // Reset tampilan game ke awal (pilih mode)
+    $('gameQuizContent').innerHTML = `
+      <div class="game-quiz-card" style="text-align:center;">
+        <div style="font-size:60px; margin-bottom:16px;">🧠</div>
+        <h2 style="color:white; font-size:24px; margin-bottom:8px;">SIAP UJIAN?</h2>
+        <p style="color:#94A3B8; margin-bottom:24px; font-size:14px;">Pilih mode permainan di bawah ini</p>
+        <div class="game-options" style="gap:10px;">
+          <button class="game-option-btn" onclick="startQuiz('all')">
+            <span class="letter">📚</span> Semua Materi (30 Soal)
+          </button>
+          <button class="game-option-btn" onclick="startQuiz('LIBERAL')">
+            <span class="letter">🏛️</span> Demokrasi Liberal (1950–1959)
+          </button>
+          <button class="game-option-btn" onclick="startQuiz('TERPIMPIN')">
+            <span class="letter">👑</span> Demokrasi Terpimpin (1959–1965)
+          </button>
+        </div>
+      </div>
+    `;
+  } else if (tabName === 'flashcard') {
+    const sk = $('flashcardSkeleton'), content = $('flashcardContent');
+    sk.classList.add('show'); content.style.display = 'none';
+    setTimeout(() => { sk.classList.remove('show'); content.style.display = 'block'; renderFlashcard(); }, 250);
+  }
+  
+  if (tabName !== 'quiz') {
+    gameOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+tabButtons.forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
+
+$('exitGameBtn').addEventListener('click', () => {
+  if(confirm('Yakin mau keluar dari mode ujian? Progress soal akan hilang.')) {
+    switchTab('kisi');
+  }
+});
+
+/* =====================================================================
+   QUIZ GAME LOGIC
+   ===================================================================== */
+let quizState = { questions: [], current: 0, answers: [], mode: 'all' };
 
 function shuffle(arr) {
   const a = [...arr];
@@ -969,16 +1028,10 @@ function shuffle(arr) {
   return a;
 }
 
-document.querySelectorAll('.quiz-mode-btn').forEach(btn => {
-  btn.addEventListener('click', () => startQuiz(btn.dataset.mode));
-});
-
 function startQuiz(mode) {
-  let pool;
-  if (mode === 'all') pool = quizData;
-  else pool = quizData.filter(q => q.era === mode);
+  let pool = mode === 'all' ? quizData : quizData.filter(q => q.era === mode);
   if (pool.length === 0) { toast('Belum ada soal untuk mode ini', 'warn'); return; }
-  quizState = { questions: shuffle(pool), current: 0, answers: new Array(pool.length).fill(null), mode, active: true };
+  quizState = { questions: shuffle(pool), current: 0, answers: new Array(pool.length).fill(null), mode };
   renderQuizQuestion();
 }
 
@@ -990,53 +1043,54 @@ function renderQuizQuestion() {
   const letters = ['A', 'B', 'C', 'D', 'E'];
   const selected = answers[current];
 
-  $('quizContent').innerHTML = `
-    <div class="quiz-card">
-      <div class="quiz-header-info">
-        <span class="quiz-progress-text">Soal ${current + 1} / ${total}</span>
-        <span class="quiz-materi-badge">Materi ${q.materi}</span>
-      </div>
-      <div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:${pct}%"></div></div>
-      <div class="quiz-question">${escapeHtml(q.q)}</div>
-      <div class="quiz-options" id="quizOptions">
+  $('gameQuizContent').innerHTML = `
+    <div class="game-quiz-card">
+      <span class="game-progress-text">SOAL ${current + 1} DARI ${total}</span>
+      <div class="game-progress-bar"><div class="game-progress-fill" style="width:${pct}%"></div></div>
+      
+      <div class="game-question-text">${escapeHtml(q.q)}</div>
+      
+      <div class="game-options">
         ${q.options.map((opt, i) => `
-          <button type="button" class="quiz-option ${selected !== null ? (i === selected ? (i === q.answer ? 'correct' : 'wrong') : (i === q.answer ? 'correct' : '')) : ''}" data-idx="${i}" ${selected !== null ? 'disabled' : ''}>
-            <span class="opt-letter">${letters[i]}</span>
-            <span>${escapeHtml(opt)}</span>
+          <button type="button" class="game-option-btn ${selected !== null ? (i === selected ? (i === q.answer ? 'correct' : 'wrong') : (i === q.answer ? 'correct' : '')) : ''}" 
+            onclick="answerQuestion(${i})" ${selected !== null ? 'disabled' : ''}>
+            <span class="letter">${letters[i]}</span> ${escapeHtml(opt)}
           </button>
         `).join('')}
       </div>
-      <div class="quiz-feedback ${selected !== null ? 'show ' + (selected === q.answer ? 'correct' : 'wrong') : ''}" id="quizFeedback">
-        <strong>${selected === q.answer ? '✅ Benar!' : '❌ Belum tepat.'}</strong> ${escapeHtml(q.explain)}
-      </div>
-      <div class="quiz-nav">
-        <button type="button" class="btn btn-secondary" id="quizBackBtn" ${current === 0 ? 'disabled' : ''}>← Kembali</button>
-        <button type="button" class="btn btn-primary" id="quizNextBtn" ${selected === null ? 'disabled' : ''}>${current === total - 1 ? 'Lihat Hasil →' : 'Lanjut →'}</button>
-      </div>
+
+      <button type="button" class="game-next-btn" id="gameNextBtn" ${selected === null ? 'disabled' : ''} onclick="nextQuestion()">
+        ${current === total - 1 ? 'SELESAIKAN UJIAN 🏁' : 'SOAL BERIKUTNYA ➔'}
+      </button>
     </div>
   `;
-
-  $('quizOptions').querySelectorAll('.quiz-option').forEach(btn => {
-    btn.addEventListener('click', () => {
-      if (quizState.answers[quizState.current] !== null) return;
-      const idx = parseInt(btn.dataset.idx, 10);
-      quizState.answers[quizState.current] = idx;
-      if (idx === q.answer) playSuccessChord();
-      else playSoftStepChime(2);
-      renderQuizQuestion();
-    });
-  });
-
-  const nextBtn = $('quizNextBtn');
-  const backBtn = $('quizBackBtn');
-  if (nextBtn) nextBtn.addEventListener('click', () => {
-    if (quizState.current === quizState.questions.length - 1) renderQuizResults();
-    else { quizState.current++; renderQuizQuestion(); }
-  });
-  if (backBtn) backBtn.addEventListener('click', () => {
-    if (quizState.current > 0) { quizState.current--; renderQuizQuestion(); }
-  });
 }
+
+// Fungsi global agar bisa dipanggil dari onclick HTML
+window.answerQuestion = (idx) => {
+  if (quizState.answers[quizState.current] !== null) return;
+  const q = quizState.questions[quizState.current];
+  quizState.answers[quizState.current] = idx;
+  
+  if (idx === q.answer) playSuccessChord();
+  else playSoftStepChime(2);
+  
+  renderQuizQuestion();
+  // Auto enable next button
+  setTimeout(() => {
+    const btn = document.getElementById('gameNextBtn');
+    if(btn) btn.removeAttribute('disabled');
+  }, 10);
+};
+
+window.nextQuestion = () => {
+  if (quizState.current === quizState.questions.length - 1) {
+    renderQuizResults();
+  } else {
+    quizState.current++;
+    renderQuizQuestion();
+  }
+};
 
 function renderQuizResults() {
   const { questions, answers } = quizState;
@@ -1044,62 +1098,79 @@ function renderQuizResults() {
   questions.forEach((q, i) => { if (answers[i] === q.answer) correct++; });
   const total = questions.length;
   const pct = Math.round((correct / total) * 100);
-  let message = '';
-  if (pct >= 90) message = '🏆 Luar biasa! Kamu siap SAS!';
-  else if (pct >= 70) message = '👍 Bagus! Sedikit lagi sempurna.';
-  else if (pct >= 50) message = '💪 Cukup baik, ulangi materi yang salah ya.';
-  else message = '📚 Yuk pelajari lagi kisi-kisinya, kamu pasti bisa!';
+  
+  const isWin = pct >= 70;
+  
+  // Set warna dan konten Modal
+  resultModalCard.className = `game-modal ${isWin ? 'win' : 'lose'}`;
+  $('modalEmoji').textContent = isWin ? '🏆' : '📉';
+  $('modalTitle').textContent = isWin ? 'MISSION COMPLETE!' : 'MISSION FAILED';
+  $('modalScore').textContent = pct + '%';
+  $('modalScore').style.color = isWin ? '#10B981' : '#EF4444';
+  $('modalDesc').innerHTML = isWin 
+    ? `Luar biasa! Kamu menjawab <b>${correct}</b> dari <b>${total}</b> soal dengan benar. Kamu siap untuk SAS!`
+    : `Jangan menyerah! Kamu menjawab <b>${correct}</b> dari <b>${total}</b> soal. Yuk pelajari lagi kisi-kisinya!`;
 
-  if (pct >= 70) launchConfettiBurst();
+  // Efek Suara & Animasi
+  if (isWin) {
+    playVictorySFX();
+    launchConfettiBurst();
+  } else {
+    playFailSFX();
+  }
 
-  $('quizContent').innerHTML = `
-    <div class="quiz-card">
-      <div class="quiz-results">
-        <div class="score-big">${pct}%</div>
-        <div class="score-label">${correct} benar dari ${total} soal</div>
-        <div class="score-message">${message}</div>
-        <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
-          <button type="button" class="btn btn-primary" id="quizRetryBtn">🔄 Coba Lagi</button>
-          <button type="button" class="btn btn-secondary" id="quizReviewBtn">📋 Lihat Pembahasan</button>
-        </div>
-        <div class="quiz-review-list" id="quizReviewList" style="display:none;"></div>
-      </div>
-    </div>
-  `;
+  resultModalOverlay.classList.add('active');
+}
 
-  $('quizRetryBtn').addEventListener('click', () => {
-    $('quizContent').innerHTML = `
-      <div class="quiz-card">
-        <div class="quiz-hero">
-          <span class="emoji">🧠</span>
-          <h2>Quiz Mode</h2>
-          <p>Uji pemahamanmu sebelum SAS! Pilih mode di bawah 👇</p>
-        </div>
-        <div class="quiz-mode-grid" id="quizModeGrid">
-          <button type="button" class="quiz-mode-btn" data-mode="all"><strong>📚 Semua Materi</strong><small>30 soal acak</small></button>
-          <button type="button" class="quiz-mode-btn" data-mode="LIBERAL"><strong>🏛️ Demokrasi Liberal</strong><small>Soal 1950–1959</small></button>
-          <button type="button" class="quiz-mode-btn" data-mode="TERPIMPIN"><strong>👑 Demokrasi Terpimpin</strong><small>Soal 1959–1965</small></button>
-        </div>
-      </div>`;
-    document.querySelectorAll('.quiz-mode-btn').forEach(b => b.addEventListener('click', () => startQuiz(b.dataset.mode)));
-  });
+// Tombol Modal
+$('modalCloseBtn').addEventListener('click', () => {
+  resultModalOverlay.classList.remove('active');
+  switchTab('kisi'); // Balik ke kisi-kisi
+});
 
-  $('quizReviewBtn').addEventListener('click', () => {
-    const list = $('quizReviewList');
-    if (list.style.display === 'none') {
-      list.style.display = 'block';
-      list.innerHTML = questions.map((q, i) => {
-        const isCorrect = answers[i] === q.answer;
-        const userAns = answers[i] !== null ? q.options[answers[i]] : '(tidak dijawab)';
-        return `<div class="quiz-review-item ${isCorrect ? 'correct' : 'wrong'}">
-          <div class="q">${i + 1}. ${escapeHtml(q.q)}</div>
-          <div class="a">Jawabanmu: <strong>${escapeHtml(userAns)}</strong>${isCorrect ? ' ✅' : ' ❌'}<br>Jawaban benar: <strong>${escapeHtml(q.options[q.answer])}</strong><br><em>${escapeHtml(q.explain)}</em></div>
-        </div>`;
-      }).join('');
-    } else {
-      list.style.display = 'none';
-    }
-  });
+$('modalRetryBtn').addEventListener('click', () => {
+  resultModalOverlay.classList.remove('active');
+  switchTab('quiz'); // Balik ke menu pilih mode quiz
+});
+
+/* =====================================================================
+   GAME SOUND EFFECTS
+   ===================================================================== */
+function playVictorySFX() {
+  if (!soundEnabled) return;
+  try {
+    initAudio(); if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+    // Nada kemenangan (Do-Mi-Sol-Do Tinggi)
+    const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+    notes.forEach((freq, i) => {
+      const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+      osc.type = 'square';
+      const start = now + (i * 0.12);
+      osc.frequency.setValueAtTime(freq, start);
+      gain.gain.setValueAtTime(0.1, start);
+      gain.gain.exponentialRampToValueAtTime(0.001, start + 0.5);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(start); osc.stop(start + 0.6);
+    });
+  } catch {}
+}
+
+function playFailSFX() {
+  if (!soundEnabled) return;
+  try {
+    initAudio(); if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+    // Nada gagal (Buzz descending)
+    const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(200, now);
+    osc.frequency.exponentialRampToValueAtTime(80, now + 0.8);
+    gain.gain.setValueAtTime(0.15, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(now); osc.stop(now + 1);
+  } catch {}
 }
 
 /* =====================================================================
