@@ -396,6 +396,41 @@ function playSuccessChord() {
   } catch {}
 }
 
+function playVictorySFX() {
+  if (!soundEnabled) return;
+  try {
+    initAudio(); if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+    const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+    notes.forEach((freq, i) => {
+      const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+      osc.type = 'square';
+      const start = now + (i * 0.12);
+      osc.frequency.setValueAtTime(freq, start);
+      gain.gain.setValueAtTime(0.1, start);
+      gain.gain.exponentialRampToValueAtTime(0.001, start + 0.5);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(start); osc.stop(start + 0.6);
+    });
+  } catch {}
+}
+
+function playFailSFX() {
+  if (!soundEnabled) return;
+  try {
+    initAudio(); if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(200, now);
+    osc.frequency.exponentialRampToValueAtTime(80, now + 0.8);
+    gain.gain.setValueAtTime(0.15, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(now); osc.stop(now + 1);
+  } catch {}
+}
+
 /* =====================================================================
    CONFETTI
    ===================================================================== */
@@ -887,77 +922,9 @@ window.addEventListener('scroll', () => {
 backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
 /* =====================================================================
-   TABS
-   ===================================================================== */
-const tabButtons = document.querySelectorAll('.tab-btn');
-const tabPanels = { kisi: $('tabKisi'), quiz: $('tabQuiz'), flashcard: $('tabFlashcard') };
-let currentTab = 'kisi';
-
-function switchTab(tabName) {
-  if (!tabPanels[tabName]) return;
-  currentTab = tabName;
-  tabButtons.forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
-  Object.values(tabPanels).forEach(p => p.classList.remove('active'));
-  tabPanels[tabName].classList.add('active');
-
-  if (tabName === 'quiz') {
-    const sk = $('quizSkeleton'), content = $('quizContent');
-    sk.classList.add('show'); content.style.display = 'none';
-    setTimeout(() => { sk.classList.remove('show'); content.style.display = 'block'; }, 250);
-  } else if (tabName === 'flashcard') {
-    const sk = $('flashcardSkeleton'), content = $('flashcardContent');
-    sk.classList.add('show'); content.style.display = 'none';
-    setTimeout(() => { sk.classList.remove('show'); content.style.display = 'block'; renderFlashcard(); }, 250);
-  }
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-tabButtons.forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
-
-/* =====================================================================
-   TIMELINE
-   ===================================================================== */
-const timelineEvents = [
-  { year: '1950', label: 'NKRI & UUDS', target: 1 },
-  { year: '1955', label: 'Pemilu I', target: 4 },
-  { year: '1957', label: 'Deklarasi Djuanda', target: 5 },
-  { year: '1959', label: 'Dekrit 5 Juli', target: 8 },
-  { year: '1962', label: 'New York', target: 11 },
-  { year: '1965', label: 'Keluar PBB', target: 12 }
-];
-
-function renderTimeline() {
-  const track = $('timelineTrack');
-  track.innerHTML = '';
-  timelineEvents.forEach((ev, i) => {
-    if (i > 0) {
-      const line = document.createElement('div');
-      line.className = 'timeline-line';
-      track.appendChild(line);
-    }
-    const node = document.createElement('button');
-    node.type = 'button';
-    node.className = 'timeline-node';
-    node.innerHTML = `<span class="timeline-dot">${ev.year}</span><span class="timeline-label">${ev.label}</span>`;
-    node.addEventListener('click', () => {
-      switchTab('kisi');
-      setTimeout(() => {
-        const row = kisiBody.querySelector(`tr[data-no="${ev.target}"]`);
-        if (row) {
-          row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          row.style.transition = 'background 0.4s';
-          row.style.background = 'rgba(246,211,101,0.35)';
-          setTimeout(() => { row.style.background = ''; }, 1500);
-        }
-      }, 100);
-    });
-    track.appendChild(node);
-  });
-}
-
-/* =====================================================================
    TABS & GAME OVERLAY CONTROL
    ===================================================================== */
+// Deklarasi hanya sekali di sini
 const tabButtons = document.querySelectorAll('.tab-btn');
 const tabPanels = { kisi: $('tabKisi'), quiz: $('tabQuiz'), flashcard: $('tabFlashcard') };
 const gameOverlay = $('gameModeOverlay');
@@ -971,10 +938,8 @@ function switchTab(tabName) {
   tabPanels[tabName].classList.add('active');
 
   if (tabName === 'quiz') {
-    // Buka Game Overlay, bukan tab biasa
     gameOverlay.classList.add('active');
-    document.body.style.overflow = 'hidden'; // Kunci scroll background
-    // Reset tampilan game ke awal (pilih mode)
+    document.body.style.overflow = 'hidden';
     $('gameQuizContent').innerHTML = `
       <div class="game-quiz-card" style="text-align:center;">
         <div style="font-size:60px; margin-bottom:16px;">🧠</div>
@@ -1028,12 +993,12 @@ function shuffle(arr) {
   return a;
 }
 
-function startQuiz(mode) {
+window.startQuiz = (mode) => {
   let pool = mode === 'all' ? quizData : quizData.filter(q => q.era === mode);
   if (pool.length === 0) { toast('Belum ada soal untuk mode ini', 'warn'); return; }
   quizState = { questions: shuffle(pool), current: 0, answers: new Array(pool.length).fill(null), mode };
   renderQuizQuestion();
-}
+};
 
 function renderQuizQuestion() {
   const { questions, current, answers } = quizState;
@@ -1066,7 +1031,6 @@ function renderQuizQuestion() {
   `;
 }
 
-// Fungsi global agar bisa dipanggil dari onclick HTML
 window.answerQuestion = (idx) => {
   if (quizState.answers[quizState.current] !== null) return;
   const q = quizState.questions[quizState.current];
@@ -1076,7 +1040,6 @@ window.answerQuestion = (idx) => {
   else playSoftStepChime(2);
   
   renderQuizQuestion();
-  // Auto enable next button
   setTimeout(() => {
     const btn = document.getElementById('gameNextBtn');
     if(btn) btn.removeAttribute('disabled');
@@ -1101,7 +1064,6 @@ function renderQuizResults() {
   
   const isWin = pct >= 70;
   
-  // Set warna dan konten Modal
   resultModalCard.className = `game-modal ${isWin ? 'win' : 'lose'}`;
   $('modalEmoji').textContent = isWin ? '🏆' : '📉';
   $('modalTitle').textContent = isWin ? 'MISSION COMPLETE!' : 'MISSION FAILED';
@@ -1111,7 +1073,6 @@ function renderQuizResults() {
     ? `Luar biasa! Kamu menjawab <b>${correct}</b> dari <b>${total}</b> soal dengan benar. Kamu siap untuk SAS!`
     : `Jangan menyerah! Kamu menjawab <b>${correct}</b> dari <b>${total}</b> soal. Yuk pelajari lagi kisi-kisinya!`;
 
-  // Efek Suara & Animasi
   if (isWin) {
     playVictorySFX();
     launchConfettiBurst();
@@ -1122,56 +1083,15 @@ function renderQuizResults() {
   resultModalOverlay.classList.add('active');
 }
 
-// Tombol Modal
 $('modalCloseBtn').addEventListener('click', () => {
   resultModalOverlay.classList.remove('active');
-  switchTab('kisi'); // Balik ke kisi-kisi
+  switchTab('kisi');
 });
 
 $('modalRetryBtn').addEventListener('click', () => {
   resultModalOverlay.classList.remove('active');
-  switchTab('quiz'); // Balik ke menu pilih mode quiz
+  switchTab('quiz');
 });
-
-/* =====================================================================
-   GAME SOUND EFFECTS
-   ===================================================================== */
-function playVictorySFX() {
-  if (!soundEnabled) return;
-  try {
-    initAudio(); if (!audioCtx) return;
-    const now = audioCtx.currentTime;
-    // Nada kemenangan (Do-Mi-Sol-Do Tinggi)
-    const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
-    notes.forEach((freq, i) => {
-      const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
-      osc.type = 'square';
-      const start = now + (i * 0.12);
-      osc.frequency.setValueAtTime(freq, start);
-      gain.gain.setValueAtTime(0.1, start);
-      gain.gain.exponentialRampToValueAtTime(0.001, start + 0.5);
-      osc.connect(gain); gain.connect(audioCtx.destination);
-      osc.start(start); osc.stop(start + 0.6);
-    });
-  } catch {}
-}
-
-function playFailSFX() {
-  if (!soundEnabled) return;
-  try {
-    initAudio(); if (!audioCtx) return;
-    const now = audioCtx.currentTime;
-    // Nada gagal (Buzz descending)
-    const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(200, now);
-    osc.frequency.exponentialRampToValueAtTime(80, now + 0.8);
-    gain.gain.setValueAtTime(0.15, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
-    osc.connect(gain); gain.connect(audioCtx.destination);
-    osc.start(now); osc.stop(now + 1);
-  } catch {}
-}
 
 /* =====================================================================
    FLASHCARD LOGIC
@@ -1306,3 +1226,41 @@ renderTimeline();
 renderTable();
 updateProgressUI();
 renderFlashcard();
+
+function renderTimeline() {
+  const timelineEvents = [
+    { year: '1950', label: 'NKRI & UUDS', target: 1 },
+    { year: '1955', label: 'Pemilu I', target: 4 },
+    { year: '1957', label: 'Deklarasi Djuanda', target: 5 },
+    { year: '1959', label: 'Dekrit 5 Juli', target: 8 },
+    { year: '1962', label: 'New York', target: 11 },
+    { year: '1965', label: 'Keluar PBB', target: 12 }
+  ];
+  const track = $('timelineTrack');
+  if(!track) return;
+  track.innerHTML = '';
+  timelineEvents.forEach((ev, i) => {
+    if (i > 0) {
+      const line = document.createElement('div');
+      line.className = 'timeline-line';
+      track.appendChild(line);
+    }
+    const node = document.createElement('button');
+    node.type = 'button';
+    node.className = 'timeline-node';
+    node.innerHTML = `<span class="timeline-dot">${ev.year}</span><span class="timeline-label">${ev.label}</span>`;
+    node.addEventListener('click', () => {
+      switchTab('kisi');
+      setTimeout(() => {
+        const row = kisiBody.querySelector(`tr[data-no="${ev.target}"]`);
+        if (row) {
+          row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          row.style.transition = 'background 0.4s';
+          row.style.background = 'rgba(246,211,101,0.35)';
+          setTimeout(() => { row.style.background = ''; }, 1500);
+        }
+      }, 100);
+    });
+    track.appendChild(node);
+  });
+}
