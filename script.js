@@ -401,7 +401,6 @@ function playSecretSFX() {
   try {
     initAudio(); if (!audioCtx) return;
     const now = audioCtx.currentTime;
-    // Nada koin game klasik (B5 -> E6)
     const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
     osc.type = 'square';
     osc.frequency.setValueAtTime(987.77, now); // B5
@@ -941,7 +940,6 @@ backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 's
 /* =====================================================================
    TABS & GAME OVERLAY CONTROL
    ===================================================================== */
-// Deklarasi hanya sekali di sini
 const tabButtons = document.querySelectorAll('.tab-btn');
 const tabPanels = { kisi: $('tabKisi'), quiz: $('tabQuiz'), flashcard: $('tabFlashcard') };
 const gameOverlay = $('gameModeOverlay');
@@ -1182,48 +1180,67 @@ document.addEventListener('keydown', e => {
   }
 });
 
+/* =====================================================================
+   EASTER EGG & MASCOT INTERAKTIF (Sistem Baru)
+   ===================================================================== */
+let isEasterEggActive = false; // Pencegah spam
 let typedBuffer = '';
+
+// Fungsi utama untuk memicu kejutan
+function triggerEasterEgg() {
+  if (isEasterEggActive) return; // Kalau masih cooldown, abaikan
+  isEasterEggActive = true;
+  
+  launchConfettiBurst();
+  playSecretSFX();
+  document.body.classList.add('easter-flash');
+  setTimeout(() => document.body.classList.remove('easter-flash'), 500);
+  
+  const rahasia = [
+    "🤫 Sssst... ini rahasia Bapak. Jangan bilang siapa-siapa ya!",
+    "🕵️‍♂️ Kode terpecahkan! Kamu memang calon sejarawan hebat.",
+    "🎉 Yeay! Kamu nemu easter egg-nya. Pinter!",
+    "📜 Naskah kuno terbuka! Nilai SAS kamu +1000 (secara imajiner)."
+  ];
+  const pesan = rahasia[Math.floor(Math.random() * rahasia.length)];
+  toast(pesan, 'success', 4500);
+  
+  const ring = document.getElementById('progressRingFill');
+  if (ring) {
+    ring.style.transition = 'stroke 0.5s';
+    ring.style.stroke = '#F6D365';
+    setTimeout(() => { ring.style.stroke = ''; }, 4000);
+  }
+
+  // Kunci selama 5 detik agar tidak spam
+  setTimeout(() => { isEasterEggActive = false; }, 5000);
+}
+
+// 1. Trigger via Keyboard (Laptop/PC)
 document.addEventListener('keypress', e => {
   if (document.activeElement && ['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+  if (isEasterEggActive) return;
+  
   typedBuffer += e.key.toLowerCase();
   if (typedBuffer.length > 20) typedBuffer = typedBuffer.slice(-20);
   
-  if (typedBuffer.includes('sejarah') || typedBuffer.includes('merdeka')) {
+  // endsWith memastikan harus persis berakhiran 'sejarah' atau 'merdeka'
+  if (typedBuffer.endsWith('sejarah') || typedBuffer.endsWith('merdeka')) {
     typedBuffer = '';
-    
-    // Efek Visual
-    launchConfettiBurst();
-    playSecretSFX(); // Panggil suara rahasia baru
-    document.body.classList.add('easter-flash');
-    setTimeout(() => document.body.classList.remove('easter-flash'), 500);
-    
-    // Teks notifikasi baru (anti-cringe)
-    const rahasia = [
-      "🤫 Sssst... ini rahasia Bapak. Jangan bilang siapa-siapa ya!",
-      "🕵️‍♂️ Kode terpecahkan! Kamu memang calon sejarawan hebat.",
-      "🎉 Yeay! Kamu nemu easter egg-nya. Pinter!",
-      "📜 Naskah kuno terbuka! Nilai SAS kamu +1000 (secara imajiner)."
-    ];
-    const pesan = rahasia[Math.floor(Math.random() * rahasia.length)];
-    toast(pesan, 'success', 4500);
-    
-    // Efek Ring Progress
-    const ring = document.getElementById('progressRingFill');
-    if (ring) {
-      ring.style.transition = 'stroke 0.5s';
-      ring.style.stroke = '#F6D365';
-      setTimeout(() => { ring.style.stroke = ''; }, 4000);
-    }
+    triggerEasterEgg();
   }
 });
 
+// 2. Trigger via Mascot Tap (Mobile/HP)
+let mascotTapCount = 0;
+let mascotTapTimer = null;
 const mascotTips = [
   'Klik judul materi untuk buka Wikipedia!',
   'Gunakan Ctrl+K untuk cari cepat!',
   'Tandai ✓ setelah selesai baca materi ya!',
   'Klik ⭐ untuk bookmark materi favorit!',
   'Tekan 🌙 untuk dark mode, nyaman di malam hari!',
-  'Ketik "sejarah" untuk kejutan 🤫',
+  'Klik aku 5x cepat untuk kejutan 🤫', // <--- PETUNJUK RAHASIA
   'Latihan di tab Quiz biar makin paham!',
   'Flashcard cocok buat hafalan cepat!',
   'Data kamu tersimpan otomatis kok!',
@@ -1239,9 +1256,28 @@ function showMascotTip() {
   clearTimeout(tip._timer);
   tip._timer = setTimeout(() => tip.classList.remove('show'), 4500);
 }
-$('mascot').addEventListener('click', showMascotTip);
+
+$('mascot').addEventListener('click', () => {
+  // Tampilkan tips biasa
+  showMascotTip(); 
+  
+  // Logika deteksi tap 5x untuk HP
+  mascotTapCount++;
+  clearTimeout(mascotTapTimer);
+  mascotTapTimer = setTimeout(() => { mascotTapCount = 0; }, 1500); // Reset jika jeda > 1.5 detik
+  
+  if (mascotTapCount >= 5) {
+    mascotTapCount = 0;
+    triggerEasterEgg(); // BOOM!
+  }
+});
+
+// Auto tip setelah web dibuka
 setTimeout(() => { if (mainContainer.classList.contains('visible')) showMascotTip(); }, 3000);
 
+/* =====================================================================
+   PWA MANIFEST & INIT
+   ===================================================================== */
 try {
   const manifest = {
     name: 'Kisi-Kisi SAS Sejarah Kelas XII', short_name: 'KisiKisi Sejarah', start_url: '.',
