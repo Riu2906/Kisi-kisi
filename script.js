@@ -1,5 +1,5 @@
 /* =====================================================================
-   DATA
+   DATA KISI-KISI, QUIZ, & FLASHCARD
    ===================================================================== */
 const kisiData = [
   {
@@ -164,7 +164,6 @@ const kisiData = [
   }
 ];
 
-// ============ QUIZ DATA (30 soal) ============
 const quizData = [
   { materi: 1, era: "LIBERAL", q: "Sistem pemerintahan yang berlaku berdasarkan UUDS 1950 adalah...", options: ["Presidensial", "Parlementer", "Otokrasi", "Federal", "Komunis"], answer: 1, explain: "UUDS 1950 memberlakukan sistem parlementer: presiden sebagai kepala negara, perdana menteri sebagai kepala pemerintahan yang bertanggung jawab kepada parlemen." },
   { materi: 1, era: "LIBERAL", q: "Berikut yang BUKAN penyebab seringnya pergantian kabinet pada masa Demokrasi Liberal adalah...", options: ["Mosi tidak percaya parlemen", "Perbedaan ideologi antarpartai koalisi", "Sistem multipartai", "Dominasi presiden dalam kabinet", "Mengutamakan kepentingan golongan"], answer: 3, explain: "Pada Demokrasi Liberal, presiden justru berperan sebagai kepala negara dengan hak prerogatif terbatas — bukan mendominasi kabinet. Justru parlemen yang mendominasi." },
@@ -201,7 +200,6 @@ const quizData = [
   { materi: 14, era: "ALL", q: "Perbedaan mendasar penyelenggaraan negara masa Demokrasi Liberal dan Demokrasi Terpimpin terletak pada...", options: ["Landasan konstitusi (UUDS 1950 vs UUD 1945)", "Bahasa resmi negara", "Mata uang yang digunakan", "Jumlah penduduk", "Sistem pertanian"], answer: 0, explain: "Demokrasi Liberal berbasis UUDS 1950 (parlementer), Demokrasi Terpimpin berbasis UUD 1945 (presidensial dengan pemusatan kekuasaan)." }
 ];
 
-// ============ FLASHCARD DATA (25 kartu) ============
 const flashcardData = [
   { front: "Apa itu UUDS 1950?", back: "Landasan konstitusi Demokrasi Liberal yang menetapkan sistem pemerintahan parlementer, berlaku setelah Indonesia kembali ke NKRI pada 17 Agustus 1950." },
   { front: "Mengapa Kabinet Natsir jatuh?", back: "Karena mosi Hadikusumo terkait PP No. 39 Tahun 1950 dan kegagalan perundingan masalah Irian Barat dengan Belanda." },
@@ -228,3 +226,1012 @@ const flashcardData = [
   { front: "Kapan Indonesia keluar dari PBB & mengapa?", back: "7 Januari 1965, sebagai protes atas diterimanya Malaysia sebagai anggota tidak tetap Dewan Keamanan PBB." },
   { front: "Sebutkan Proyek Mercusuar era Soekarno!", back: "Kompleks GBK Senayan, Monas, Monumen Selamat Datang, Jembatan Semanggi, dan Hotel Indonesia — proyek prestise untuk menunjukkan kebesaran bangsa." },
   { front: "Apa itu Oldefo & Nefo?", back: "Oldefo (Old Established Forces) = kekuatan imperialis Barat. Nefo (New Emerging Forces) = negara berkembang progresif. Dikotomi khas politik luar negeri Soekarno." }
+];
+
+/* =====================================================================
+   STATE & UTILITIES
+   ===================================================================== */
+const $ = id => document.getElementById(id);
+const store = {
+  get: (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+};
+
+let soundEnabled = store.get('sas_sound', true);
+let completedMateri = new Set(store.get('sas_completed', []));
+let bookmarkedMateri = new Set(store.get('sas_bookmarks', []));
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  $('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+  store.set('sas_theme', theme);
+}
+applyTheme(store.get('sas_theme', 'light'));
+
+$('themeToggle').addEventListener('click', () => {
+  const current = document.documentElement.getAttribute('data-theme');
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+  toast(current === 'dark' ? '☀️ Mode terang aktif' : '🌙 Mode gelap aktif', 'info');
+});
+
+function applySound() {
+  $('soundToggle').textContent = soundEnabled ? '🔊' : '🔇';
+  $('soundToggle').classList.toggle('muted', !soundEnabled);
+  store.set('sas_sound', soundEnabled);
+}
+applySound();
+
+$('soundToggle').addEventListener('click', () => {
+  soundEnabled = !soundEnabled;
+  applySound();
+  toast(soundEnabled ? '🔊 Suara aktif' : '🔇 Suara dimatikan', 'info');
+  if (soundEnabled) playSoftStepChime(0);
+});
+
+function toast(message, type = 'info', duration = 3000) {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span>${message}</span>`;
+  $('toastContainer').appendChild(el);
+  setTimeout(() => {
+    el.classList.add('removing');
+    setTimeout(() => el.remove(), 300);
+  }, duration);
+}
+
+function fuzzyMatch(text, query) {
+  text = text.toLowerCase(); query = query.toLowerCase().trim();
+  if (!query) return true;
+  if (text.includes(query)) return true;
+  if (query.length < 3) return false;
+  let qi = 0;
+  for (let i = 0; i < text.length && qi < query.length; i++) {
+    if (text[i] === query[qi]) qi++;
+  }
+  return qi === query.length;
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[m]));
+}
+
+/* =====================================================================
+   WEB AUDIO
+   ===================================================================== */
+let audioCtx = null;
+function initAudio() {
+  if (!audioCtx) {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (AC) audioCtx = new AC();
+  }
+  if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+}
+
+function playDodgeWhooshSFX() {
+  if (!soundEnabled) return;
+  try {
+    initAudio(); if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(280, now);
+    osc.frequency.exponentialRampToValueAtTime(760, now + 0.14);
+    osc.frequency.exponentialRampToValueAtTime(340, now + 0.26);
+    gain.gain.setValueAtTime(0.22, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.27);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(now); osc.stop(now + 0.28);
+  } catch {}
+}
+
+function playPartyPopperAndBounceSFX() {
+  if (!soundEnabled) return;
+  try {
+    initAudio(); if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+    const popOsc = audioCtx.createOscillator(), popGain = audioCtx.createGain();
+    popOsc.type = 'sine';
+    popOsc.frequency.setValueAtTime(140, now);
+    popOsc.frequency.exponentialRampToValueAtTime(520, now + 0.12);
+    popOsc.frequency.exponentialRampToValueAtTime(90, now + 0.24);
+    popGain.gain.setValueAtTime(0.35, now);
+    popGain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+    popOsc.connect(popGain); popGain.connect(audioCtx.destination);
+    popOsc.start(now); popOsc.stop(now + 0.26);
+
+    const boingOsc = audioCtx.createOscillator(), boingGain = audioCtx.createGain();
+    boingOsc.type = 'triangle';
+    boingOsc.frequency.setValueAtTime(240, now + 0.18);
+    boingOsc.frequency.exponentialRampToValueAtTime(680, now + 0.42);
+    boingOsc.frequency.exponentialRampToValueAtTime(420, now + 0.58);
+    boingOsc.frequency.exponentialRampToValueAtTime(760, now + 0.78);
+    boingGain.gain.setValueAtTime(0.28, now + 0.18);
+    boingGain.gain.exponentialRampToValueAtTime(0.001, now + 0.85);
+    boingOsc.connect(boingGain); boingGain.connect(audioCtx.destination);
+    boingOsc.start(now + 0.18); boingOsc.stop(now + 0.86);
+
+    [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+      const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+      osc.type = 'sine';
+      const start = now + 0.35 + idx * 0.14;
+      osc.frequency.setValueAtTime(freq, start);
+      gain.gain.setValueAtTime(0.14, start);
+      gain.gain.exponentialRampToValueAtTime(0.001, start + 0.38);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(start); osc.stop(start + 0.4);
+    });
+  } catch {}
+}
+
+function playSoftStepChime(stepIndex) {
+  if (!soundEnabled) return;
+  try {
+    initAudio(); if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+    const scale = [587.33, 659.25, 783.99, 880.00, 1046.50];
+    const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(scale[stepIndex % scale.length], now);
+    gain.gain.setValueAtTime(0.08, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.26);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(now); osc.stop(now + 0.28);
+  } catch {}
+}
+
+function playSuccessChord() {
+  if (!soundEnabled) return;
+  try {
+    initAudio(); if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+    [523.25, 659.25, 783.99].forEach((freq, i) => {
+      const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now + i * 0.08);
+      gain.gain.setValueAtTime(0.15, now + i * 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.35);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(now + i * 0.08); osc.stop(now + i * 0.08 + 0.36);
+    });
+  } catch {}
+}
+
+/* =====================================================================
+   CONFETTI
+   ===================================================================== */
+const canvas = $('confettiCanvas');
+const ctx = canvas.getContext('2d');
+let confettiParticles = [], confettiAnimId = null;
+
+function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+window.addEventListener('resize', resizeCanvas);
+
+function launchConfettiBurst() {
+  resizeCanvas();
+  confettiParticles = [];
+  const colors = ['#F6D365','#FDA085','#FF6B6B','#4ECDC4','#45B7D1','#A78BFA','#F472B6','#34D399','#FBBF24','#FFFFFF'];
+  const originX = canvas.width / 2, originY = canvas.height * 0.44;
+  for (let i = 0; i < 165; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 5 + Math.random() * 14;
+    confettiParticles.push({
+      x: originX, y: originY,
+      vx: Math.cos(angle) * speed * (0.8 + Math.random() * 0.5),
+      vy: Math.sin(angle) * speed - 4.5,
+      w: 7 + Math.random() * 8, h: 4 + Math.random() * 6,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rotation: Math.random() * 360,
+      rotSpeed: (Math.random() - 0.5) * 12,
+      gravity: 0.22 + Math.random() * 0.12,
+      drag: 0.965,
+      wobble: Math.random() * 10,
+      wobbleSpeed: 0.05 + Math.random() * 0.06,
+      shape: Math.random() > 0.25 ? 'rect' : 'circle'
+    });
+  }
+  if (confettiAnimId) cancelAnimationFrame(confettiAnimId);
+  animateConfetti();
+}
+
+function animateConfetti() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  let active = 0;
+  confettiParticles.forEach(p => {
+    p.vx *= p.drag;
+    p.vy = p.vy * p.drag + p.gravity;
+    p.wobble += p.wobbleSpeed;
+    p.x += p.vx + Math.sin(p.wobble) * 1.1;
+    p.y += p.vy;
+    p.rotation += p.rotSpeed;
+    if (p.y < canvas.height + 30) {
+      active++;
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rotation * Math.PI / 180); ctx.fillStyle = p.color;
+      if (p.shape === 'rect') ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      else { ctx.beginPath(); ctx.arc(0, 0, p.w / 2.2, 0, Math.PI * 2); ctx.fill(); }
+      ctx.restore();
+    }
+  });
+  if (active > 0) confettiAnimId = requestAnimationFrame(animateConfetti);
+}
+
+/* =====================================================================
+   WELCOME SCREEN & PRANK BUTTON
+   ===================================================================== */
+const welcomeScreen = $('welcomeScreen');
+const welcomeCard = $('welcomeCard');
+const studentNameInput = $('studentName');
+const studentClassSelect = $('studentClass');
+const teaseBanner = $('teaseBanner');
+const errorMsg = $('errorMsg');
+const startBtn = $('startBtn');
+const celebrationOverlay = $('celebrationOverlay');
+const heroThanks = $('heroThanks');
+const displayBodyName = $('displayBodyName');
+const displayBodyClass = $('displayBodyClass');
+const proudBadgeText = $('proudBadgeText');
+const countdownBox = $('countdownBox');
+const countdownNum = $('countdownNum');
+const progressFill = $('progressFill');
+const skipBtn = $('skipBtn');
+const mainContainer = $('mainContainer');
+const studentPill = $('studentPill');
+const replayBtn = $('replayBtn');
+
+let currentStudentName = '', currentStudentClass = '';
+let sequenceTimers = [], countdownInterval = null;
+let dodgeCount = 0, lastMoveType = '', isButtonAnimating = false;
+const maxDodgesBeforeSuccess = 2;
+
+// Auto-fill nama dari localStorage
+const savedStudent = store.get('sas_student', null);
+if (savedStudent) {
+  studentNameInput.value = savedStudent.name || '';
+  studentClassSelect.value = savedStudent.kelas || '';
+}
+
+window.addEventListener('resize', () => {
+  if (startBtn.classList.contains('escaped')) {
+    const rect = startBtn.getBoundingClientRect();
+    const maxX = Math.max(16, window.innerWidth - rect.width - 16);
+    const maxY = Math.max(16, window.innerHeight - rect.height - 16);
+    const clampedX = Math.min(Math.max(16, rect.left), maxX);
+    const clampedY = Math.min(Math.max(16, rect.top), maxY);
+    startBtn.style.left = `${clampedX}px`;
+    startBtn.style.top = `${clampedY}px`;
+    updateButtonColorByPosition();
+  }
+});
+
+function createGhostTrail(rect) {
+  const ghost = document.createElement('div');
+  ghost.className = 'ghost-trail';
+  ghost.style.left = `${rect.left}px`;
+  ghost.style.top = `${rect.top}px`;
+  ghost.style.width = `${rect.width}px`;
+  ghost.style.height = `${rect.height}px`;
+  welcomeScreen.appendChild(ghost);
+  requestAnimationFrame(() => { ghost.style.opacity = '0'; ghost.style.transform = 'scale(0.85)'; });
+  setTimeout(() => ghost.remove(), 380);
+}
+
+function computeOutsideWhiteCardPosition(btnWidth, btnHeight, currentRect) {
+  const cardRect = welcomeCard.getBoundingClientRect();
+  const vw = window.innerWidth, vh = window.innerHeight;
+  const isCompact = vw < 640;
+  const margin = isCompact ? 12 : 20, gap = isCompact ? 10 : 18;
+  const zones = [];
+  if (cardRect.left - margin - gap >= btnWidth) zones.push({ minX: margin, maxX: cardRect.left - btnWidth - gap, minY: Math.max(margin, cardRect.top - 30), maxY: Math.min(vh - btnHeight - margin, cardRect.bottom + 30) });
+  if (vw - cardRect.right - margin - gap >= btnWidth) zones.push({ minX: cardRect.right + gap, maxX: vw - btnWidth - margin, minY: Math.max(margin, cardRect.top - 30), maxY: Math.min(vh - btnHeight - margin, cardRect.bottom + 30) });
+  if (cardRect.top - margin - gap >= btnHeight) zones.push({ minX: Math.max(margin, cardRect.left - 80), maxX: Math.min(vw - btnWidth - margin, cardRect.right + 80), minY: margin, maxY: cardRect.top - btnHeight - gap });
+  if (vh - cardRect.bottom - margin - gap >= btnHeight) zones.push({ minX: Math.max(margin, cardRect.left - 80), maxX: Math.min(vw - btnWidth - margin, cardRect.right + 80), minY: cardRect.bottom + gap, maxY: vh - btnHeight - margin });
+  let chosen = null;
+  if (zones.length > 0) {
+    const shuffled = zones.sort(() => Math.random() - 0.5);
+    chosen = shuffled.find(z => Math.hypot((z.minX + z.maxX) / 2 - currentRect.left, (z.minY + z.maxY) / 2 - currentRect.top) > 95) || shuffled[0];
+  }
+  if (chosen) {
+    return { x: chosen.minX + Math.random() * Math.max(0, chosen.maxX - chosen.minX), y: chosen.minY + Math.random() * Math.max(0, chosen.maxY - chosen.minY) };
+  }
+  const corners = [
+    { x: margin, y: margin },
+    { x: Math.max(margin, vw - btnWidth - margin), y: margin },
+    { x: margin, y: Math.max(margin, vh - btnHeight - margin) },
+    { x: Math.max(margin, vw - btnWidth - margin), y: Math.max(margin, vh - btnHeight - margin) }
+  ];
+  corners.sort((a, b) => Math.hypot(b.x - currentRect.left, b.y - currentRect.top) - Math.hypot(a.x - currentRect.left, a.y - currentRect.top));
+  return corners[0];
+}
+
+function updateButtonColorByPosition() {
+  const btnRect = startBtn.getBoundingClientRect();
+  const cardRect = welcomeCard.getBoundingClientRect();
+  const overlaps = !(btnRect.right < cardRect.left || btnRect.left > cardRect.right || btnRect.bottom < cardRect.top || btnRect.top > cardRect.bottom);
+  startBtn.classList.toggle('outside-white', !overlaps);
+}
+
+function performPlayfulButtonDodge() {
+  if (isButtonAnimating) return;
+  isButtonAnimating = true;
+  playDodgeWhooshSFX();
+  const currentRect = startBtn.getBoundingClientRect();
+  createGhostTrail(currentRect);
+
+  if (!startBtn.classList.contains('escaped')) {
+    startBtn.style.left = `${currentRect.left}px`;
+    startBtn.style.top = `${currentRect.top}px`;
+    startBtn.style.width = `${currentRect.width}px`;
+    startBtn.classList.add('escaped');
+    void startBtn.offsetWidth;
+  }
+
+  const moves = ['dash', 'shrink', 'flicker', 'spin', 'spring'].filter(m => m !== lastMoveType);
+  const chosenMove = moves[Math.floor(Math.random() * moves.length)];
+  lastMoveType = chosenMove;
+
+  const targetW = window.innerWidth < 480 ? 182 : 205;
+  const targetH = 50;
+  const { x: nextX, y: nextY } = computeOutsideWhiteCardPosition(targetW, targetH, currentRect);
+
+  startBtn.classList.remove('fx-dash','fx-shrink-move','fx-flicker','fx-spin','fx-spring','state-shrunk');
+  void startBtn.offsetWidth;
+
+  if (chosenMove === 'dash') {
+    startBtn.style.transition = 'left 0.34s cubic-bezier(0.16,1,0.3,1), top 0.34s cubic-bezier(0.16,1,0.3,1), width 0.25s ease, transform 0.34s ease, filter 0.16s ease, background-color 0.2s, color 0.2s';
+    startBtn.classList.add('fx-dash');
+    startBtn.style.width = `${targetW}px`;
+    startBtn.style.left = `${nextX}px`;
+    startBtn.style.top = `${nextY}px`;
+    startBtn.style.transform = 'scaleX(1.18) scaleY(0.88)';
+    setTimeout(() => { startBtn.classList.remove('fx-dash'); startBtn.style.transform = 'scale(1)'; updateButtonColorByPosition(); isButtonAnimating = false; }, 350);
+  } else if (chosenMove === 'shrink') {
+    startBtn.style.transition = 'left 0.42s cubic-bezier(0.34,1.56,0.64,1), top 0.42s cubic-bezier(0.34,1.56,0.64,1), width 0.25s ease, transform 0.42s cubic-bezier(0.34,1.56,0.64,1), filter 0.2s, background-color 0.2s, color 0.2s';
+    startBtn.classList.add('fx-shrink-move', 'state-shrunk');
+    startBtn.style.width = `${targetW}px`;
+    startBtn.style.left = `${nextX}px`;
+    startBtn.style.top = `${nextY}px`;
+    startBtn.style.transform = 'scale(0.68) rotate(-5deg)';
+    setTimeout(() => { startBtn.classList.remove('fx-shrink-move'); updateButtonColorByPosition(); isButtonAnimating = false; }, 420);
+  } else if (chosenMove === 'flicker') {
+    startBtn.style.transition = 'background-color 0.18s, color 0.18s';
+    startBtn.classList.add('fx-flicker');
+    setTimeout(() => { startBtn.style.width = `${targetW}px`; startBtn.style.left = `${nextX}px`; startBtn.style.top = `${nextY}px`; startBtn.style.transform = 'scale(1)'; updateButtonColorByPosition(); }, 160);
+    setTimeout(() => { startBtn.classList.remove('fx-flicker'); updateButtonColorByPosition(); isButtonAnimating = false; }, 470);
+  } else if (chosenMove === 'spin') {
+    startBtn.style.transition = 'left 0.5s cubic-bezier(0.34,1.56,0.64,1), top 0.5s cubic-bezier(0.34,1.56,0.64,1), width 0.3s ease, transform 0.55s cubic-bezier(0.34,1.56,0.64,1), background-color 0.2s, color 0.2s';
+    startBtn.style.width = `${targetW}px`;
+    startBtn.style.left = `${nextX}px`;
+    startBtn.style.top = `${nextY}px`;
+    startBtn.classList.add('fx-spin');
+    setTimeout(() => { startBtn.classList.remove('fx-spin'); updateButtonColorByPosition(); isButtonAnimating = false; }, 560);
+  } else {
+    startBtn.style.transition = 'left 0.4s cubic-bezier(0.34,1.56,0.64,1), top 0.4s cubic-bezier(0.34,1.56,0.64,1), width 0.3s ease, background-color 0.2s, color 0.2s';
+    startBtn.style.width = `${targetW}px`;
+    startBtn.style.left = `${nextX}px`;
+    startBtn.style.top = `${nextY}px`;
+    startBtn.classList.add('fx-spring');
+    setTimeout(() => { startBtn.classList.remove('fx-spring'); updateButtonColorByPosition(); isButtonAnimating = false; }, 570);
+  }
+
+  if (dodgeCount === 1) {
+    startBtn.textContent = 'Eits, Meleset! 😜';
+    teaseBanner.textContent = '🏃‍♂️💨 Wlee, tombolnya kabur! Coba tangkap lagi ya~';
+    teaseBanner.classList.add('show');
+  } else if (dodgeCount === 2) {
+    startBtn.textContent = 'Tangkap Aku! 🏃‍♂️💨';
+    teaseBanner.textContent = '😆 Hampir kena! Klik sekali lagi baru Bapak kasih masuk~';
+    teaseBanner.classList.remove('show'); void teaseBanner.offsetWidth; teaseBanner.classList.add('show');
+  }
+}
+
+function resetStartButtonState() {
+  dodgeCount = 0; lastMoveType = ''; isButtonAnimating = false;
+  startBtn.classList.remove('escaped','outside-white','fx-dash','fx-shrink-move','fx-flicker','fx-spin','fx-spring','state-shrunk');
+  startBtn.style.cssText = '';
+  startBtn.textContent = 'Buka Kisi-Kisi SAS 🚀';
+  teaseBanner.classList.remove('show');
+}
+
+function clearAllTimers() {
+  sequenceTimers.forEach(t => clearTimeout(t));
+  sequenceTimers = [];
+  if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
+}
+
+function startCelebrationSequence(name, kelas) {
+  clearAllTimers();
+  heroThanks.textContent = `HALO, ${name.toUpperCase()} 👋`;
+  displayBodyName.textContent = name;
+  displayBodyClass.textContent = kelas;
+  proudBadgeText.textContent = `prod of u ${kelas} 🎓✨`;
+
+  heroThanks.classList.remove('animate-bounce'); void heroThanks.offsetWidth;
+  ['seqLine1','seqLine2','seqLine3','seqLine4'].forEach(id => $(id).classList.remove('visible'));
+  countdownBox.classList.remove('visible');
+
+  const totalCountdown = 8;
+  countdownNum.textContent = totalCountdown;
+  progressFill.style.transition = 'none';
+  progressFill.style.width = '100%';
+
+  welcomeScreen.style.display = 'none';
+  celebrationOverlay.classList.add('active');
+
+  launchConfettiBurst();
+  playPartyPopperAndBounceSFX();
+  heroThanks.classList.add('animate-bounce');
+
+  const lineDelays = [1600, 3400, 5400, 7000];
+  ['seqLine1','seqLine2','seqLine3','seqLine4'].forEach((id, idx) => {
+    sequenceTimers.push(setTimeout(() => {
+      $(id).classList.add('visible');
+      playSoftStepChime(idx);
+      if (idx === 3) launchConfettiBurst();
+    }, lineDelays[idx]));
+  });
+
+  sequenceTimers.push(setTimeout(() => {
+    countdownBox.classList.add('visible');
+    void progressFill.offsetWidth;
+    progressFill.style.transition = `width ${totalCountdown}s linear`;
+    progressFill.style.width = '0%';
+    let remaining = totalCountdown;
+    countdownInterval = setInterval(() => {
+      remaining--;
+      if (remaining > 0) countdownNum.textContent = remaining;
+      else { countdownNum.textContent = '0'; closeCelebrationAndShowKisi(); }
+    }, 1000);
+  }, lineDelays[3] + 1150));
+}
+
+function closeCelebrationAndShowKisi() {
+  clearAllTimers();
+  if (confettiAnimId) cancelAnimationFrame(confettiAnimId);
+  celebrationOverlay.classList.remove('active');
+  mainContainer.classList.add('visible');
+  studentPill.textContent = `👋 Semangat belajar, ${currentStudentName} (${currentStudentClass})!`;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  renderTable();
+  updateProgressUI();
+  setTimeout(() => initScrollReveal(), 100);
+}
+
+startBtn.addEventListener('click', () => {
+  const nameVal = studentNameInput.value.trim();
+  const classVal = studentClassSelect.value;
+  if (!nameVal || !classVal) {
+    errorMsg.style.display = 'block';
+    welcomeCard.classList.remove('shake'); void welcomeCard.offsetWidth; welcomeCard.classList.add('shake');
+    return;
+  }
+  errorMsg.style.display = 'none';
+  if (dodgeCount < maxDodgesBeforeSuccess) { dodgeCount++; performPlayfulButtonDodge(); return; }
+  currentStudentName = nameVal;
+  currentStudentClass = classVal;
+  store.set('sas_student', { name: nameVal, kelas: classVal });
+  resetStartButtonState();
+  startCelebrationSequence(currentStudentName, currentStudentClass);
+});
+
+studentNameInput.addEventListener('keypress', e => { if (e.key === 'Enter') startBtn.click(); });
+skipBtn.addEventListener('click', closeCelebrationAndShowKisi);
+replayBtn.addEventListener('click', () => startCelebrationSequence(currentStudentName, currentStudentClass));
+
+/* =====================================================================
+   RENDER TABLE & PROGRESS
+   ===================================================================== */
+const kisiBody = $('kisiBody');
+const searchInput = $('searchInput');
+const filterBtns = document.querySelectorAll('.filter-btn');
+let currentEraFilter = 'ALL';
+
+function renderTable() {
+  const q = searchInput.value.trim();
+  kisiBody.innerHTML = '';
+
+  const filtered = kisiData.filter(item => {
+    const eraMatch = currentEraFilter === 'ALL' || item.era === currentEraFilter || item.era === 'ALL';
+    if (!eraMatch) return false;
+    if (!q) return true;
+    const combined = [item.no, item.periode, item.materi, item.inti.join(' '), item.paketA, item.paketB].join(' ');
+    return fuzzyMatch(combined, q);
+  });
+
+  if (filtered.length === 0) {
+    kisiBody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:24px; color:var(--text-muted);">Tidak ada materi yang cocok dengan "<strong>${escapeHtml(searchInput.value)}</strong>".</td></tr>`;
+    return;
+  }
+
+  filtered.forEach(item => {
+    const tr = document.createElement('tr');
+    tr.className = 'reveal';
+    tr.dataset.no = item.no;
+    if (completedMateri.has(item.no)) tr.classList.add('done');
+    if (bookmarkedMateri.has(item.no)) tr.classList.add('bookmarked');
+
+    const bulletsHtml = item.inti.map(b => `<li>${b}</li>`).join('');
+    const isDone = completedMateri.has(item.no);
+    const isStar = bookmarkedMateri.has(item.no);
+
+    tr.innerHTML = `
+      <td class="col-no">
+        ${item.no}
+        <div class="row-actions">
+          <button type="button" class="row-action-btn check ${isDone ? 'active' : ''}" data-no="${item.no}" data-action="check" title="Tandai sudah dipelajari">${isDone ? '✓' : '○'}</button>
+          <button type="button" class="row-action-btn star ${isStar ? 'active' : ''}" data-no="${item.no}" data-action="star" title="Bookmark favorit">${isStar ? '★' : '☆'}</button>
+        </div>
+      </td>
+      <td class="col-materi">
+        <span class="periode-tag">${item.periode}</span>
+        <a href="${item.wikiUrl}" target="_blank" rel="noopener noreferrer" class="materi-link" title="Buka Wikipedia">${item.materi}</a>
+        <div><a href="${item.wikiUrl}" target="_blank" rel="noopener noreferrer" class="wiki-badge">🌐 Baca Wikipedia ↗</a></div>
+      </td>
+      <td class="col-inti"><ul class="inti-list">${bulletsHtml}</ul></td>
+      <td class="col-posisi">
+        <div class="paket-row"><span class="paket-label">Paket A:</span> ${item.paketA}</div>
+        <div class="paket-row"><span class="paket-label b">Paket B:</span> ${item.paketB}</div>
+      </td>
+    `;
+    kisiBody.appendChild(tr);
+  });
+
+  kisiBody.querySelectorAll('[data-action]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const no = parseInt(btn.dataset.no, 10);
+      const action = btn.dataset.action;
+      if (action === 'check') toggleComplete(no, btn);
+      else if (action === 'star') toggleBookmark(no, btn);
+    });
+  });
+
+  initScrollReveal();
+}
+
+function toggleComplete(no, btn) {
+  const tr = btn.closest('tr');
+  if (completedMateri.has(no)) {
+    completedMateri.delete(no);
+    btn.classList.remove('active'); btn.textContent = '○';
+    tr?.classList.remove('done');
+    store.set('sas_completed', [...completedMateri]);
+  } else {
+    completedMateri.add(no);
+    btn.classList.add('active'); btn.textContent = '✓';
+    tr?.classList.add('done');
+    store.set('sas_completed', [...completedMateri]);
+    playSuccessChord();
+    if (completedMateri.size === kisiData.length) {
+      launchConfettiBurst();
+      toast('🎉 Wow! Semua materi sudah kamu pelajari!', 'success', 5000);
+    } else {
+      toast('✅ Materi ditandai selesai!', 'success', 2000);
+    }
+  }
+  updateProgressUI();
+}
+
+function toggleBookmark(no, btn) {
+  const tr = btn.closest('tr');
+  if (bookmarkedMateri.has(no)) {
+    bookmarkedMateri.delete(no);
+    btn.classList.remove('active'); btn.textContent = '☆';
+    tr?.classList.remove('bookmarked');
+    toast('Bookmark dihapus', 'info', 1800);
+  } else {
+    bookmarkedMateri.add(no);
+    btn.classList.add('active'); btn.textContent = '★';
+    tr?.classList.add('bookmarked');
+    toast('⭐ Ditambahkan ke bookmark!', 'success', 1800);
+  }
+  store.set('sas_bookmarks', [...bookmarkedMateri]);
+}
+
+function updateProgressUI() {
+  const total = kisiData.length;
+  const done = completedMateri.size;
+  const pct = Math.round((done / total) * 100);
+  const offset = 94.25 * (1 - pct / 100);
+  const ring = $('progressRingFill');
+  if (ring) ring.style.strokeDashoffset = offset;
+  $('progressPct').textContent = pct + '%';
+}
+
+searchInput.addEventListener('input', renderTable);
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentEraFilter = btn.dataset.era;
+    renderTable();
+  });
+});
+
+/* =====================================================================
+   SCROLL REVEAL
+   ===================================================================== */
+let revealObserver = null;
+function initScrollReveal() {
+  if (!('IntersectionObserver' in window)) {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('revealed'));
+    return;
+  }
+  if (revealObserver) revealObserver.disconnect();
+  revealObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('.reveal:not(.revealed)').forEach(el => revealObserver.observe(el));
+}
+
+/* =====================================================================
+   STICKY HEADER, SCROLL PROGRESS, BACK TO TOP
+   ===================================================================== */
+const appHeader = $('appHeader');
+const scrollProgressBar = $('scrollProgressBar');
+const backToTop = $('backToTop');
+
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  scrollProgressBar.style.width = pct + '%';
+
+  appHeader.classList.toggle('scrolled', scrollTop > 10);
+  backToTop.classList.toggle('show', scrollTop > 400);
+}, { passive: true });
+
+backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+/* =====================================================================
+   TABS
+   ===================================================================== */
+const tabButtons = document.querySelectorAll('.tab-btn');
+const tabPanels = { kisi: $('tabKisi'), quiz: $('tabQuiz'), flashcard: $('tabFlashcard') };
+let currentTab = 'kisi';
+
+function switchTab(tabName) {
+  if (!tabPanels[tabName]) return;
+  currentTab = tabName;
+  tabButtons.forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
+  Object.values(tabPanels).forEach(p => p.classList.remove('active'));
+  tabPanels[tabName].classList.add('active');
+
+  if (tabName === 'quiz') {
+    const sk = $('quizSkeleton'), content = $('quizContent');
+    sk.classList.add('show'); content.style.display = 'none';
+    setTimeout(() => { sk.classList.remove('show'); content.style.display = 'block'; }, 250);
+  } else if (tabName === 'flashcard') {
+    const sk = $('flashcardSkeleton'), content = $('flashcardContent');
+    sk.classList.add('show'); content.style.display = 'none';
+    setTimeout(() => { sk.classList.remove('show'); content.style.display = 'block'; renderFlashcard(); }, 250);
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+tabButtons.forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
+
+/* =====================================================================
+   TIMELINE
+   ===================================================================== */
+const timelineEvents = [
+  { year: '1950', label: 'NKRI & UUDS', target: 1 },
+  { year: '1955', label: 'Pemilu I', target: 4 },
+  { year: '1957', label: 'Deklarasi Djuanda', target: 5 },
+  { year: '1959', label: 'Dekrit 5 Juli', target: 8 },
+  { year: '1962', label: 'New York', target: 11 },
+  { year: '1965', label: 'Keluar PBB', target: 12 }
+];
+
+function renderTimeline() {
+  const track = $('timelineTrack');
+  track.innerHTML = '';
+  timelineEvents.forEach((ev, i) => {
+    if (i > 0) {
+      const line = document.createElement('div');
+      line.className = 'timeline-line';
+      track.appendChild(line);
+    }
+    const node = document.createElement('button');
+    node.type = 'button';
+    node.className = 'timeline-node';
+    node.innerHTML = `<span class="timeline-dot">${ev.year}</span><span class="timeline-label">${ev.label}</span>`;
+    node.addEventListener('click', () => {
+      switchTab('kisi');
+      setTimeout(() => {
+        const row = kisiBody.querySelector(`tr[data-no="${ev.target}"]`);
+        if (row) {
+          row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          row.style.transition = 'background 0.4s';
+          row.style.background = 'rgba(246,211,101,0.35)';
+          setTimeout(() => { row.style.background = ''; }, 1500);
+        }
+      }, 100);
+    });
+    track.appendChild(node);
+  });
+}
+
+/* =====================================================================
+   QUIZ LOGIC
+   ===================================================================== */
+let quizState = { questions: [], current: 0, answers: [], mode: 'all', active: false };
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+document.querySelectorAll('.quiz-mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => startQuiz(btn.dataset.mode));
+});
+
+function startQuiz(mode) {
+  let pool;
+  if (mode === 'all') pool = quizData;
+  else pool = quizData.filter(q => q.era === mode);
+  if (pool.length === 0) { toast('Belum ada soal untuk mode ini', 'warn'); return; }
+  quizState = { questions: shuffle(pool), current: 0, answers: new Array(pool.length).fill(null), mode, active: true };
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion() {
+  const { questions, current, answers } = quizState;
+  const q = questions[current];
+  const total = questions.length;
+  const pct = ((current) / total) * 100;
+  const letters = ['A', 'B', 'C', 'D', 'E'];
+  const selected = answers[current];
+
+  $('quizContent').innerHTML = `
+    <div class="quiz-card">
+      <div class="quiz-header-info">
+        <span class="quiz-progress-text">Soal ${current + 1} / ${total}</span>
+        <span class="quiz-materi-badge">Materi ${q.materi}</span>
+      </div>
+      <div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:${pct}%"></div></div>
+      <div class="quiz-question">${escapeHtml(q.q)}</div>
+      <div class="quiz-options" id="quizOptions">
+        ${q.options.map((opt, i) => `
+          <button type="button" class="quiz-option ${selected !== null ? (i === selected ? (i === q.answer ? 'correct' : 'wrong') : (i === q.answer ? 'correct' : '')) : ''}" data-idx="${i}" ${selected !== null ? 'disabled' : ''}>
+            <span class="opt-letter">${letters[i]}</span>
+            <span>${escapeHtml(opt)}</span>
+          </button>
+        `).join('')}
+      </div>
+      <div class="quiz-feedback ${selected !== null ? 'show ' + (selected === q.answer ? 'correct' : 'wrong') : ''}" id="quizFeedback">
+        <strong>${selected === q.answer ? '✅ Benar!' : '❌ Belum tepat.'}</strong> ${escapeHtml(q.explain)}
+      </div>
+      <div class="quiz-nav">
+        <button type="button" class="btn btn-secondary" id="quizBackBtn" ${current === 0 ? 'disabled' : ''}>← Kembali</button>
+        <button type="button" class="btn btn-primary" id="quizNextBtn" ${selected === null ? 'disabled' : ''}>${current === total - 1 ? 'Lihat Hasil →' : 'Lanjut →'}</button>
+      </div>
+    </div>
+  `;
+
+  $('quizOptions').querySelectorAll('.quiz-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (quizState.answers[quizState.current] !== null) return;
+      const idx = parseInt(btn.dataset.idx, 10);
+      quizState.answers[quizState.current] = idx;
+      if (idx === q.answer) playSuccessChord();
+      else playSoftStepChime(2);
+      renderQuizQuestion();
+    });
+  });
+
+  const nextBtn = $('quizNextBtn');
+  const backBtn = $('quizBackBtn');
+  if (nextBtn) nextBtn.addEventListener('click', () => {
+    if (quizState.current === quizState.questions.length - 1) renderQuizResults();
+    else { quizState.current++; renderQuizQuestion(); }
+  });
+  if (backBtn) backBtn.addEventListener('click', () => {
+    if (quizState.current > 0) { quizState.current--; renderQuizQuestion(); }
+  });
+}
+
+function renderQuizResults() {
+  const { questions, answers } = quizState;
+  let correct = 0;
+  questions.forEach((q, i) => { if (answers[i] === q.answer) correct++; });
+  const total = questions.length;
+  const pct = Math.round((correct / total) * 100);
+  let message = '';
+  if (pct >= 90) message = '🏆 Luar biasa! Kamu siap SAS!';
+  else if (pct >= 70) message = '👍 Bagus! Sedikit lagi sempurna.';
+  else if (pct >= 50) message = '💪 Cukup baik, ulangi materi yang salah ya.';
+  else message = '📚 Yuk pelajari lagi kisi-kisinya, kamu pasti bisa!';
+
+  if (pct >= 70) launchConfettiBurst();
+
+  $('quizContent').innerHTML = `
+    <div class="quiz-card">
+      <div class="quiz-results">
+        <div class="score-big">${pct}%</div>
+        <div class="score-label">${correct} benar dari ${total} soal</div>
+        <div class="score-message">${message}</div>
+        <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+          <button type="button" class="btn btn-primary" id="quizRetryBtn">🔄 Coba Lagi</button>
+          <button type="button" class="btn btn-secondary" id="quizReviewBtn">📋 Lihat Pembahasan</button>
+        </div>
+        <div class="quiz-review-list" id="quizReviewList" style="display:none;"></div>
+      </div>
+    </div>
+  `;
+
+  $('quizRetryBtn').addEventListener('click', () => {
+    $('quizContent').innerHTML = `
+      <div class="quiz-card">
+        <div class="quiz-hero">
+          <span class="emoji">🧠</span>
+          <h2>Quiz Mode</h2>
+          <p>Uji pemahamanmu sebelum SAS! Pilih mode di bawah 👇</p>
+        </div>
+        <div class="quiz-mode-grid" id="quizModeGrid">
+          <button type="button" class="quiz-mode-btn" data-mode="all"><strong>📚 Semua Materi</strong><small>30 soal acak</small></button>
+          <button type="button" class="quiz-mode-btn" data-mode="LIBERAL"><strong>🏛️ Demokrasi Liberal</strong><small>Soal 1950–1959</small></button>
+          <button type="button" class="quiz-mode-btn" data-mode="TERPIMPIN"><strong>👑 Demokrasi Terpimpin</strong><small>Soal 1959–1965</small></button>
+        </div>
+      </div>`;
+    document.querySelectorAll('.quiz-mode-btn').forEach(b => b.addEventListener('click', () => startQuiz(b.dataset.mode)));
+  });
+
+  $('quizReviewBtn').addEventListener('click', () => {
+    const list = $('quizReviewList');
+    if (list.style.display === 'none') {
+      list.style.display = 'block';
+      list.innerHTML = questions.map((q, i) => {
+        const isCorrect = answers[i] === q.answer;
+        const userAns = answers[i] !== null ? q.options[answers[i]] : '(tidak dijawab)';
+        return `<div class="quiz-review-item ${isCorrect ? 'correct' : 'wrong'}">
+          <div class="q">${i + 1}. ${escapeHtml(q.q)}</div>
+          <div class="a">Jawabanmu: <strong>${escapeHtml(userAns)}</strong>${isCorrect ? ' ✅' : ' ❌'}<br>Jawaban benar: <strong>${escapeHtml(q.options[q.answer])}</strong><br><em>${escapeHtml(q.explain)}</em></div>
+        </div>`;
+      }).join('');
+    } else {
+      list.style.display = 'none';
+    }
+  });
+}
+
+/* =====================================================================
+   FLASHCARD LOGIC
+   ===================================================================== */
+let flashcardState = { cards: [...flashcardData], current: 0, flipped: false };
+
+function renderFlashcard() {
+  const { cards, current, flipped } = flashcardState;
+  if (cards.length === 0) return;
+  const card = cards[current];
+  $('fcFrontText').textContent = card.front;
+  $('fcBackText').textContent = card.back;
+  $('fcCounter').textContent = `${current + 1} / ${cards.length}`;
+  $('flashcard').classList.toggle('flipped', flipped);
+}
+
+$('flashcard').addEventListener('click', () => {
+  flashcardState.flipped = !flashcardState.flipped;
+  $('flashcard').classList.toggle('flipped', flashcardState.flipped);
+  playSoftStepChime(flashcardState.flipped ? 1 : 0);
+});
+
+$('fcPrevBtn').addEventListener('click', () => {
+  if (flashcardState.current > 0) {
+    flashcardState.current--;
+    flashcardState.flipped = false;
+    renderFlashcard();
+  }
+});
+
+$('fcNextBtn').addEventListener('click', () => {
+  if (flashcardState.current < flashcardState.cards.length - 1) {
+    flashcardState.current++;
+    flashcardState.flipped = false;
+    renderFlashcard();
+  }
+});
+
+$('fcShuffleBtn').addEventListener('click', () => {
+  flashcardState.cards = shuffle(flashcardData);
+  flashcardState.current = 0;
+  flashcardState.flipped = false;
+  renderFlashcard();
+  toast('🔀 Kartu diacak!', 'info', 1800);
+});
+
+$('fcResetBtn').addEventListener('click', () => {
+  flashcardState.cards = [...flashcardData];
+  flashcardState.current = 0;
+  flashcardState.flipped = false;
+  renderFlashcard();
+  toast('↺ Urutan direset', 'info', 1800);
+});
+
+/* =====================================================================
+   PRINT, SHORTCUTS, EASTER EGG, MASCOT, INIT
+   ===================================================================== */
+$('printBtn').addEventListener('click', () => {
+  switchTab('kisi');
+  setTimeout(() => window.print(), 300);
+});
+
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    switchTab('kisi');
+    setTimeout(() => searchInput.focus(), 100);
+  }
+  if (e.key === 'Escape') {
+    if (document.activeElement === searchInput) searchInput.blur();
+  }
+});
+
+let typedBuffer = '';
+document.addEventListener('keypress', e => {
+  if (document.activeElement && ['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+  typedBuffer += e.key.toLowerCase();
+  if (typedBuffer.length > 20) typedBuffer = typedBuffer.slice(-20);
+  if (typedBuffer.includes('sejarah') || typedBuffer.includes('merdeka')) {
+    typedBuffer = '';
+    launchConfettiBurst();
+    playPartyPopperAndBounceSFX();
+    toast('🥚 Easter egg ditemukan! Merdeka! 🇮🇩', 'success', 4000);
+    const ring = document.getElementById('progressRingFill');
+    if (ring) {
+      ring.style.transition = 'stroke 0.5s';
+      ring.style.stroke = '#C59B27';
+      setTimeout(() => { ring.style.stroke = ''; }, 3000);
+    }
+  }
+});
+
+const mascotTips = [
+  'Klik judul materi untuk buka Wikipedia!',
+  'Gunakan Ctrl+K untuk cari cepat!',
+  'Tandai ✓ setelah selesai baca materi ya!',
+  'Klik ⭐ untuk bookmark materi favorit!',
+  'Tekan 🌙 untuk dark mode, nyaman di malam hari!',
+  'Ketik "sejarah" untuk kejutan 🤫',
+  'Latihan di tab Quiz biar makin paham!',
+  'Flashcard cocok buat hafalan cepat!',
+  'Data kamu tersimpan otomatis kok!',
+  'Klik 🖨️ untuk simpan PDF kisi-kisi!'
+];
+let mascotTipIndex = 0;
+
+function showMascotTip() {
+  const tip = $('mascotTip');
+  tip.textContent = mascotTips[mascotTipIndex % mascotTips.length];
+  mascotTipIndex++;
+  tip.classList.add('show');
+  clearTimeout(tip._timer);
+  tip._timer = setTimeout(() => tip.classList.remove('show'), 4500);
+}
+$('mascot').addEventListener('click', showMascotTip);
+setTimeout(() => { if (mainContainer.classList.contains('visible')) showMascotTip(); }, 3000);
+
+try {
+  const manifest = {
+    name: 'Kisi-Kisi SAS Sejarah Kelas XII', short_name: 'KisiKisi Sejarah', start_url: '.',
+    display: 'standalone', background_color: '#1B365D', theme_color: '#1B365D',
+    icons: [{ src: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="40" fill="#1B365D"/><text x="96" y="130" font-size="100" text-anchor="middle">📜</text></svg>'), sizes: '192x192', type: 'image/svg+xml', purpose: 'any' }]
+  };
+  const blob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+  const link = document.createElement('link');
+  link.rel = 'manifest';
+  link.href = URL.createObjectURL(blob);
+  document.head.appendChild(link);
+} catch {}
+
+renderTimeline();
+renderTable();
+updateProgressUI();
+renderFlashcard();
