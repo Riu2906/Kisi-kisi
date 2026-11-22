@@ -237,6 +237,13 @@ const store = {
   set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
 };
 
+// ==========================================
+// PENGATURAN WAKTU RILIS (4 Desember 2026, 18:00 WIB)
+// ==========================================
+const releaseDate = new Date('2026-12-04T18:00:00+07:00').getTime();
+let countdownIntervalMain = null;
+let countdownIntervalFloat = null;
+
 let soundEnabled = store.get('sas_sound', true);
 let completedMateri = new Set(store.get('sas_completed', []));
 let bookmarkedMateri = new Set(store.get('sas_bookmarks', []));
@@ -738,7 +745,7 @@ function closeCelebrationAndShowKisi() {
   clearAllTimers();
   if (confettiAnimId) cancelAnimationFrame(confettiAnimId);
   celebrationOverlay.classList.remove('active');
-  welcomeScreen.style.display = 'none'; // Pastikan layar login hilang
+  welcomeScreen.style.display = 'none'; 
   mainContainer.classList.add('visible');
   studentPill.textContent = `👋 Semangat belajar, ${currentStudentName} (${currentStudentClass})!`;
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -767,16 +774,47 @@ startBtn.addEventListener('click', () => {
   store.set('sas_student', { name: nameVal, kelas: classVal });
   resetStartButtonState();
 
-  // Cek apakah sudah pernah melihat ucapan
+  const isLocked = Date.now() < releaseDate;
   const hasSeenThanks = store.get('sas_has_seen_thanks', false);
 
-  if (hasSeenThanks) {
-    // Jika sudah pernah, langsung masuk tanpa animasi
-    closeCelebrationAndShowKisi();
+  if (isLocked) {
+    // ==========================================
+    // JIKA MASIH TERKUNCI (SEBELUM 4 DES 2026)
+    // ==========================================
+    welcomeScreen.style.display = 'none';
+    mainContainer.classList.add('visible');
+    studentPill.textContent = `👋 Semangat belajar, ${currentStudentName} (${currentStudentClass})!`;
+    renderTable();
+    updateProgressUI();
+    
+    $('replayBtn').style.display = 'none'; // Sembunyikan tombol putar ulang
+    
+    // Tampilkan pop-up hitungan mundur
+    if ($('countdownOverlay')) $('countdownOverlay').classList.add('active');
+    
+    // Tampilkan widget melayang di kanan bawah
+    if ($('floatingCountdown')) $('floatingCountdown').style.display = 'flex';
+    
+    // Jalankan timer
+    updateCountdownUI();
+    countdownIntervalMain = setInterval(updateCountdownUI, 1000);
+    countdownIntervalFloat = setInterval(updateCountdownUI, 1000);
+
   } else {
-    // Jika belum pernah, mainkan animasi dan simpan statusnya
-    store.set('sas_has_seen_thanks', true);
-    startCelebrationSequence(currentStudentName, currentStudentClass);
+    // ==========================================
+    // JIKA SUDAH DIRILIS (SETELAH 4 DES 2026)
+    // ==========================================
+    // Pastikan elemen countdown disembunyikan
+    if ($('countdownOverlay')) $('countdownOverlay').classList.remove('active');
+    if ($('floatingCountdown')) $('floatingCountdown').style.display = 'none';
+    $('replayBtn').style.display = 'inline-flex';
+
+    if (hasSeenThanks) {
+      closeCelebrationAndShowKisi();
+    } else {
+      store.set('sas_has_seen_thanks', true);
+      startCelebrationSequence(currentStudentName, currentStudentClass);
+    }
   }
 });
 
@@ -1200,12 +1238,11 @@ document.addEventListener('keydown', e => {
 /* =====================================================================
    EASTER EGG & MASCOT INTERAKTIF
    ===================================================================== */
-let isEasterEggActive = false; // Pencegah spam
+let isEasterEggActive = false; 
 let typedBuffer = '';
 
-// Fungsi utama untuk memicu kejutan
 function triggerEasterEgg() {
-  if (isEasterEggActive) return; // Kalau masih cooldown, abaikan
+  if (isEasterEggActive) return;
   isEasterEggActive = true;
   
   launchConfettiBurst();
@@ -1228,12 +1265,9 @@ function triggerEasterEgg() {
     ring.style.stroke = '#F6D365';
     setTimeout(() => { ring.style.stroke = ''; }, 4000);
   }
-
-  // Kunci selama 5 detik agar tidak spam
   setTimeout(() => { isEasterEggActive = false; }, 5000);
 }
 
-// 1. Trigger via Keyboard (Laptop/PC)
 document.addEventListener('keypress', e => {
   if (document.activeElement && ['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName)) return;
   if (isEasterEggActive) return;
@@ -1241,14 +1275,12 @@ document.addEventListener('keypress', e => {
   typedBuffer += e.key.toLowerCase();
   if (typedBuffer.length > 20) typedBuffer = typedBuffer.slice(-20);
   
-  // endsWith memastikan harus persis berakhiran 'sejarah' atau 'merdeka'
   if (typedBuffer.endsWith('sejarah') || typedBuffer.endsWith('merdeka')) {
     typedBuffer = '';
     triggerEasterEgg();
   }
 });
 
-// 2. Trigger via Mascot Tap (Mobile/HP)
 let mascotTapCount = 0;
 let mascotTapTimer = null;
 const mascotTips = [
@@ -1257,7 +1289,7 @@ const mascotTips = [
   'Tandai ✓ setelah selesai baca materi ya!',
   'Klik ⭐ untuk bookmark materi favorit!',
   'Tekan 🌙 untuk dark mode, nyaman di malam hari!',
-  'Klik aku 5x cepat untuk kejutan 🤫', // <--- PETUNJUK RAHASIA
+  'Klik aku 5x cepat untuk kejutan 🤫', 
   'Latihan di tab Quiz biar makin paham!',
   'Flashcard cocok buat hafalan cepat!',
   'Data kamu tersimpan otomatis kok!',
@@ -1275,22 +1307,72 @@ function showMascotTip() {
 }
 
 $('mascot').addEventListener('click', () => {
-  // Tampilkan tips biasa
   showMascotTip(); 
   
-  // Logika deteksi tap 5x untuk HP
   mascotTapCount++;
   clearTimeout(mascotTapTimer);
-  mascotTapTimer = setTimeout(() => { mascotTapCount = 0; }, 1500); // Reset jika jeda > 1.5 detik
+  mascotTapTimer = setTimeout(() => { mascotTapCount = 0; }, 1500); 
   
   if (mascotTapCount >= 5) {
     mascotTapCount = 0;
-    triggerEasterEgg(); // BOOM!
+    triggerEasterEgg(); 
   }
 });
 
-// Auto tip setelah web dibuka
 setTimeout(() => { if (mainContainer.classList.contains('visible')) showMascotTip(); }, 3000);
+
+/* =====================================================================
+   COUNTDOWN TIMER LOGIC (4 DESEMBER 2026)
+   ===================================================================== */
+function getTimeRemaining(endtime) {
+  const t = endtime - Date.now();
+  if (t <= 0) return null;
+  const seconds = Math.floor((t / 1000) % 60);
+  const minutes = Math.floor((t / 1000 / 60) % 60);
+  const hours = Math.floor((t / (1000 * 60 * 60)) % 24);
+  const days = Math.floor(t / (1000 * 60 * 60 * 24));
+  return { total: t, days, hours, minutes, seconds };
+}
+
+function updateCountdownUI() {
+  const time = getTimeRemaining(releaseDate);
+  
+  if (!time) {
+    // Jika waktu sudah habis saat layar menyala
+    if ($('countdownOverlay')) $('countdownOverlay').classList.remove('active');
+    if ($('floatingCountdown')) $('floatingCountdown').style.display = 'none';
+    clearInterval(countdownIntervalMain);
+    clearInterval(countdownIntervalFloat);
+    $('replayBtn').style.display = 'inline-flex';
+    return;
+  }
+
+  const daysStr = time.days > 0 ? `${time.days}h ` : '';
+  const timeString = `${daysStr}${String(time.hours).padStart(2, '0')}:${String(time.minutes).padStart(2, '0')}:${String(time.seconds).padStart(2, '0')}`;
+  
+  if ($('timerDisplay')) $('timerDisplay').textContent = timeString;
+  if ($('floatingTimer')) $('floatingTimer').textContent = timeString;
+}
+
+// Event listener untuk tombol-tombol di Pop-up Countdown
+if ($('closeCountdownBtn')) {
+  $('closeCountdownBtn').addEventListener('click', () => {
+    $('countdownOverlay').classList.remove('active');
+  });
+}
+
+if ($('floatingCountdown')) {
+  $('floatingCountdown').addEventListener('click', () => {
+    $('countdownOverlay').classList.add('active');
+  });
+}
+
+if ($('previewThanksBtn')) {
+  $('previewThanksBtn').addEventListener('click', () => {
+    $('countdownOverlay').classList.remove('active');
+    startCelebrationSequence(currentStudentName, currentStudentClass);
+  });
+}
 
 /* =====================================================================
    PWA MANIFEST & INIT

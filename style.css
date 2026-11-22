@@ -942,3 +942,34 @@ table.kisi-table td {
   30% { box-shadow: inset 0 0 100px 20px rgba(246, 211, 101, 0.8); }
   100% { box-shadow: inset 0 0 0 0px rgba(246, 211, 101, 0); }
 }
+
+/* =====================================================
+   COUNTDOWN SYSTEM
+   ===================================================== */
+.floating-countdown {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: linear-gradient(135deg, #1B365D, #2B4C7E);
+  color: var(--gold-light);
+  border: 2px solid var(--gold);
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 800;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(27,54,93,0.4);
+  z-index: 999;
+  transition: transform 0.2s, box-shadow 0.2s;
+  animation: floatDoodle 3s ease-in-out infinite;
+}
+.floating-countdown:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 30px rgba(27,54,93,0.6);
+}
+@media (max-width: 600px) {
+  .floating-countdown { bottom: 16px; right: 16px; padding: 8px 12px; font-size: 11px; }
+}
