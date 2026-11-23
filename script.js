@@ -1,5 +1,100 @@
 /* =====================================================================
-   DATA KISI-KISI, QUIZ, & FLASHCARD
+   DATA KISI-KISI MID SEMESTER (TENGAH SEMESTER)
+   ===================================================================== */
+const kisiDataMid = [
+  {
+    no: 1, era: "MID", periode: "PEMBENTUKAN NEGARA (AGUSTUS 1945)",
+    materi: "Sidang PPKI dan Pembentukan Kelengkapan Negara",
+    wikiUrl: "https://id.wikipedia.org/wiki/Sidang_PPKI",
+    inti: [
+      `<a href="https://id.wikipedia.org/wiki/Sidang_PPKI" target="_blank" rel="noopener noreferrer" class="inti-link">Keputusan Sidang PPKI:</a> Mengidentifikasi keputusan-keputusan penting pada Sidang PPKI (pengesahan UUD, pemilihan Presiden dan Wakil Presiden, pembagian wilayah, serta pembentukan departemen).`,
+      `<a href="https://id.wikipedia.org/wiki/Komite_Nasional_Indonesia_Pusat" target="_blank" rel="noopener noreferrer" class="inti-link">Pembentukan KNIP:</a> Menganalisis fungsi dan tujuan pembentukan Komite Nasional Indonesia Pusat (KNIP) pada masa awal transisi ketatanegaraan.`
+    ],
+    paketA: "No. 1, 2 (PG), No. 26 (PGK)", paketB: "No. 6, 12 (PG), No. 24 (PGK)"
+  },
+  {
+    no: 2, era: "MID", periode: "KONSTITUSI & DASAR NEGARA (1945)",
+    materi: "Perubahan Piagam Jakarta",
+    wikiUrl: "https://id.wikipedia.org/wiki/Piagam_Jakarta",
+    inti: [
+      `<a href="https://id.wikipedia.org/wiki/Piagam_Jakarta" target="_blank" rel="noopener noreferrer" class="inti-link">Latar Belakang Historis Perubahan:</a> Menganalisis alasan rasional (latar belakang historis) perubahan rumusan Piagam Jakarta demi menjaga persatuan bangsa yang majemuk.`
+    ],
+    paketA: "No. 3 (PG), No. 27 (PGK)", paketB: "No. 7 (PG), No. 27 (PGK)"
+  },
+  {
+    no: 3, era: "MID", periode: "AWAL KEMERDEKAAN (1945)",
+    materi: "Pengambilalihan Kekuasaan dari Jepang",
+    wikiUrl: "https://id.wikipedia.org/wiki/Pertempuran_Lima_Hari_di_Semarang",
+    inti: [
+      `<a href="https://id.wikipedia.org/wiki/Pertempuran_Lima_Hari_di_Semarang" target="_blank" rel="noopener noreferrer" class="inti-link">Perebutan Aset &amp; Pertempuran Daerah:</a> Mengidentifikasi peristiwa pertempuran dalam rangka perebutan aset Jepang di berbagai daerah (contoh: Pertempuran Lima Hari di Semarang).`,
+      `Motif Penguasaan Fasilitas Strategis: Menganalisis motif pemuda mengambil alih fasilitas strategis peninggalan Jepang seperti stasiun radio dan jaringan kereta api.`
+    ],
+    paketA: "No. 4, 5 (PG), No. 16, 28 (PGK)", paketB: "No. 2, 14 (PG), No. 21, 30 (PGK)"
+  },
+  {
+    no: 4, era: "MID", periode: "PERJUANGAN FISIK (1945-1946)",
+    materi: "Perjuangan Bersenjata Daerah Melawan Sekutu/NICA",
+    wikiUrl: "https://id.wikipedia.org/wiki/Pertempuran_Surabaya",
+    inti: [
+      `<a href="https://id.wikipedia.org/wiki/Bandung_Lautan_Api" target="_blank" rel="noopener noreferrer" class="inti-link">Pertempuran Heroik Daerah:</a> Mengidentifikasi latar belakang, tokoh, dan taktik perlawanan dalam pertempuran daerah (Bandung Lautan Api, Palagan Ambarawa, dan Puputan Margarana).`,
+      `<a href="https://id.wikipedia.org/wiki/Pertempuran_Surabaya" target="_blank" rel="noopener noreferrer" class="inti-link">Pertempuran Surabaya:</a> Menganalisis rentetan kejadian dan faktor utama pemicu meletusnya Pertempuran Surabaya.`
+    ],
+    paketA: "No. 6, 7, 8, 9 (PG), No. 17, 22, 29 (PGK)", paketB: "No. 3, 4, 5, 8 (PG), No. 16, 20, 28 (PGK)"
+  },
+  {
+    no: 5, era: "MID", periode: "PERJUANGAN DIPLOMASI (1946-1948)",
+    materi: "Perjuangan Diplomasi (Linggarjati & Renville)",
+    wikiUrl: "https://id.wikipedia.org/wiki/Perjanjian_Linggarjati",
+    inti: [
+      `<a href="https://id.wikipedia.org/wiki/Perjanjian_Linggarjati" target="_blank" rel="noopener noreferrer" class="inti-link">Perundingan Linggarjati:</a> Mengidentifikasi poin-poin kesepakatan dan dampak politik wilayah dari Perundingan Linggarjati.`,
+      `<a href="https://id.wikipedia.org/wiki/Perjanjian_Renville" target="_blank" rel="noopener noreferrer" class="inti-link">Perjanjian Renville &amp; Agresi Militer I:</a> Menganalisis dampak kerugian militer dan wilayah dari Perjanjian Renville serta Agresi Militer Belanda I sebagai bentuk pelanggaran kesepakatan.`
+    ],
+    paketA: "No. 10, 11, 12 (PG), No. 30 (PGK)", paketB: "No. 1, 9, 10 (PG), No. 29 (PGK)"
+  },
+  {
+    no: 6, era: "MID", periode: "KRISIS KEDAULATAN (1948-1949)",
+    materi: "Agresi Militer Belanda II & Dampaknya",
+    wikiUrl: "https://id.wikipedia.org/wiki/Serangan_Umum_1_Maret",
+    inti: [
+      `<a href="https://id.wikipedia.org/wiki/Pemerintahan_Darurat_Republik_Indonesia" target="_blank" rel="noopener noreferrer" class="inti-link">PDRI &amp; Serangan Umum 1 Maret:</a> Mengevaluasi dampak Agresi Militer Belanda II, pembentukan Pemerintah Darurat Republik Indonesia (PDRI), dan pelaksanaan Serangan Umum 1 Maret 1949.`
+    ],
+    paketA: "No. 18 (PGK), No. 31 (BS)", paketB: "No. 17 (PGK), No. 31 (BS)"
+  },
+  {
+    no: 7, era: "MID", periode: "DIPLOMASI INTERNASIONAL (1947-1949)",
+    materi: "Penyelesaian Konflik & Diplomasi Lanjutan",
+    wikiUrl: "https://id.wikipedia.org/wiki/Konferensi_Meja_Bundar",
+    inti: [
+      `<a href="https://id.wikipedia.org/wiki/Komisi_Tiga_Negara" target="_blank" rel="noopener noreferrer" class="inti-link">Peran Mediasi PBB (KTN &amp; UNCI):</a> Menjelaskan peran komisi bentukan PBB (KTN dan UNCI) dalam menengahi konflik fisik antara RI dan Belanda.`,
+      `<a href="https://id.wikipedia.org/wiki/Konferensi_Meja_Bundar" target="_blank" rel="noopener noreferrer" class="inti-link">Roem-Royen &amp; KMB:</a> Mengidentifikasi kesepakatan Roem-Royen serta mengevaluasi hasil dan beban kompromi Konferensi Meja Bundar (KMB).`
+    ],
+    paketA: "No. 13 (PG), No. 19, 20, 21 (PGK), No. 32 (BS)", paketB: "No. 11 (PG), No. 18, 19, 26 (PGK), No. 32 (BS)"
+  },
+  {
+    no: 8, era: "MID", periode: "KETATANEGARAAN (1949-1950)",
+    materi: "Dinamika Ketatanegaraan & Kembali ke NKRI",
+    wikiUrl: "https://id.wikipedia.org/wiki/Mosi_Integral_Natsir",
+    inti: [
+      `<a href="https://id.wikipedia.org/wiki/Republik_Indonesia_Serikat" target="_blank" rel="noopener noreferrer" class="inti-link">Bubarnya RIS &amp; Peleburan BFO:</a> Menganalisis faktor internal dan rasional bubarnya Republik Indonesia Serikat (RIS) beserta peleburan negara bagian (BFO).`,
+      `<a href="https://id.wikipedia.org/wiki/Mosi_Integral_Natsir" target="_blank" rel="noopener noreferrer" class="inti-link">Peran Mohammad Natsir:</a> Menganalisis peran tokoh nasional seperti Mohammad Natsir melalui Mosi Integral dalam memulihkan negara kesatuan.`,
+      `Maklumat Pemerintah: Mengidentifikasi maklumat pemerintah yang mengubah haluan ketatanegaraan Indonesia.`
+    ],
+    paketA: "No. 14, 15 (PG), No. 23, 24, 25 (PGK), No. 33 (BS)", paketB: "No. 13, 15 (PG), No. 22, 23, 25 (PGK), No. 33 (BS)"
+  },
+  {
+    no: 9, era: "MID", periode: "SINTESIS & KETOKOHAN (1945-1950)",
+    materi: "Peran Tokoh & Sinergi Strategi",
+    wikiUrl: "https://id.wikipedia.org/wiki/Jenderal_Sudirman",
+    inti: [
+      `<a href="https://id.wikipedia.org/wiki/Jenderal_Sudirman" target="_blank" rel="noopener noreferrer" class="inti-link">Peran Tokoh Militer &amp; Sipil:</a> Mengevaluasi peran krusial tokoh militer (Jenderal Sudirman) dan tokoh sipil (Sri Sultan Hamengkubuwono IX, Sutan Sjahrir) dalam mempertahankan kemerdekaan.`,
+      `Sinergi Diplomasi &amp; Konfrontasi Bersenjata: Menganalisis sinergi antara strategi perjuangan diplomasi dan konfrontasi bersenjata dalam mempertahankan kedaulatan RI.`
+    ],
+    paketA: "No. 34, 35 (BS)", paketB: "No. 34, 35 (BS)"
+  }
+];
+
+/* =====================================================================
+   DATA KISI-KISI SAS (UJIAN AKHIR)
    ===================================================================== */
 const kisiData = [
   {
@@ -237,9 +332,6 @@ const store = {
   set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
 };
 
-// ==========================================
-// PENGATURAN WAKTU RILIS (4 Desember 2026, 18:00 WIB)
-// ==========================================
 const releaseDate = new Date('2026-12-04T18:00:00+07:00').getTime();
 let countdownIntervalMain = null;
 let countdownIntervalFloat = null;
@@ -410,8 +502,8 @@ function playSecretSFX() {
     const now = audioCtx.currentTime;
     const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
     osc.type = 'square';
-    osc.frequency.setValueAtTime(987.77, now); // B5
-    osc.frequency.setValueAtTime(1318.51, now + 0.08); // E6
+    osc.frequency.setValueAtTime(987.77, now);
+    osc.frequency.setValueAtTime(1318.51, now + 0.08);
     gain.gain.setValueAtTime(0.1, now);
     gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
     osc.connect(gain); gain.connect(audioCtx.destination);
@@ -540,7 +632,6 @@ let sequenceTimers = [], countdownInterval = null;
 let dodgeCount = 0, lastMoveType = '', isButtonAnimating = false;
 const maxDodgesBeforeSuccess = 2;
 
-// Auto-fill nama dari localStorage
 const savedStudent = store.get('sas_student', null);
 if (savedStudent) {
   studentNameInput.value = savedStudent.name || '';
@@ -766,7 +857,6 @@ startBtn.addEventListener('click', () => {
   
   errorMsg.style.display = 'none';
   
-  // Logika Tombol Kabur
   if (dodgeCount < maxDodgesBeforeSuccess) { dodgeCount++; performPlayfulButtonDodge(); return; }
   
   currentStudentName = nameVal;
@@ -778,33 +868,22 @@ startBtn.addEventListener('click', () => {
   const hasSeenThanks = store.get('sas_has_seen_thanks', false);
 
   if (isLocked) {
-    // ==========================================
-    // JIKA MASIH TERKUNCI (SEBELUM 4 DES 2026)
-    // ==========================================
     welcomeScreen.style.display = 'none';
     mainContainer.classList.add('visible');
     studentPill.textContent = `👋 Semangat belajar, ${currentStudentName} (${currentStudentClass})!`;
     renderTable();
     updateProgressUI();
     
-    $('replayBtn').style.display = 'none'; // Sembunyikan tombol putar ulang
+    $('replayBtn').style.display = 'none';
     
-    // Tampilkan pop-up hitungan mundur
     if ($('countdownOverlay')) $('countdownOverlay').classList.add('active');
-    
-    // Tampilkan widget melayang di kanan bawah
     if ($('floatingCountdown')) $('floatingCountdown').style.display = 'flex';
     
-    // Jalankan timer
     updateCountdownUI();
     countdownIntervalMain = setInterval(updateCountdownUI, 1000);
     countdownIntervalFloat = setInterval(updateCountdownUI, 1000);
 
   } else {
-    // ==========================================
-    // JIKA SUDAH DIRILIS (SETELAH 4 DES 2026)
-    // ==========================================
-    // Pastikan elemen countdown disembunyikan
     if ($('countdownOverlay')) $('countdownOverlay').classList.remove('active');
     if ($('floatingCountdown')) $('floatingCountdown').style.display = 'none';
     $('replayBtn').style.display = 'inline-flex';
@@ -823,18 +902,56 @@ skipBtn.addEventListener('click', closeCelebrationAndShowKisi);
 replayBtn.addEventListener('click', () => startCelebrationSequence(currentStudentName, currentStudentClass));
 
 /* =====================================================================
-   RENDER TABLE & PROGRESS
+   RENDER TABLE & PROGRESS (DUAL TABLE: MID & SAS)
    ===================================================================== */
 const kisiBody = $('kisiBody');
+const kisiBodyMid = $('kisiBodyMid');
 const searchInput = $('searchInput');
 const filterBtns = document.querySelectorAll('.filter-btn');
 let currentEraFilter = 'ALL';
 
 function renderTable() {
   const q = searchInput.value.trim();
-  kisiBody.innerHTML = '';
+  
+  // --- RENDER TABEL MID ---
+  if (kisiBodyMid) {
+    kisiBodyMid.innerHTML = '';
+    const filteredMid = kisiDataMid.filter(item => {
+      if (!q) return true;
+      const combined = [item.no, item.periode, item.materi, item.inti.join(' '), item.paketA, item.paketB].join(' ');
+      return fuzzyMatch(combined, q);
+    });
 
-  const filtered = kisiData.filter(item => {
+    if (filteredMid.length === 0 && q) {
+      kisiBodyMid.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:24px; color:var(--text-muted);">Tidak ada materi MID yang cocok dengan "<strong>${escapeHtml(q)}</strong>".</td></tr>`;
+    } else {
+      filteredMid.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.className = 'reveal';
+        tr.dataset.no = item.no;
+        const bulletsHtml = item.inti.map(b => `<li>${b}</li>`).join('');
+        
+        tr.innerHTML = `
+          <td class="col-no">${item.no}</td>
+          <td class="col-materi">
+            <span class="periode-tag">${item.periode}</span>
+            <a href="${item.wikiUrl}" target="_blank" rel="noopener noreferrer" class="materi-link" title="Buka Wikipedia">${item.materi}</a>
+            <div><a href="${item.wikiUrl}" target="_blank" rel="noopener noreferrer" class="wiki-badge">🌐 Baca Wikipedia ↗</a></div>
+          </td>
+          <td class="col-inti"><ul class="inti-list">${bulletsHtml}</ul></td>
+          <td class="col-posisi">
+            <div class="paket-row"><span class="paket-label">Paket A:</span> ${item.paketA}</div>
+            <div class="paket-row"><span class="paket-label b">Paket B:</span> ${item.paketB}</div>
+          </td>
+        `;
+        kisiBodyMid.appendChild(tr);
+      });
+    }
+  }
+
+  // --- RENDER TABEL SAS ---
+  kisiBody.innerHTML = '';
+  const filteredSas = kisiData.filter(item => {
     const eraMatch = currentEraFilter === 'ALL' || item.era === currentEraFilter || item.era === 'ALL';
     if (!eraMatch) return false;
     if (!q) return true;
@@ -842,43 +959,42 @@ function renderTable() {
     return fuzzyMatch(combined, q);
   });
 
-  if (filtered.length === 0) {
-    kisiBody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:24px; color:var(--text-muted);">Tidak ada materi yang cocok dengan "<strong>${escapeHtml(searchInput.value)}</strong>".</td></tr>`;
-    return;
+  if (filteredSas.length === 0 && q) {
+    kisiBody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:24px; color:var(--text-muted);">Tidak ada materi SAS yang cocok dengan "<strong>${escapeHtml(q)}</strong>".</td></tr>`;
+  } else {
+    filteredSas.forEach(item => {
+      const tr = document.createElement('tr');
+      tr.className = 'reveal';
+      tr.dataset.no = item.no;
+      if (completedMateri.has(item.no)) tr.classList.add('done');
+      if (bookmarkedMateri.has(item.no)) tr.classList.add('bookmarked');
+
+      const bulletsHtml = item.inti.map(b => `<li>${b}</li>`).join('');
+      const isDone = completedMateri.has(item.no);
+      const isStar = bookmarkedMateri.has(item.no);
+
+      tr.innerHTML = `
+        <td class="col-no">
+          ${item.no}
+          <div class="row-actions">
+            <button type="button" class="row-action-btn check ${isDone ? 'active' : ''}" data-no="${item.no}" data-action="check" title="Tandai sudah dipelajari">${isDone ? '✓' : '○'}</button>
+            <button type="button" class="row-action-btn star ${isStar ? 'active' : ''}" data-no="${item.no}" data-action="star" title="Bookmark favorit">${isStar ? '★' : '☆'}</button>
+          </div>
+        </td>
+        <td class="col-materi">
+          <span class="periode-tag">${item.periode}</span>
+          <a href="${item.wikiUrl}" target="_blank" rel="noopener noreferrer" class="materi-link" title="Buka Wikipedia">${item.materi}</a>
+          <div><a href="${item.wikiUrl}" target="_blank" rel="noopener noreferrer" class="wiki-badge">🌐 Baca Wikipedia ↗</a></div>
+        </td>
+        <td class="col-inti"><ul class="inti-list">${bulletsHtml}</ul></td>
+        <td class="col-posisi">
+          <div class="paket-row"><span class="paket-label">Paket A:</span> ${item.paketA}</div>
+          <div class="paket-row"><span class="paket-label b">Paket B:</span> ${item.paketB}</div>
+        </td>
+      `;
+      kisiBody.appendChild(tr);
+    });
   }
-
-  filtered.forEach(item => {
-    const tr = document.createElement('tr');
-    tr.className = 'reveal';
-    tr.dataset.no = item.no;
-    if (completedMateri.has(item.no)) tr.classList.add('done');
-    if (bookmarkedMateri.has(item.no)) tr.classList.add('bookmarked');
-
-    const bulletsHtml = item.inti.map(b => `<li>${b}</li>`).join('');
-    const isDone = completedMateri.has(item.no);
-    const isStar = bookmarkedMateri.has(item.no);
-
-    tr.innerHTML = `
-      <td class="col-no">
-        ${item.no}
-        <div class="row-actions">
-          <button type="button" class="row-action-btn check ${isDone ? 'active' : ''}" data-no="${item.no}" data-action="check" title="Tandai sudah dipelajari">${isDone ? '✓' : '○'}</button>
-          <button type="button" class="row-action-btn star ${isStar ? 'active' : ''}" data-no="${item.no}" data-action="star" title="Bookmark favorit">${isStar ? '★' : '☆'}</button>
-        </div>
-      </td>
-      <td class="col-materi">
-        <span class="periode-tag">${item.periode}</span>
-        <a href="${item.wikiUrl}" target="_blank" rel="noopener noreferrer" class="materi-link" title="Buka Wikipedia">${item.materi}</a>
-        <div><a href="${item.wikiUrl}" target="_blank" rel="noopener noreferrer" class="wiki-badge">🌐 Baca Wikipedia ↗</a></div>
-      </td>
-      <td class="col-inti"><ul class="inti-list">${bulletsHtml}</ul></td>
-      <td class="col-posisi">
-        <div class="paket-row"><span class="paket-label">Paket A:</span> ${item.paketA}</div>
-        <div class="paket-row"><span class="paket-label b">Paket B:</span> ${item.paketB}</div>
-      </td>
-    `;
-    kisiBody.appendChild(tr);
-  });
 
   kisiBody.querySelectorAll('[data-action]').forEach(btn => {
     btn.addEventListener('click', e => {
@@ -1338,7 +1454,6 @@ function updateCountdownUI() {
   const time = getTimeRemaining(releaseDate);
   
   if (!time) {
-    // Jika waktu sudah habis saat layar menyala
     if ($('countdownOverlay')) $('countdownOverlay').classList.remove('active');
     if ($('floatingCountdown')) $('floatingCountdown').style.display = 'none';
     clearInterval(countdownIntervalMain);
@@ -1354,7 +1469,6 @@ function updateCountdownUI() {
   if ($('floatingTimer')) $('floatingTimer').textContent = timeString;
 }
 
-// Event listener untuk tombol-tombol di Pop-up Countdown
 if ($('closeCountdownBtn')) {
   $('closeCountdownBtn').addEventListener('click', () => {
     $('countdownOverlay').classList.remove('active');
@@ -1424,4 +1538,4 @@ function renderTimeline() {
     });
     track.appendChild(node);
   });
-}s
+}
