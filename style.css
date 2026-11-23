@@ -62,7 +62,7 @@ html, body {
   background-color: var(--bg-page);
   color: var(--text-main);
   line-height: 1.5;
-  overflow-x: hidden;
+  overflow-x: clip; /* <--- INI DIPERBAIKI DARI HIDDEN KE CLIP */
   min-height: 100dvh;
   transition: background-color 0.35s ease, color 0.35s ease;
 }
@@ -130,6 +130,10 @@ button { font-family: inherit; }
   background: linear-gradient(135deg, var(--navy) 0%, #244980 100%);
   color: var(--white); padding: 24px 24px 20px; text-align: center;
   border-radius: 24px 24px 0 0; border-bottom: 4px solid var(--gold); position: relative;
+}
+.welcome-logo {
+  font-size: 52px; line-height: 1; margin-bottom: 12px; display: inline-block;
+  animation: mascotFloat 3s ease-in-out infinite; filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.4));
 }
 .mascot-bubble {
   display: inline-flex; align-items: center; gap: 6px;
@@ -282,7 +286,10 @@ button { font-family: inherit; }
 @keyframes fadeInMain { from { opacity: 0; } to { opacity: 1; } }
 
 .app-header {
-  position: sticky; top: 0; z-index: 500;
+  position: -webkit-sticky; /* Tambahan untuk Safari */
+  position: sticky; 
+  top: 0; 
+  z-index: 500;
   background: var(--header-bg);
   backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border-gray);
@@ -476,7 +483,7 @@ table.kisi-table td {
 .row-action-btn {
   width: 26px; height: 26px; border-radius: 6px; border: 1px solid var(--border-gray);
   background: var(--card-bg); cursor: pointer; font-size: 12px;
-  color: var(--text-main); /* <--- TAMBAHKAN BARIS INI */
+  color: var(--text-main); /* Perbaikan untuk ikon gelap/terang */
   display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s;
   -webkit-tap-highlight-color: transparent;
 }
