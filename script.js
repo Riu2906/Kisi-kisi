@@ -1367,13 +1367,6 @@ if ($('floatingCountdown')) {
   });
 }
 
-if ($('previewThanksBtn')) {
-  $('previewThanksBtn').addEventListener('click', () => {
-    $('countdownOverlay').classList.remove('active');
-    startCelebrationSequence(currentStudentName, currentStudentClass);
-  });
-}
-
 /* =====================================================================
    PWA MANIFEST & INIT
    ===================================================================== */
@@ -1431,4 +1424,4 @@ function renderTimeline() {
     });
     track.appendChild(node);
   });
-}
+}s
